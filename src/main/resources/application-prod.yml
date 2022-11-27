@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${/prod/data-source/url}
+    username: ${/prod/data-source/user}
+    password: ${/prod/data-source/password}
+
+awsParameterStorePropertySource:
+  enabled: true
