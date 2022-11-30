@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:basedir: {docdir}/../../../
+:snippets: build/generated-snippets
+:sources-root: {basedir}/src
+:resources: {sources-root}/main/resources
+:resources-test: {sources-root}/test/resources
+:java: {sources-root}/main/java
+:java-test: {sources-root}/test/java
+endif::[]
+= API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:sectlinks:
+
+== Check API
+=== link:actuator-health.html[0.Check Api Status]

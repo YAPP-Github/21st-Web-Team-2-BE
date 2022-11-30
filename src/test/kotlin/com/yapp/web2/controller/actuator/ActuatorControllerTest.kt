@@ -1,4 +1,4 @@
-package com.yapp.web2.controller.docs
+package com.yapp.web2.controller.actuator
 
 import com.yapp.web2.controller.ApiControllerTest
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ class ActuatorControllerTest : ApiControllerTest(uri = "/actuator") {
 			.andDo(MockMvcResultHandlers.print())
 			.andDo(
 				document(
-					"Actuator-Api", // docs directory name
+					"actuator-health", // docs directory name
 					responseFields(
 						fieldWithPath("status").description("현재 상태"),
 					)
