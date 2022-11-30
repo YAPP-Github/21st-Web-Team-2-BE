@@ -38,3 +38,5 @@ out/
 
 ### Mac OS ###
 .DS_Store
+
+/src/main/resources/static/docs/**.html
