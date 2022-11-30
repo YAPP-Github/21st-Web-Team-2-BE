@@ -26,6 +26,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	// Spring Rest Docs
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 }
