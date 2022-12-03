@@ -1,20 +1,21 @@
-package com.yapp.web2.domain.vote.model.option
+package com.yapp.web2.domain.like.model
 
+import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.member.model.Member
 import jakarta.persistence.*
 
 @Entity
-class VoteOptionMember(
+class CommentLikes constructor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    val votedBy: Member,
+    val likedBy: Member,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_option_id")
-    val voteOption: VoteOption,
+    @JoinColumn(name = "comment_id")
+    val comment: Comment,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vote_option_member_id")
+    @Column(name = "comment_likes_id")
     private val id: Long? = null
 }

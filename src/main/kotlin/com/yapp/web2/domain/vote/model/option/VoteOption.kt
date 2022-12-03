@@ -1,4 +1,23 @@
 package com.yapp.web2.domain.vote.model.option
 
-class VoteOption {
+import com.yapp.web2.common.entity.BaseEntity
+import com.yapp.web2.domain.vote.model.Vote
+import jakarta.persistence.*
+
+@Entity
+class VoteOption(
+    val text: String?,
+
+    val voteOptionImageFilename: String?,
+
+    val codeBlock: String?,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_id")
+    val vote: Vote,
+) : BaseEntity() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vote_option_id")
+    val id: Long? = null
 }
