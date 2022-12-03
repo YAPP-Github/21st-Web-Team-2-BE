@@ -116,8 +116,10 @@ tasks.jacocoTestReport {
         sourceSets.main.get().output.asFileTree.matching {
             exclude(
                 "**/Web2ApplicationKt*",
-                "**/domain/*/model/*",
                 "**/common/entity/*",
+                "**/domain/*/model/*",
+                "**/web/*/error/*",
+                "**/web/*/response/*",
             )
         }
     )
