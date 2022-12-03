@@ -18,4 +18,8 @@ abstract class BaseEntity {
 
     @Enumerated(EnumType.STRING)
     var status: EntityStatus = EntityStatus.ACTIVE
+
+    fun softDelete() {
+        this.status = EntityStatus.INACTIVE
+    }
 }

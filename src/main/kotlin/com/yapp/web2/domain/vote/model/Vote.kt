@@ -5,8 +5,10 @@ import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.vote.model.option.VoteOption
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 
 @Entity
+@Where(clause = "status = \'ACTIVE\'")
 class Vote constructor(
     var title: String,
 
