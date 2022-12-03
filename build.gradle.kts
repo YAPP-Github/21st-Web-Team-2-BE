@@ -7,6 +7,9 @@ plugins {
     kotlin("jvm") version "1.7.21"
     kotlin("plugin.spring") version "1.7.21"
     kotlin("plugin.jpa") version "1.7.21"
+    kotlin("plugin.allopen") version "1.6.21"
+    kotlin("plugin.noarg") version "1.6.21"
+    kotlin("kapt") version "1.3.61"
     jacoco
 }
 
@@ -75,7 +78,7 @@ tasks {
         dependsOn(test)
 
         attributes(
-                mapOf("snippets" to snippetsDir)
+            mapOf("snippets" to snippetsDir)
         )
         inputs.dir(snippetsDir)
 
@@ -110,9 +113,13 @@ tasks.jacocoTestReport {
     }
 
     classDirectories.setFrom(
-            sourceSets.main.get().output.asFileTree.matching {
-                exclude("**/Web2ApplicationKt*")
-            }
+        sourceSets.main.get().output.asFileTree.matching {
+            exclude(
+                "**/Web2ApplicationKt*",
+                "**/domain/*/model/*",
+                "**/common/entity/*",
+            )
+        }
     )
 
     finalizedBy("jacocoTestCoverageVerification")
@@ -137,10 +144,22 @@ val testCoverage by tasks.registering {
     group = "verification"
     description = "Runs the unit tests with coverage"
 
-    dependsOn(":test",
-            ":jacocoTestReport",
-            ":jacocoTestCoverageVerification")
+    dependsOn(
+        ":test",
+        ":jacocoTestReport",
+        ":jacocoTestCoverageVerification"
+    )
 
     tasks["jacocoTestReport"].mustRunAfter(tasks["test"])
     tasks["jacocoTestCoverageVerification"].mustRunAfter(tasks["jacocoTestReport"])
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
+noArg {
+    annotation("jakarta.persistence.Entity")
 }

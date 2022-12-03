@@ -39,4 +39,8 @@ out/
 ### Mac OS ###
 .DS_Store
 
+### Static ###
 /src/main/resources/static/docs/**.html
+
+### dev-profile ###
+/src/main/resources/application-dev.yml
