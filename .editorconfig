@@ -8,6 +8,10 @@ insert_final_newline = true
 end_of_line = crlf
 
 [*.kt]
-indent_style = tab
+indent_style = space
 indent_size = 4
 tab_width = 4
+
+[*.yml]
+indent_style = space
+indent_size = 2
