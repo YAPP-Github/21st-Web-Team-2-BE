@@ -7,8 +7,10 @@ import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.option.VoteOption
 import com.yapp.web2.domain.vote.model.option.VoteOptionMember
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 
 @Entity
+@Where(clause = "status = \'ACTIVE\'")
 class Member constructor(
     var nickname: String,
 
