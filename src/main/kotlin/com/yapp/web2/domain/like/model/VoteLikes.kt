@@ -17,5 +17,5 @@ class VoteLikes(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_likes_id")
-    private val id: Long? = null
+    val id: Long = 0L
 }

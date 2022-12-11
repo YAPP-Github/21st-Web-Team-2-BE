@@ -37,5 +37,5 @@ class Member constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    val id: Long? = null
+    val id: Long = 0L
 }
