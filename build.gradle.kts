@@ -121,7 +121,7 @@ tasks.jacocoTestReport {
         sourceSets.main.get().output.asFileTree.matching {
             exclude(
                 "**/Web2ApplicationKt*",
-                "**/common/entity/*",
+                "**/common/**",
                 "**/domain/*/model/*",
                 "**/web/*/error/*",
                 "**/web/*/response/*",
@@ -133,6 +133,12 @@ tasks.jacocoTestReport {
 }
 
 tasks.jacocoTestCoverageVerification {
+    val Qdomains = mutableListOf<String>()
+
+    for (qPattern in 'A'..'Z') {
+        Qdomains.add("*.Q${qPattern}*")
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -143,8 +149,18 @@ tasks.jacocoTestCoverageVerification {
                 value = "COVEREDRATIO"
                 minimum = "0.80".toBigDecimal()
             }
+
+            excludes = Qdomains
         }
     }
+
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            exclude(
+                "**/common/**"
+            )
+        }
+    )
 }
 
 val testCoverage by tasks.registering {
