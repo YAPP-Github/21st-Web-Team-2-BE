@@ -20,5 +20,5 @@ class Comment constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    val id: Long? = null
+    val id: Long = 0L
 }

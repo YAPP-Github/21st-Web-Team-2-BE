@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val querydslVersion = "5.0.0"
+
 plugins {
     id("org.springframework.boot") version "3.0.0"
     id("io.spring.dependency-management") version "1.1.0"
@@ -9,7 +11,7 @@ plugins {
     kotlin("plugin.jpa") version "1.7.21"
     kotlin("plugin.allopen") version "1.6.21"
     kotlin("plugin.noarg") version "1.6.21"
-    kotlin("kapt") version "1.3.61"
+    kotlin("kapt") version "1.7.21"
     jacoco
 }
 
@@ -35,6 +37,9 @@ dependencies {
     // Spring Rest Docs
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
+    //query dsl
+    implementation("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 }
 
 jacoco {
@@ -116,7 +121,7 @@ tasks.jacocoTestReport {
         sourceSets.main.get().output.asFileTree.matching {
             exclude(
                 "**/Web2ApplicationKt*",
-                "**/common/entity/*",
+                "**/common/**",
                 "**/domain/*/model/*",
                 "**/web/*/error/*",
                 "**/web/*/response/*",
@@ -128,6 +133,12 @@ tasks.jacocoTestReport {
 }
 
 tasks.jacocoTestCoverageVerification {
+    val Qdomains = mutableListOf<String>()
+
+    for (qPattern in 'A'..'Z') {
+        Qdomains.add("*.Q${qPattern}*")
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -138,8 +149,18 @@ tasks.jacocoTestCoverageVerification {
                 value = "COVEREDRATIO"
                 minimum = "0.80".toBigDecimal()
             }
+
+            excludes = Qdomains
         }
     }
+
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            exclude(
+                "**/common/**"
+            )
+        }
+    )
 }
 
 val testCoverage by tasks.registering {

@@ -19,5 +19,5 @@ class ReplyComment constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id")
-    private val id: Long? = null
+    val id: Long = 0L
 }
