@@ -13,9 +13,11 @@ class CommentLikes constructor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val comment: Comment,
-) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_likes_id")
-    val id: Long = 0L
+    val id: Long = 0L,
+) {
+
 }

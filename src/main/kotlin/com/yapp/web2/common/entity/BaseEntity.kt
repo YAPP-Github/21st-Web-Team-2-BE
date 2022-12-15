@@ -10,13 +10,13 @@ import java.time.LocalDateTime
 @EntityListeners(value = [AuditingEntityListener::class])
 abstract class BaseEntity {
     @CreatedDate
-    @Column(updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    val createdAt: LocalDateTime = LocalDateTime.now()
 
     @LastModifiedDate
     var modifiedAt: LocalDateTime = LocalDateTime.now()
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 8)
     var status: EntityStatus = EntityStatus.ACTIVE
 
     fun softDelete() {

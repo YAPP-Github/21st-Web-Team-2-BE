@@ -4,8 +4,10 @@ import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 
 @Entity
+@Where(clause = "status = \'ACTIVE\'")
 class Comment constructor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -16,9 +18,13 @@ class Comment constructor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
-) : BaseEntity() {
+
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    val replyComments: List<ReplyComment> = mutableListOf(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    val id: Long = 0L
+    val id: Long = 0L,
+) : BaseEntity() {
 }
