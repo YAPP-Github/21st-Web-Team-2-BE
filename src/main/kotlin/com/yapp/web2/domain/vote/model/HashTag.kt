@@ -5,7 +5,7 @@ import jakarta.persistence.*
 @Entity
 class HashTag(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_id")
+    @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
 
     var hashTag: String

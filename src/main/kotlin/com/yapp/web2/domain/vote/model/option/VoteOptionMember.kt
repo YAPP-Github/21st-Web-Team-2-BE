@@ -6,11 +6,11 @@ import jakarta.persistence.*
 @Entity
 class VoteOptionMember(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val votedBy: Member,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_option_id")
+    @JoinColumn(name = "vote_option_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val voteOption: VoteOption,
 ) {
     @Id
