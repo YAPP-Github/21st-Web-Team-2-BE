@@ -18,6 +18,6 @@ class VoteOptionMember constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_option_member_id")
-    private val id: Long = 0L,
+    val id: Long = 0L,
 ) {
 }
