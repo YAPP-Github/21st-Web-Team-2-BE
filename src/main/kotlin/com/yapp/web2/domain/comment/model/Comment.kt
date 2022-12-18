@@ -19,7 +19,7 @@ class Comment constructor(
     @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @OneToMany(mappedBy = "comment")
     val replyComments: List<ReplyComment> = mutableListOf(),
 
     @Id

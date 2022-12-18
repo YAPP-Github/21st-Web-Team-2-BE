@@ -22,10 +22,10 @@ class Vote constructor(
     @Column(length = 30)
     var voteType: VoteType,
 
-    @OneToMany(mappedBy = "vote", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "vote")
     val voteOptions: MutableList<VoteOption> = mutableListOf(),
 
-    @OneToMany(mappedBy = "vote", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "vote")
     val hashTags: MutableList<HashTag> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
