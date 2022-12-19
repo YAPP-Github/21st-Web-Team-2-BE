@@ -15,6 +15,7 @@ class Member constructor(
     var nickname: String,
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     var jobCategory: JobCategory,
 
     var workingYears: Int,
@@ -33,9 +34,10 @@ class Member constructor(
     @OneToMany(mappedBy = "votedBy")
     val voteOptions: MutableList<VoteOptionMember> = mutableListOf(),
 
-    ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    val id: Long = 0L
+    val id: Long = 0L,
+) : BaseEntity() {
+
 }

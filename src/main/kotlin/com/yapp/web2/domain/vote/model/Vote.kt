@@ -15,23 +15,26 @@ class Vote constructor(
     @Enumerated(EnumType.STRING)
     var jobCategory: JobCategory,
 
+    @Column(length = 1000)
     var contents: String,
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     var voteType: VoteType,
 
     @OneToMany(mappedBy = "vote")
     val voteOptions: MutableList<VoteOption> = mutableListOf(),
 
-    @OneToMany(mappedBy = "vote", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "vote")
     val hashTags: MutableList<HashTag> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val createdBy: Member,
-) : BaseEntity() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_id")
-    val id: Long = 0L
+    val id: Long = 0L,
+) : BaseEntity() {
 }

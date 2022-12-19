@@ -3,9 +3,11 @@ package com.yapp.web2.domain.vote.model.option
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
+import org.hibernate.annotations.Where
 
 @Entity
-class VoteOption(
+@Where(clause = "status = \'ACTIVE\'")
+class VoteOption constructor(
     val text: String?,
 
     val voteOptionImageFilename: String?,
@@ -13,11 +15,13 @@ class VoteOption(
     val codeBlock: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_id")
+    @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
-) : BaseEntity() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_option_id")
-    val id: Long? = null
+    val id: Long = 0L
+) : BaseEntity() {
+    //TODO text, image, codeblock이 모두 null인 경우에 대한 검증 메서드 필요
 }

@@ -5,17 +5,19 @@ import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
 
 @Entity
-class VoteLikes(
+class VoteLikes constructor(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val likedBy: Member,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_id")
+    @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
-) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_likes_id")
-    val id: Long = 0L
+    val id: Long = 0L,
+) {
+
 }
