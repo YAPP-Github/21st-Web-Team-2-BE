@@ -5,6 +5,8 @@ import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
+import jakarta.persistence.EntityManagerFactory
+import jakarta.persistence.PersistenceUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -63,6 +65,24 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         val content = searchBySlice?.content
         assertThat(content).hasSize(2)
         assertThat(searchBySlice!!.hasNext()).isFalse
+    }
+
+    @PersistenceUnit
+    lateinit var emf: EntityManagerFactory
+
+    @Test
+    fun `투표 페이징 멤버 페치 조인 테스트`() {
+        //given
+        saveDummyVotes(10)
+        val pageSize = 5
+
+        //when
+        val searchBySlice = voteQuerydslRepository.findVotePreviewsLessThanId(pageable = Pageable.ofSize(pageSize))
+
+        //then
+        val content = searchBySlice?.content
+        val loaded = emf.persistenceUnitUtil.isLoaded(content!![0].createdBy)
+        assertThat(loaded).isTrue
     }
 
     //test용 투표 저장

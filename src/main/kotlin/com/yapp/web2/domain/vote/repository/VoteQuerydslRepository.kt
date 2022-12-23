@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.vote.repository
 
-import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.yapp.web2.domain.member.model.QMember.member
 import com.yapp.web2.domain.vote.model.QVote.vote
 import com.yapp.web2.domain.vote.model.Vote
 import org.springframework.data.domain.Pageable
@@ -15,9 +15,8 @@ class VoteQuerydslRepository(
 ) {
     fun findVotePreviewsLessThanId(lastVoteId: Long? = null, pageable: Pageable): Slice<Vote>? {
         val results: MutableList<Vote> = queryFactory.selectFrom(vote)
-            .where(lastVoteId?.let {
-                vote.id.lt(lastVoteId)
-            })
+            .join(vote.createdBy, member).fetchJoin()
+            .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
             .orderBy(vote.createdAt.desc())
             .limit((pageable.pageSize + 1).toLong())
             .fetch()
