@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component
 class VoteQuerydslRepository(
     private val queryFactory: JPAQueryFactory
 ) {
-    fun findVotePreviewsLessThanId(lastVoteId: Long? = null, pageable: Pageable): Slice<Vote>? {
+    fun findMainPageVotes(lastVoteId: Long? = null, pageable: Pageable): Slice<Vote> {
         val results: MutableList<Vote> = queryFactory.selectFrom(vote)
-            .join(vote.createdBy, member).fetchJoin()
             .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
             .orderBy(vote.createdAt.desc())
             .limit((pageable.pageSize + 1).toLong())
+            .join(vote.createdBy, member).fetchJoin()
             .fetch()
 
         return SliceImpl(results, pageable, hasNext(pageable, results))

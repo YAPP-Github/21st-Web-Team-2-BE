@@ -39,12 +39,12 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         dummyVotes.sortByDescending { it.createdAt }
 
         //when
-        val searchBySlice = voteQuerydslRepository.findVotePreviewsLessThanId(pageable = Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findMainPageVotes(pageable = Pageable.ofSize(pageSize))
 
         //then
-        val content = searchBySlice?.content
+        val content = searchBySlice.content
         assertThat(content).hasSize(pageSize)
-        assertThat(searchBySlice!!.hasNext()).isTrue
+        assertThat(searchBySlice.hasNext()).isTrue
     }
 
     @Test
@@ -59,12 +59,12 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
         //when
         //우선순위(최신순)으로 정렬된 데이터에서, id가 lastVoteId 이후에서 부터 조회
-        val searchBySlice = voteQuerydslRepository.findVotePreviewsLessThanId(lastVoteId, Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findMainPageVotes(lastVoteId, Pageable.ofSize(pageSize))
 
         //then
-        val content = searchBySlice?.content
+        val content = searchBySlice.content
         assertThat(content).hasSize(2)
-        assertThat(searchBySlice!!.hasNext()).isFalse
+        assertThat(searchBySlice.hasNext()).isFalse
     }
 
     @PersistenceUnit
@@ -77,11 +77,11 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         val pageSize = 5
 
         //when
-        val searchBySlice = voteQuerydslRepository.findVotePreviewsLessThanId(pageable = Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findMainPageVotes(pageable = Pageable.ofSize(pageSize))
 
         //then
-        val content = searchBySlice?.content
-        val loaded = emf.persistenceUnitUtil.isLoaded(content!![0].createdBy)
+        val content = searchBySlice.content
+        val loaded = emf.persistenceUnitUtil.isLoaded(content[0].createdBy)
         assertThat(loaded).isTrue
     }
 
