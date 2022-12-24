@@ -21,7 +21,7 @@ class VoteService(
         return votes.content.map { vote ->
             VotePreviewResponse.of(
                 vote,
-                getVoteOptionPreviewResponses(vote)
+                getVoteOptionPreviewResponses(vote),
             )
         }
     }
