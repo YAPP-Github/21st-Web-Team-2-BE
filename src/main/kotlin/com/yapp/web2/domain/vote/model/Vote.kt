@@ -1,10 +1,12 @@
 package com.yapp.web2.domain.vote.model
 
 import com.yapp.web2.common.entity.BaseEntity
+import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.vote.model.option.VoteOption
 import jakarta.persistence.*
+import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.Where
 
 @Entity
@@ -22,11 +24,16 @@ class Vote constructor(
     @Column(length = 30)
     var voteType: VoteType,
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "vote")
-    val voteOptions: MutableList<VoteOption> = mutableListOf(),
+    val voteOptions: MutableSet<VoteOption> = mutableSetOf(),
 
     @OneToMany(mappedBy = "vote")
     val hashTags: MutableList<HashTag> = mutableListOf(),
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "vote")
+    val comments: MutableSet<Comment> = mutableSetOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
