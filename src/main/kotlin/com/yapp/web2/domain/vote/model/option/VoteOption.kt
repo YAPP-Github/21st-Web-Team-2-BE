@@ -3,6 +3,7 @@ package com.yapp.web2.domain.vote.model.option
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
+import org.hibernate.annotations.Formula
 import org.hibernate.annotations.Where
 
 @Entity
@@ -17,6 +18,9 @@ class VoteOption constructor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
+
+    @OneToMany(mappedBy = "voteOption")
+    val voteOptionMembers: MutableSet<VoteOptionMember> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
