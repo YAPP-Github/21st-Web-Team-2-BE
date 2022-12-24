@@ -3,6 +3,7 @@ package com.yapp.web2.domain.vote.model.option
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
+import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.Formula
 import org.hibernate.annotations.Where
 
@@ -19,7 +20,8 @@ class VoteOption constructor(
     @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val vote: Vote,
 
-    @OneToMany(mappedBy = "voteOption")
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "voteOption", cascade = [CascadeType.PERSIST])
     val voteOptionMembers: MutableSet<VoteOptionMember> = mutableSetOf(),
 
     @Id
@@ -28,4 +30,8 @@ class VoteOption constructor(
     val id: Long = 0L
 ) : BaseEntity() {
     //TODO text, image, codeblock이 모두 null인 경우에 대한 검증 메서드 필요
+
+    fun addVoteOptionMember(voteOptionMember: VoteOptionMember) {
+        this.voteOptionMembers.add(voteOptionMember)
+    }
 }

@@ -24,14 +24,12 @@ class Vote constructor(
     @Column(length = 30)
     var voteType: VoteType,
 
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "vote")
+    @OneToMany(mappedBy = "vote", cascade = [CascadeType.PERSIST])
     val voteOptions: MutableSet<VoteOption> = mutableSetOf(),
 
     @OneToMany(mappedBy = "vote")
     val hashTags: MutableList<HashTag> = mutableListOf(),
 
-    @BatchSize(size = 100)
     @OneToMany(mappedBy = "vote")
     val comments: MutableSet<Comment> = mutableSetOf(),
 
@@ -44,4 +42,8 @@ class Vote constructor(
     @Column(name = "vote_id")
     val id: Long = 0L,
 ) : BaseEntity() {
+
+    fun addVoteOption(voteOption: VoteOption) {
+        this.voteOptions.add(voteOption)
+    }
 }
