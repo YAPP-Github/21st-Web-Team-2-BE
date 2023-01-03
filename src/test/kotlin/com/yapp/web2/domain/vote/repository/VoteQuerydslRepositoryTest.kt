@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -39,32 +38,31 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         dummyVotes.sortByDescending { it.createdAt }
 
         //when
-        val searchBySlice = voteQuerydslRepository.findMainPageVotes(pageable = Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findLatestVotes()
 
         //then
-        val content = searchBySlice.content
+        val content = searchBySlice.votes
         assertThat(content).hasSize(pageSize)
-        assertThat(searchBySlice.hasNext()).isTrue
+        assertThat(searchBySlice.hasNext).isTrue
     }
 
     @Test
     fun `투표 페이징 인덱스 조회 테스트`() {
         //given
         val dummyVoteAmount = 20
-        val pageSize = 5
 
         val dummyVotes = saveDummyVotes(dummyVoteAmount)
         dummyVotes.sortByDescending { it.createdAt }
-        val lastVoteId = dummyVotes[(dummyVoteAmount - 1) - 2].id
+        val lastVoteId = dummyVotes[(dummyVoteAmount - 1) - 2].id // 마지막에서 2번째 부터 페이징 조회
 
         //when
         //우선순위(최신순)으로 정렬된 데이터에서, id가 lastVoteId 이후에서 부터 조회
-        val searchBySlice = voteQuerydslRepository.findMainPageVotes(lastVoteId, Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findLatestVotes(lastVoteId)
 
         //then
-        val content = searchBySlice.content
+        val content = searchBySlice.votes
         assertThat(content).hasSize(2)
-        assertThat(searchBySlice.hasNext()).isFalse
+        assertThat(searchBySlice.hasNext).isFalse
     }
 
     @PersistenceUnit
@@ -74,13 +72,12 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     fun `투표 페이징 멤버 페치 조인 테스트`() {
         //given
         saveDummyVotes(10)
-        val pageSize = 5
 
         //when
-        val searchBySlice = voteQuerydslRepository.findMainPageVotes(pageable = Pageable.ofSize(pageSize))
+        val searchBySlice = voteQuerydslRepository.findLatestVotes()
 
         //then
-        val content = searchBySlice.content
+        val content = searchBySlice.votes
         val loaded = emf.persistenceUnitUtil.isLoaded(content[0].createdBy)
         assertThat(loaded).isTrue
     }

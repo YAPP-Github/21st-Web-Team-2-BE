@@ -25,6 +25,9 @@ internal class VoteTest(
 
     @BeforeEach
     fun beforeEach() {
+        memberRepository.deleteAll()
+        voteRepository.deleteAll()
+
         val member = Member("MemberA", JobCategory.DEVELOPER, 3, null)
         vote = Vote("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
         memberRepository.save(member)

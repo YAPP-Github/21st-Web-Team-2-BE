@@ -25,13 +25,13 @@ class Vote constructor(
     var voteType: VoteType,
 
     @OneToMany(mappedBy = "vote", cascade = [CascadeType.PERSIST])
-    val voteOptions: MutableSet<VoteOption> = mutableSetOf(),
+    val voteOptions: MutableList<VoteOption> = mutableListOf(),
 
     @OneToMany(mappedBy = "vote")
     val hashTags: MutableList<HashTag> = mutableListOf(),
 
     @OneToMany(mappedBy = "vote")
-    val comments: MutableSet<Comment> = mutableSetOf(),
+    val comments: MutableList<Comment> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))

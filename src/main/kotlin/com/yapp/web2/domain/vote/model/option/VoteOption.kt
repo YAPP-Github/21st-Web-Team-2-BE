@@ -22,7 +22,7 @@ class VoteOption constructor(
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "voteOption", cascade = [CascadeType.PERSIST])
-    val voteOptionMembers: MutableSet<VoteOptionMember> = mutableSetOf(),
+    val voteOptionMembers: MutableList<VoteOptionMember> = mutableListOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

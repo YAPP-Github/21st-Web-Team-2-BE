@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.domain.PageRequest
 
 @SpringBootTest
 internal class VoteServiceTest @Autowired constructor(
@@ -35,7 +34,7 @@ internal class VoteServiceTest @Autowired constructor(
         saveDummyVotesDetail(2)
 
         //when
-        val votesByPageRequest = voteService.getVotesByPageRequest(null, PageRequest.of(0, 5))
+        val votesByPageRequest = voteService.getVotesByPageRequest()
 
         //then
         assertThat(votesByPageRequest).hasSize(2)
