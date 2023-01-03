@@ -18,12 +18,14 @@ class VoteService(
 ) {
 
     fun getVotesByPageRequest(lastVoteId: Long? = null): List<VotePreviewResponse> {
-        val votes = voteQuerydslRepository.findLatestVotes(lastVoteId)
+        val latestVoteSliceVo = voteQuerydslRepository.findLatestVotes(lastVoteId)
 
-        return votes.votes.map { vote ->
+        return latestVoteSliceVo.votes.map { votePreviewVo ->
             VotePreviewResponse.of(
-                vote,
-                getVoteOptionPreviewResponses(vote),
+                votePreviewVo.vote,
+                votePreviewVo.commentCount.toInt(),
+                votePreviewVo.voteAmount.toInt(),
+                getVoteOptionPreviewResponses(votePreviewVo.vote),
             )
         }
     }

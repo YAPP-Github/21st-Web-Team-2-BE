@@ -10,13 +10,13 @@ data class VotePreviewResponse constructor(
     val createdMemberId: Long,
     val createdMemberName: String,
     val createdMemberProfileImage: String?,
-    val commentCount: Int,
+    val commentAmount: Int,
     val voteAmount: Int,
     val voteOptionPreviewResponse: List<VoteOptionPreviewResponse>,
 ) {
 
     companion object {
-        fun of(vote: Vote, voteOptionPreviewResponse: List<VoteOptionPreviewResponse>): VotePreviewResponse {
+        fun of(vote: Vote, commentCount: Int, voteAmount: Int, voteOptionPreviewResponse: List<VoteOptionPreviewResponse>): VotePreviewResponse {
             return VotePreviewResponse(
                 vote.id,
                 vote.title,
@@ -24,8 +24,8 @@ data class VotePreviewResponse constructor(
                 vote.createdBy.id,
                 vote.createdBy.nickname,
                 vote.createdBy.profileImageFilename,
-                vote.comments.size,
-                vote.voteOptions.sumOf { it.voteOptionMembers.size },
+                commentCount,
+                voteAmount,
                 voteOptionPreviewResponse,
             )
         }

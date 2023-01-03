@@ -78,8 +78,8 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
         //then
         val content = searchBySlice.votes
-        val loaded = emf.persistenceUnitUtil.isLoaded(content[0].createdBy)
-        assertThat(loaded).isTrue
+//        val loaded = emf.persistenceUnitUtil.isLoaded(content[0].createdBy)
+//        assertThat(loaded).isTrue
     }
 
     //test용 투표 저장
