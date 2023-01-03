@@ -1,9 +1,15 @@
 package com.yapp.web2.domain.vote.application
 
+import com.yapp.web2.domain.vote.application.vo.LatestVoteSliceVo
+import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.repository.VoteQuerydslRepository
 import com.yapp.web2.web.dto.vote.response.VotePreviewResponse
+import com.yapp.web2.web.dto.vote.response.VotePreviewSliceResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
+import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,17 +31,21 @@ class VoteService(
         }
     }
 
-    fun getLatestVotesSlice(lastVoteId: Long? = null): List<VotePreviewResponse> {
+    fun getLatestVotesSlice(lastVoteId: Long?): Slice<VotePreviewResponse> {
         val latestVoteSliceVo = voteQuerydslRepository.findLatestVotes(lastVoteId)
 
-        return latestVoteSliceVo.votes.map { votePreviewVo ->
-            VotePreviewResponse.of(
-                votePreviewVo.vote,
-                votePreviewVo.commentCount.toInt(),
-                votePreviewVo.voteAmount.toInt(),
-                getVoteOptionPreviewResponses(votePreviewVo.vote),
-            )
-        }
+        return SliceImpl(
+            latestVoteSliceVo.votes.map { votePreviewVo ->
+                VotePreviewResponse.of(
+                    votePreviewVo.vote,
+                    votePreviewVo.commentCount.toInt(),
+                    votePreviewVo.voteAmount.toInt(),
+                    getVoteOptionPreviewResponses(votePreviewVo.vote),
+                )
+            },
+            Pageable.ofSize(6),
+            latestVoteSliceVo.hasNext,
+        )
     }
 
     private fun getVoteOptionPreviewResponses(vote: Vote): List<VoteOptionPreviewResponse> {

@@ -34,7 +34,7 @@ internal class VoteServiceTest @Autowired constructor(
         saveDummyVotesDetail(2)
 
         //when
-        val latestVotesSlice = voteService.getLatestVotesSlice()
+        val latestVotesSlice = voteService.getLatestVotesSlice(null).content
 
         //then
         assertThat(latestVotesSlice).hasSize(2)
