@@ -33,8 +33,6 @@ include::{snippets}/{docname}/request-body.adoc[]
 == Response
 === Http-Response
 include::{snippets}/{docname}/http-response.adoc[]
-=== Response-Body
-include::{snippets}/{docname}/response-body.adoc[]
 === Response-Fields
 ==== Common
 include::{snippets}/common/response-fields.adoc[]

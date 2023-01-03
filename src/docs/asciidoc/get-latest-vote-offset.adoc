@@ -26,8 +26,6 @@ endif::[]
 include::{snippets}/{docname}/http-request.adoc[]
 // === Request-Headers
 // include::{snippets}/{docname}/request-headers.adoc[]
-=== Request-Body
-include::{snippets}/{docname}/request-body.adoc[]
 === Request-Parameters
 |===
 |Parameter|Description|Nullable
