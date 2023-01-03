@@ -70,7 +70,7 @@ internal class VoteServiceTest @Autowired constructor(
 
             voteOptionA.addVoteOptionMember(VoteOptionMember(memberA, voteOptionA))
             voteOptionA.addVoteOptionMember(VoteOptionMember(memberB, voteOptionA))
-            voteOptionA.addVoteOptionMember(VoteOptionMember(memberC, voteOptionB))
+            voteOptionB.addVoteOptionMember(VoteOptionMember(memberC, voteOptionB))
         }
 
 

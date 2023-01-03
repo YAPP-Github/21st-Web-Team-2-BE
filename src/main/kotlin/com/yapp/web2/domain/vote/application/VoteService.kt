@@ -39,7 +39,7 @@ class VoteService(
         }
     }
 
-//    fun getVotesByPopular() {
-//        voteRepository.
-//    }
+    fun getVotesByPopular() {
+        voteQuerydslRepository.findPopularVotes()
+    }
 }
