@@ -28,14 +28,25 @@ include::{snippets}/{docname}/http-request.adoc[]
 // include::{snippets}/{docname}/request-headers.adoc[]
 === Request-Body
 include::{snippets}/{docname}/request-body.adoc[]
-// === Request-Parameters
-// include::{snippets}/{docname}/request-parameters.adoc[]
+=== Request-Parameters
+|===
+|Parameter|Description|Nullable
+
+|`+lastOffset+`
+|마지막 투표 게시글 Id
+|true
+|===
+
 == Response
 === Http-Response
 include::{snippets}/{docname}/http-response.adoc[]
 === Response-Body
 include::{snippets}/{docname}/response-body.adoc[]
 === Response-Fields
-include::{snippets}/{docname}/response-fields.adoc[]
+==== Common
+include::{snippets}/common-slice/response-fields.adoc[]
+
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
 
 link:api-docs.html[back to api-docs]

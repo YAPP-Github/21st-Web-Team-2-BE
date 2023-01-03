@@ -36,6 +36,10 @@ include::{snippets}/{docname}/http-response.adoc[]
 === Response-Body
 include::{snippets}/{docname}/response-body.adoc[]
 === Response-Fields
-include::{snippets}/{docname}/response-fields.adoc[]
+==== Common
+include::{snippets}/common/response-fields.adoc[]
+
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
 
 link:api-docs.html[back to api-docs]
