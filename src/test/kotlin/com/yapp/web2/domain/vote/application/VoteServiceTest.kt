@@ -34,12 +34,12 @@ internal class VoteServiceTest @Autowired constructor(
         saveDummyVotesDetail(2)
 
         //when
-        val votesByPageRequest = voteService.getVotesByPageRequest()
+        val latestVotesSlice = voteService.getLatestVotesSlice()
 
         //then
-        assertThat(votesByPageRequest).hasSize(2)
+        assertThat(latestVotesSlice).hasSize(2)
 
-        val voteOptionPreview = votesByPageRequest[0]
+        val voteOptionPreview = latestVotesSlice[0]
         assertThat(voteOptionPreview.voteAmount).isEqualTo(3)
 
         assertThat(voteOptionPreview.voteOptionPreviewResponse[0].votedAmount).isEqualTo(2)
