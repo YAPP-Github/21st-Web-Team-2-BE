@@ -39,7 +39,15 @@ class VoteService(
         }
     }
 
-    fun getVotesByPopular() {
-        voteQuerydslRepository.findPopularVotes()
+    fun getVotesByPopular(): List<VotePreviewResponse> {
+        val popularVotes = voteQuerydslRepository.findPopularVotes()
+        return popularVotes.map { votePreviewVo ->
+            VotePreviewResponse.of(
+                votePreviewVo.vote,
+                votePreviewVo.commentCount.toInt(),
+                votePreviewVo.voteAmount.toInt(),
+                getVoteOptionPreviewResponses(votePreviewVo.vote),
+            )
+        }
     }
 }

@@ -46,6 +46,22 @@ internal class VoteServiceTest @Autowired constructor(
         assertThat(voteOptionPreview.voteOptionPreviewResponse[1].votedAmount).isEqualTo(1)
     }
 
+    @Test
+    fun `인기순 투표 게시글 조회 테스트`() {
+        //given
+        saveDummyVotesDetailWithVoteAmount(10)
+
+        //when
+        val popularVotes = voteService.getVotesByPopular()
+
+        //then
+        assertThat(popularVotes).hasSize(4)
+
+        val voteOptionPreview = popularVotes[0]
+        assertThat(voteOptionPreview.voteAmount).isEqualTo(20)
+    }
+
+
     private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
         // 유저 생성
         val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
@@ -77,6 +93,33 @@ internal class VoteServiceTest @Autowired constructor(
         return voteRepository.saveAll(sampleVotes)
     }
 
+    private fun saveDummyVotesDetailWithVoteAmount(amount: Int) {
+        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        memberRepository.saveAll(listOf(memberA))
+
+        val sampleVotes: MutableList<Vote> = mutableListOf()
+        for (i in 1..amount) {
+            sampleVotes.add(Vote("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+        }
+
+        for (vote in sampleVotes) {
+            vote.addVoteOption(VoteOption("${vote.contents} OptionA", null, null, vote))
+            vote.addVoteOption(VoteOption("${vote.contents} OptionB", null, null, vote))
+        }
+
+        // 투표 게시글 크기의 2배 만큼 투표수를 받음
+        // ex) voteSize = 10, 게시글의 투표수는 20, 18, 16, ... 씩 줄어듦
+        for (i in 0 until sampleVotes.size) {
+            val voteOptionA = sampleVotes[i].voteOptions[0]
+            val voteOptionB = sampleVotes[i].voteOptions[1]
+
+            for (j in 0..i) {
+                voteOptionA.addVoteOptionMember(VoteOptionMember(memberA, voteOptionA))
+                voteOptionB.addVoteOptionMember(VoteOptionMember(memberA, voteOptionB))
+            }
+        }
+        voteRepository.saveAll(sampleVotes)
+    }
 }
 
 
