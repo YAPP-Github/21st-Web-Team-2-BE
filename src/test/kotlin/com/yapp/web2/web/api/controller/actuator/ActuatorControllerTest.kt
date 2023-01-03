@@ -1,6 +1,6 @@
-package com.yapp.web2.controller.actuator
+package com.yapp.web2.web.api.controller.actuator
 
-import com.yapp.web2.controller.ApiControllerTest
+import com.yapp.web2.web.api.controller.ApiControllerTest
 import org.junit.jupiter.api.Test
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders

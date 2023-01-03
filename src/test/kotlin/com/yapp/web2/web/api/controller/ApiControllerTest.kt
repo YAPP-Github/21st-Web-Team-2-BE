@@ -1,4 +1,4 @@
-package com.yapp.web2.controller
+package com.yapp.web2.web.api.controller
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
