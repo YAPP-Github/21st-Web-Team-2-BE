@@ -15,12 +15,14 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.payload.ResponseFieldsSnippet
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.queryParameters
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class VoteControllerTest @Autowired constructor(
@@ -39,12 +41,14 @@ internal class VoteControllerTest @Autowired constructor(
         mockMvc.perform(
             RestDocumentationRequestBuilders.get(uri)
         )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
-            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
             .andDo(
                 document(
                     "get-popular-vote", // docs directory name
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
                     votePreviewDataResponseFieldsSnippet()
                 )
             )
@@ -56,12 +60,14 @@ internal class VoteControllerTest @Autowired constructor(
         mockMvc.perform(
             RestDocumentationRequestBuilders.get(uri)
         )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
-            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
             .andDo(
                 document(
                     "get-latest-vote", // docs directory name
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
                     votePreviewDataResponseFieldsSnippet()
                 )
             )
@@ -74,16 +80,19 @@ internal class VoteControllerTest @Autowired constructor(
             RestDocumentationRequestBuilders.get(uri)
                 .param("lastOffset", "3")
         )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
-            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
             .andDo(
                 document(
-                    "get-latest-vote-offset", queryParameters(
+                    "get-latest-vote-offset",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    queryParameters(
                         parameterWithName("lastOffset").description("마지막 투표 게시글 Id").optional()
                     ),
-                    votePreviewDataResponseFieldsSnippet()
-                )
+                    votePreviewDataResponseFieldsSnippet(),
+                ),
             )
     }
 
