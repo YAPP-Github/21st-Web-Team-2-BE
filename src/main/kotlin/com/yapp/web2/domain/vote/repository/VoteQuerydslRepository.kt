@@ -2,6 +2,7 @@ package com.yapp.web2.domain.vote.repository
 
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.JPAExpressions
+import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.yapp.web2.domain.comment.model.QComment.comment
 import com.yapp.web2.domain.member.model.QMember.member
@@ -18,19 +19,14 @@ class VoteQuerydslRepository(
     private val queryFactory: JPAQueryFactory
 ) {
     fun findLatestVotes(lastVoteId: Long? = null): LatestVoteSliceVo {
-        val commentAmountSubQuery =
-            JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
-
-        val voteAmountSubQuery = JPAExpressions.select(voteOptionMember.count()).from(voteOptionMember).where(
-            voteOptionMember.voteOption.vote.id.eq(vote.id)
-        )
         val results = queryFactory.select(
             Projections.constructor(
                 VotePreviewVo::class.java,
                 vote,
-                commentAmountSubQuery,
-                voteAmountSubQuery)
-            ).from(vote)
+                commentAmountFindQuery(),
+                voteAmountFindQuery(),
+            )
+        ).from(vote)
             .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
             .orderBy(vote.createdAt.desc())
             .limit((latestVoteSliceSize + 1).toLong())
@@ -50,4 +46,12 @@ class VoteQuerydslRepository(
             false
         }
     }
+
+    private fun voteAmountFindQuery(): JPQLQuery<Long> =
+        JPAExpressions.select(voteOptionMember.count()).from(voteOptionMember).where(
+            voteOptionMember.voteOption.vote.id.eq(vote.id)
+        )
+
+    private fun commentAmountFindQuery(): JPQLQuery<Long> =
+        JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
 }
