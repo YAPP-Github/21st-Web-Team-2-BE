@@ -4,7 +4,6 @@ import com.yapp.web2.domain.vote.application.VoteService
 import com.yapp.web2.web.api.response.ApiResponse
 import com.yapp.web2.web.dto.vote.response.VotePreviewResponse
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -17,7 +16,7 @@ class VoteController(
 
     @GetMapping("/popular")
     fun getPopularVotes(): ApiResponse<List<VotePreviewResponse>> {
-        val votesByPopular = voteService.getVotesByPopular()
+        val votesByPopular = voteService.getPopularVotes()
 
         return ApiResponse.success(votesByPopular)
     }

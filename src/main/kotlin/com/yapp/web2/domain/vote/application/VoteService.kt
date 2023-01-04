@@ -1,11 +1,8 @@
 package com.yapp.web2.domain.vote.application
 
-import com.yapp.web2.domain.vote.application.vo.LatestVoteSliceVo
-import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.repository.VoteQuerydslRepository
 import com.yapp.web2.web.dto.vote.response.VotePreviewResponse
-import com.yapp.web2.web.dto.vote.response.VotePreviewSliceResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -19,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 class VoteService(
     private val voteQuerydslRepository: VoteQuerydslRepository,
 ) {
-    fun getVotesByPopular(): List<VotePreviewResponse> {
+    fun getPopularVotes(): List<VotePreviewResponse> {
         val popularVotes = voteQuerydslRepository.findPopularVotes()
         return popularVotes.map { votePreviewVo ->
             VotePreviewResponse.of(
@@ -43,7 +40,7 @@ class VoteService(
                     getVoteOptionPreviewResponses(votePreviewVo.vote),
                 )
             },
-            Pageable.ofSize(6),
+            Pageable.unpaged(),
             latestVoteSliceVo.hasNext,
         )
     }

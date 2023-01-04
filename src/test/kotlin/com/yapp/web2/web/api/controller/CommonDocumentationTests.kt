@@ -9,8 +9,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+/**
+ * 공통 응답 Spring rest docs snippet 생성용 테스트
+ */
 internal class VoteControllerTest : ApiControllerTest(uri = "/api/v1/vote") {
 
+    // 일반적인 공통응답인 경우
     @Test
     fun commonResponseDocsTest() {
         val uri = "$uri/popular"
@@ -21,7 +25,6 @@ internal class VoteControllerTest : ApiControllerTest(uri = "/api/v1/vote") {
             .andExpect(jsonPath("$.code").value("SUCCESS"))
             .andDo(print())
             .andDo(
-
                 document(
                     "common", // docs directory name
                     responseFields(
@@ -33,6 +36,7 @@ internal class VoteControllerTest : ApiControllerTest(uri = "/api/v1/vote") {
             )
     }
 
+    // Slice 형태의 공통응답.
     @Test
     fun commonSliceResponseDocsTest() {
         val uri = "$uri/latest"

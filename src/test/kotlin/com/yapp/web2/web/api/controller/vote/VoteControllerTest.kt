@@ -96,6 +96,7 @@ internal class VoteControllerTest @Autowired constructor(
             )
     }
 
+    // 투표 게시글 미리보기 응답에 대한 Spring Rest Docs snippet
     private fun votePreviewDataResponseFieldsSnippet(): ResponseFieldsSnippet? = responseFields(
         beneathPath("data").withSubsectionId("data"),
 
@@ -115,6 +116,7 @@ internal class VoteControllerTest @Autowired constructor(
         fieldWithPath("voteOptionPreviewResponse[].votedAmount").description("투표 선택지 투표 수"),
     )
 
+    // 테스트용 데이터 저장
     private fun saveDummyVotesDetail(amount: Int) {
         val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
         memberRepository.saveAll(listOf(memberA))

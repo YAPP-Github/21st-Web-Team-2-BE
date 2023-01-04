@@ -52,7 +52,7 @@ internal class VoteServiceTest @Autowired constructor(
         saveDummyVotesDetailWithVoteAmount(10)
 
         //when
-        val popularVotes = voteService.getVotesByPopular()
+        val popularVotes = voteService.getPopularVotes()
 
         //then
         assertThat(popularVotes).hasSize(4)

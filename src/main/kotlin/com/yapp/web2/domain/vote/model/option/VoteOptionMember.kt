@@ -2,7 +2,6 @@ package com.yapp.web2.domain.vote.model.option
 
 import com.yapp.web2.domain.member.model.Member
 import jakarta.persistence.*
-import org.hibernate.annotations.Where
 
 @Entity
 class VoteOptionMember constructor(

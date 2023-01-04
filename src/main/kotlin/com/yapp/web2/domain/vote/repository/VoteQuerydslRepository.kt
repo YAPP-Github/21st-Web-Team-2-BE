@@ -30,12 +30,13 @@ class VoteQuerydslRepository(
                 ExpressionUtils.`as`(commentAmountFindQuery(), "commentAmount"),
                 ExpressionUtils.`as`(voteAmountFindQuery(),"voteAmount"),
             )
-        ).from(vote)
+        )
+            .from(vote)
             .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
             .orderBy(vote.createdAt.desc())
             .limit((latestVoteSliceSize + 1).toLong())
             .join(vote.createdBy, member).fetchJoin()
-//            .join(vote.voteOptions).fetchJoin()
+//            .join(vote.voteOptions).fetchJoin()  TODO voteOptions fetchJoin에 대한 성능 비교 후 적용 필요
             .distinct()
             .fetch()
 
@@ -54,30 +55,31 @@ class VoteQuerydslRepository(
     fun findPopularVotes(): MutableList<VotePreviewVo> {
         val numberPath = Expressions.numberPath(Long::class.java, "voteAmount")
 
-        val results = queryFactory.select(
+        return queryFactory.select(
             Projections.constructor(
                 VotePreviewVo::class.java,
                 vote.`as`("vote"),
                 ExpressionUtils.`as`(commentAmountFindQuery(), "commentAmount"),
                 ExpressionUtils.`as`(voteAmountFindQuery(),"voteAmount"),
             )
-        ).from(vote)
+        )
+            .from(vote)
 //            .where(vote.createdAt.after(LocalDateTime.now().minusDays(7L)))
             .orderBy(numberPath.desc())
             .limit(popularVoteSize.toLong())
             .join(vote.createdBy, member).fetchJoin()
             .distinct()
             .fetch()
-
-        return results
     }
 
 
+    // 투표 게시글의 투표 수를 조회하는 서브쿼리
     private fun voteAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(voteOptionMember.count()).from(voteOptionMember).where(
             voteOptionMember.voteOption.vote.id.eq(vote.id)
         )
 
+    // 투표 게시글의 댓글 수를 조회하는 서브쿼리
     private fun commentAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
 
