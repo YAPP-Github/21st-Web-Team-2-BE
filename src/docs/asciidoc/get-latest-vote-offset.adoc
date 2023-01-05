@@ -38,8 +38,7 @@ include::{snippets}/{docname}/http-request.adoc[]
 == Response
 === Http-Response
 include::{snippets}/{docname}/http-response.adoc[]
-=== Response-Body
-include::{snippets}/{docname}/response-body.adoc[]
+
 === Response-Fields
 ==== Common
 include::{snippets}/common-slice/response-fields.adoc[]
