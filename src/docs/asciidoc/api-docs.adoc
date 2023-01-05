@@ -15,5 +15,9 @@ endif::[]
 :toclevels: 5
 :sectlinks:
 
-== Check API
-=== link:actuator-health.html[0.Check Api Status]
+=== 0. Check API
+==== link:actuator-health.html[1. Check Api Status]
+
+=== 1. Vote API
+==== link:get-popular-vote.html[1.1 인기 투표 게시글 조회]
+==== link:get-latest-vote-offset.html[1.2 최신 투표 게시글 조회]
