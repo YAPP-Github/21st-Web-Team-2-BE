@@ -13,10 +13,9 @@ import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.QVote.vote
 import com.yapp.web2.domain.vote.model.option.QVoteOptionMember.voteOptionMember
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 
-const val latestVoteSliceSize = 6
-const val popularVoteSize = 4
+const val LATEST_VOTE_SLICE_SIZE = 6
+const val POPULAR_VOTE_SIZE = 4
 
 @Component
 class VoteQuerydslRepository(
@@ -34,7 +33,7 @@ class VoteQuerydslRepository(
             .from(vote)
             .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
             .orderBy(vote.createdAt.desc())
-            .limit((latestVoteSliceSize + 1).toLong())
+            .limit((LATEST_VOTE_SLICE_SIZE + 1).toLong())
             .join(vote.createdBy, member).fetchJoin()
 //            .join(vote.voteOptions).fetchJoin()  TODO voteOptions fetchJoin에 대한 성능 비교 후 적용 필요
             .distinct()
@@ -44,8 +43,8 @@ class VoteQuerydslRepository(
     }
 
     private fun hasNext(results: MutableList<VotePreviewVo>): Boolean {
-        return if (results.size > latestVoteSliceSize) {
-            results.removeAt(latestVoteSliceSize)
+        return if (results.size > LATEST_VOTE_SLICE_SIZE) {
+            results.removeAt(LATEST_VOTE_SLICE_SIZE)
             true
         } else {
             false
@@ -66,7 +65,7 @@ class VoteQuerydslRepository(
             .from(vote)
 //            .where(vote.createdAt.after(LocalDateTime.now().minusDays(7L)))
             .orderBy(numberPath.desc())
-            .limit(popularVoteSize.toLong())
+            .limit(POPULAR_VOTE_SIZE.toLong())
             .join(vote.createdBy, member).fetchJoin()
             .distinct()
             .fetch()
