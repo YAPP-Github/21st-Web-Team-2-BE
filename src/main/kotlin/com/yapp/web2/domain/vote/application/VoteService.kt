@@ -57,7 +57,7 @@ class VoteService(
         }
     }
 
-    fun getVoteDetail(voteId: Long): VoteDetailResponse? {
+    fun getVoteDetail(voteId: Long): VoteDetailResponse {
         try {
             return voteQuerydslRepository.findVoteById(voteId)?.let { voteVo ->
                 VoteDetailResponse.of(
@@ -67,7 +67,7 @@ class VoteService(
                     false, //TODO 좋아요 여부
                     getVoteOptionPreviewResponses(voteVo.vote),
                 )
-            }
+            } ?: throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
