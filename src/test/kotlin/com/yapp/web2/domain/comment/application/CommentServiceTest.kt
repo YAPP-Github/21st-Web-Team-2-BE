@@ -1,6 +1,7 @@
-package com.yapp.web2.domain.comment.respository
+package com.yapp.web2.domain.comment.application
 
 import com.yapp.web2.domain.comment.model.Comment
+import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
@@ -8,8 +9,7 @@ import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
 import com.yapp.web2.domain.vote.repository.VoteRepository
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -20,11 +20,11 @@ import org.springframework.transaction.annotation.Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 @SpringBootTest
-internal class CommentQuerydslRepositoryTest @Autowired constructor(
-    val commentRepository: CommentRepository,
-    val commentQuerydslRepository: CommentQuerydslRepository,
-    val memberRepository: MemberRepository,
+internal class CommentServiceTest @Autowired constructor(
+    val commentService: CommentService,
     val voteRepository: VoteRepository,
+    val memberRepository: MemberRepository,
+    val commentRepository: CommentRepository,
 ) {
 
     @BeforeAll
@@ -32,32 +32,19 @@ internal class CommentQuerydslRepositoryTest @Autowired constructor(
         saveDummyComments()
     }
 
-
     @Test
-    fun `댓글 조회 테스트`() {
+    fun `댓글 최신순 조회 테스트`() {
         //when
-        val findCommentsSlice = commentQuerydslRepository.findComments(1L)
+        val latestCommentSlice = commentService.getLatestComments(1L, null)
 
         //then
-        assertThat(findCommentsSlice.content).hasSize(10)
+        assertThat(latestCommentSlice.hasNext()).isTrue
 
-        assertThat(findCommentsSlice.content[0].createdBy.nickname).isEqualTo("MemberA")
-        assertThat(findCommentsSlice.hasNext()).isTrue
+        val comments = latestCommentSlice.content
+        assertThat(comments).hasSize(10)
+        assertThat(comments[0].offsetId).isEqualTo(30L)
+        assertThat(comments[0].likeAmount).isEqualTo(30)
     }
-
-    @Test
-    fun `댓글 마지막 offset 조회 테스트`() {
-
-        val lastCommentId = 6L // lastCommentId 6L => id: 5, 4, 3, 2, 1만 조회됨
-
-        //when
-        val findCommentsSlice = commentQuerydslRepository.findComments(1L, lastCommentId)
-
-        //then
-        assertThat(findCommentsSlice.content).hasSize(5)
-        assertThat(findCommentsSlice.hasNext()).isFalse
-    }
-
 
 
     // voteId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
