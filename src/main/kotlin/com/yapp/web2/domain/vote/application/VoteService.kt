@@ -64,6 +64,7 @@ class VoteService(
                     voteVo.vote,
                     voteVo.voteAmount.toInt(),
                     voteVo.commentCount.toInt(),
+                    false, //TODO 좋아요 여부
                     getVoteOptionPreviewResponses(voteVo.vote),
                 )
             }

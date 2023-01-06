@@ -12,10 +12,11 @@ data class VoteDetailResponse(
     val createdMemberProfileImage: String?,
     val commentAmount: Int,
     val voteAmount: Int,
+    val liked: Boolean,
     val voteOptionPreviewResponse: List<VoteOptionPreviewResponse>
 ) {
     companion object {
-        fun of(vote: Vote, commentCount: Int, voteAmount: Int, voteOptionPreviewResponse: List<VoteOptionPreviewResponse>): VoteDetailResponse {
+        fun of(vote: Vote, commentCount: Int, voteAmount: Int, liked: Boolean, voteOptionPreviewResponse: List<VoteOptionPreviewResponse>): VoteDetailResponse {
             return VoteDetailResponse(
                 vote.id,
                 vote.title,
@@ -25,6 +26,7 @@ data class VoteDetailResponse(
                 vote.createdBy.profileImageFilename,
                 commentCount,
                 voteAmount,
+                liked,
                 voteOptionPreviewResponse,
             )
         }
