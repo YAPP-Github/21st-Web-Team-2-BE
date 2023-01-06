@@ -84,13 +84,23 @@ class VoteQuerydslRepository(
     private fun commentAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
 
-    fun findVoteById(voteId: Long): Vote? {
-        return queryFactory.selectFrom(vote)
+    fun findVoteById(voteId: Long): VotePreviewVo? {
+        return queryFactory.select(
+            Projections.constructor(
+                VotePreviewVo::class.java,
+                vote,
+                ExpressionUtils.`as`(commentAmountFindQuery(), "commentAmount"),
+                ExpressionUtils.`as`(voteAmountFindQuery(),"voteAmount"),
+            )
+        )
+            .distinct()
+            .from(vote)
             .where(vote.id.eq(voteId))
             .join(vote.createdBy, member).fetchJoin()
             .leftJoin(vote.voteOptions, voteOption).fetchJoin()
+            .fetch()
             .distinct()
-            .fetchOne()
+            .first()
     }
 
 

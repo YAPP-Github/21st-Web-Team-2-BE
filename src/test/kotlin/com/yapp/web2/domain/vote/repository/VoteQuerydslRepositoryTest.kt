@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import java.util.Comparator
 
 @Transactional
 @SpringBootTest
@@ -117,11 +116,12 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
         //when
         em.clear()
-        val vote = voteQuerydslRepository.findVoteById(findVote.id)!!
+        val voteVo = voteQuerydslRepository.findVoteById(findVote.id)!!
 
         //then
-        assertThat(vote.title).isEqualTo(findVote.title)
-        assertThat(vote.voteOptions[0].text).contains("OptionA")
+        assertThat(voteVo.vote.title).isEqualTo(findVote.title)
+        assertThat(voteVo.vote.voteOptions[0].text).contains("OptionA")
+        assertThat(voteVo.vote.voteOptions[1].text).contains("OptionB")
     }
 
 
