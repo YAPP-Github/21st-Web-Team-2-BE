@@ -19,8 +19,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.payload.ResponseFieldsSnippet
-import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
-import org.springframework.restdocs.request.RequestDocumentation.queryParameters
+import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -108,10 +107,10 @@ internal class VoteControllerTest @Autowired constructor(
 
     @Test
     fun getVoteDetailTest() {
-        val findVoteId = 3L
-        val uri = "$uri/$findVoteId"
+        val findVoteId = 2L
+        val uri = "$uri/{voteId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            RestDocumentationRequestBuilders.get(uri, findVoteId)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -121,6 +120,9 @@ internal class VoteControllerTest @Autowired constructor(
                     "get-vote-detail",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        parameterWithName("voteId").description("투표 게시글 Id")
+                    ),
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *votePreviewDataResponseFieldsSnippet(),
@@ -133,9 +135,9 @@ internal class VoteControllerTest @Autowired constructor(
     @Test
     fun getVoteDetailFailTest() {
         val findVoteId = 12450L
-        val uri = "$uri/$findVoteId"
+        val uri = "$uri/{voteId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            RestDocumentationRequestBuilders.get(uri, findVoteId)
         )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("존재하지 않는 리소스 요청입니다."))
