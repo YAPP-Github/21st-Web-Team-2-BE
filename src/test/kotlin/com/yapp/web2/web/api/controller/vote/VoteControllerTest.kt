@@ -53,8 +53,7 @@ internal class VoteControllerTest @Autowired constructor(
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *votePreviewDataResponseFieldsSnippet(),
-                        fieldWithPath("liked").description("투표 게시글 좋아요 여부")
-                    )
+                    ).andWithPrefix("voteOptionPreviewResponse[].", *voteOptionPreviewDataResponseFieldsSnippet())
                 )
             )
     }
@@ -76,8 +75,7 @@ internal class VoteControllerTest @Autowired constructor(
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *votePreviewDataResponseFieldsSnippet(),
-                        fieldWithPath("liked").description("투표 게시글 좋아요 여부")
-                    )
+                    ).andWithPrefix("voteOptionPreviewResponse[].", *voteOptionPreviewDataResponseFieldsSnippet())
                 )
             )
     }
@@ -103,8 +101,7 @@ internal class VoteControllerTest @Autowired constructor(
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *votePreviewDataResponseFieldsSnippet(),
-                        fieldWithPath("liked").description("투표 게시글 좋아요 여부")
-                    )
+                    ).andWithPrefix("voteOptionPreviewResponse[].", *voteOptionPreviewDataResponseFieldsSnippet())
                 ),
             )
     }
@@ -129,6 +126,29 @@ internal class VoteControllerTest @Autowired constructor(
                         *votePreviewDataResponseFieldsSnippet(),
                         fieldWithPath("liked").description("투표 게시글 좋아요 여부")
                     ).andWithPrefix("voteOptionPreviewResponse[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                ),
+            )
+    }
+
+    @Test
+    fun getVoteDetailFailTest() {
+        val findVoteId = 12450L
+        val uri = "$uri/$findVoteId"
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.get(uri)
+        )
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").value("존재하지 않는 리소스 요청입니다."))
+            .andDo(print())
+            .andDo(
+                document(
+                    "get-vote-detail-fail",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    responseFields(
+                        fieldWithPath("code").description("요청 결과 상태 코드"),
+                        fieldWithPath("message").description("상태 메세지"),
+                    )
                 ),
             )
     }
