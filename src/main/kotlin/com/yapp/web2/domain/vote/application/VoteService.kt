@@ -2,6 +2,9 @@ package com.yapp.web2.domain.vote.application
 
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.repository.VoteQuerydslRepository
+import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.api.error.ErrorCode
+import com.yapp.web2.web.dto.vote.response.VoteDetailResponse
 import com.yapp.web2.web.dto.vote.response.VotePreviewResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
 import org.springframework.data.domain.Pageable
@@ -51,6 +54,21 @@ class VoteService(
                 voteOption,
                 //TODO 로그인 한 회원에 대한 투표 여부 응답
             )
+        }
+    }
+
+    fun getVoteDetail(voteId: Long): VoteDetailResponse? {
+        try {
+            return voteQuerydslRepository.findVoteById(voteId)?.let { voteVo ->
+                VoteDetailResponse.of(
+                    voteVo.vote,
+                    voteVo.voteAmount.toInt(),
+                    voteVo.commentCount.toInt(),
+                    getVoteOptionPreviewResponses(voteVo.vote),
+                )
+            }
+        } catch (exception: NoSuchElementException) {
+            throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
     }
 }
