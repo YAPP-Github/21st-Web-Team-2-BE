@@ -11,6 +11,8 @@ import com.yapp.web2.domain.member.model.QMember.member
 import com.yapp.web2.domain.vote.application.vo.LatestVoteSliceVo
 import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.QVote.vote
+import com.yapp.web2.domain.vote.model.Vote
+import com.yapp.web2.domain.vote.model.option.QVoteOption.voteOption
 import com.yapp.web2.domain.vote.model.option.QVoteOptionMember.voteOptionMember
 import org.springframework.stereotype.Component
 
@@ -81,6 +83,15 @@ class VoteQuerydslRepository(
     // 투표 게시글의 댓글 수를 조회하는 서브쿼리
     private fun commentAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
+
+    fun findVoteById(voteId: Long): Vote? {
+        return queryFactory.selectFrom(vote)
+            .where(vote.id.eq(voteId))
+            .join(vote.createdBy, member).fetchJoin()
+            .leftJoin(vote.voteOptions, voteOption).fetchJoin()
+            .distinct()
+            .fetchOne()
+    }
 
 
 }
