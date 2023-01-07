@@ -30,14 +30,15 @@ internal class CommentControllerTest @Autowired constructor(
     val commentRepository: CommentRepository,
 ) : ApiControllerTest(uri = "/api/v1/comment") {
 
+    lateinit var vote: Vote
     @BeforeAll
     fun saveTestData() {
-        saveDummyComments()
+        vote = saveDummyComments()
     }
 
     @Test
     fun `getCommentsNoOffsetTest`() {
-        val findVoteId = 1L
+        val findVoteId = vote.id
         val uri = "$uri/{voteId}/latest"
         mockMvc.perform(
             RestDocumentationRequestBuilders.get(uri, findVoteId)
@@ -79,7 +80,7 @@ internal class CommentControllerTest @Autowired constructor(
 
     // voteId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
-    private fun saveDummyComments() {
+    private fun saveDummyComments(): Vote {
         val member = memberRepository.saveAll(
             listOf(
                 Member("MemberA", JobCategory.DEVELOPER, 3),
@@ -107,5 +108,7 @@ internal class CommentControllerTest @Autowired constructor(
             }
         }
         commentRepository.saveAll(sampleComments)
+
+        return vote
     }
 }

@@ -30,9 +30,10 @@ internal class VoteControllerTest @Autowired constructor(
     val memberRepository: MemberRepository,
 ) : ApiControllerTest(uri = "/api/v1/vote") {
 
+    lateinit var votes: MutableList<Vote>
     @BeforeAll
     fun dataInsert() {
-        saveDummyVotesDetail(15)
+        votes = saveDummyVotesDetail(15)
     }
 
     @Test
@@ -84,7 +85,7 @@ internal class VoteControllerTest @Autowired constructor(
         val uri = "$uri/latest"
         mockMvc.perform(
             RestDocumentationRequestBuilders.get(uri)
-                .param("lastOffset", "3")
+                .param("lastOffset", "${votes.last().id}")
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -182,7 +183,7 @@ internal class VoteControllerTest @Autowired constructor(
 
 
     // 테스트용 데이터 저장
-    private fun saveDummyVotesDetail(amount: Int) {
+    private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
         val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
         memberRepository.saveAll(listOf(memberA))
 
@@ -207,6 +208,6 @@ internal class VoteControllerTest @Autowired constructor(
                 voteOptionB.addVoteOptionMember(VoteOptionMember(memberA, voteOptionB))
             }
         }
-        voteRepository.saveAll(sampleVotes)
+        return voteRepository.saveAll(sampleVotes)
     }
 }

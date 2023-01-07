@@ -22,3 +22,7 @@ endif::[]
 ==== link:get-popular-vote.html[1.1 인기 투표 게시글 조회]
 ==== link:get-latest-vote-offset.html[1.2 최신 투표 게시글 조회]
 ==== link:get-vote-detail.html[1.3 투표 게시글 상세 조회]
+
+=== 2. Comment API
+==== link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
+
