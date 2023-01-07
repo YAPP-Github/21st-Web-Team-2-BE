@@ -1,0 +1,47 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+= {docname} API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+//NOTE: ""
+
+//TIP: ""
+
+//IMPORTANT: ""
+
+//CAUTION: ""
+
+== Request
+// === Curl-Reqeust
+// include::{snippets}/{docname}/curl-request.adoc[]
+=== Http-Request
+include::{snippets}/{docname}/http-request.adoc[]
+// === Request-Headers
+// include::{snippets}/{docname}/request-headers.adoc[]
+// === Request-Body
+// include::{snippets}/{docname}/request-body.adoc[]
+=== Request-Parameters
+include::{snippets}/{docname}/path-parameters.adoc[]
+== Response
+=== Http-Response
+include::{snippets}/{docname}/http-response.adoc[]
+=== Response-Fields
+==== Common
+include::{snippets}/common/response-fields.adoc[]
+
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
+
+==== 예외 케이스
+
+. 존재하지 않는 투표 게시글인 경우
+include::{snippets}/get-vote-detail-fail/response-fields.adoc[]
+include::{snippets}/get-vote-detail-fail/response-body.adoc[]
+
+link:api-docs.html[back to api-docs]

@@ -7,7 +7,9 @@ import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
 import com.yapp.web2.domain.vote.model.option.VoteOption
 import com.yapp.web2.domain.vote.model.option.VoteOptionMember
+import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
+import jakarta.persistence.PersistenceContext
 import jakarta.persistence.PersistenceUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import java.util.Comparator
 
 @Transactional
 @SpringBootTest
@@ -24,6 +25,11 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     val memberRepository: MemberRepository,
     val voteQuerydslRepository: VoteQuerydslRepository,
 ) {
+    @PersistenceUnit
+    lateinit var emf: EntityManagerFactory
+
+    @PersistenceContext
+    lateinit var em: EntityManager
 
     @BeforeEach
     fun beforeEach() {
@@ -68,9 +74,6 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         assertThat(searchBySlice.hasNext).isFalse
     }
 
-    @PersistenceUnit
-    lateinit var emf: EntityManagerFactory
-
     @Test
     fun `투표 페이징 멤버 페치 조인 테스트`() {
         //given
@@ -104,6 +107,24 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         assertThat(findPopularVotes).extracting("voteAmount").isEqualTo(expectedVoteAmounts)
     }
 
+    @Test
+    fun `투표 상세 페이지 조회 테스트`() {
+        //given
+        val voteSize = 3
+        val saveDummyVotes = saveDummyVotesDetail(voteSize) // voteSize 가 3인 경우, voteAmount = [6, 4, 2]
+        val findVote = saveDummyVotes[0]
+
+        //when
+        em.clear()
+        val voteVo = voteQuerydslRepository.findVoteById(findVote.id)!!
+
+        //then
+        assertThat(voteVo.vote.title).isEqualTo(findVote.title)
+        assertThat(voteVo.vote.voteOptions[0].text).contains("OptionA")
+        assertThat(voteVo.vote.voteOptions[1].text).contains("OptionB")
+    }
+
+
     //test용 투표 저장
     private fun saveDummyVotes(amount: Int): MutableList<Vote> {
         val member = Member("MemberA", JobCategory.DEVELOPER, 3)
@@ -116,7 +137,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         return voteRepository.saveAll(sampleVotes)
     }
 
-    private fun saveDummyVotesDetail(amount: Int) {
+    private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
         val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
         memberRepository.saveAll(listOf(memberA))
 
@@ -141,7 +162,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
                 voteOptionB.addVoteOptionMember(VoteOptionMember(memberA, voteOptionB))
             }
         }
-        voteRepository.saveAll(sampleVotes)
+        return voteRepository.saveAll(sampleVotes)
     }
 
 }

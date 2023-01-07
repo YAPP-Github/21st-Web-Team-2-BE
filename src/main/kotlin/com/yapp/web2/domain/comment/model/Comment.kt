@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.comment.model
 
 import com.yapp.web2.common.entity.BaseEntity
+import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.vote.model.Vote
 import jakarta.persistence.*
@@ -20,11 +21,18 @@ class Comment constructor(
     val vote: Vote,
 
     @OneToMany(mappedBy = "comment")
-    val replyComments: List<ReplyComment> = mutableListOf(),
+    val replyComments: MutableList<ReplyComment> = mutableListOf(),
+
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.PERSIST])
+    val commentLikes: MutableList<CommentLikes> = mutableListOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     val id: Long = 0L,
 ) : BaseEntity() {
+
+    fun addCommentLikes(commentLike: CommentLikes) {
+        this.commentLikes.add(commentLike)
+    }
 }

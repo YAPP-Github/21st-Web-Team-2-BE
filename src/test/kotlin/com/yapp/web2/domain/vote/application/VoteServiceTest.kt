@@ -8,7 +8,9 @@ import com.yapp.web2.domain.vote.model.VoteType
 import com.yapp.web2.domain.vote.model.option.VoteOption
 import com.yapp.web2.domain.vote.model.option.VoteOptionMember
 import com.yapp.web2.domain.vote.repository.VoteRepository
+import com.yapp.web2.web.api.error.BusinessException
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,6 +63,28 @@ internal class VoteServiceTest @Autowired constructor(
         assertThat(voteOptionPreview.voteAmount).isEqualTo(20)
     }
 
+    @Test
+    fun `투표 게시글 상세 조회 테스트`() {
+        //given
+        val dummyVotes = saveDummyVotesDetailWithVoteAmount(10)
+
+        //when
+        val findVote = dummyVotes[0]
+        val voteDetail = voteService.getVoteDetail(findVote.id)
+
+        //then
+        assertThat(voteDetail?.title).isEqualTo(findVote.title)
+    }
+
+    @Test
+    fun `존재하지 않는 투표 게시글 상세 조회시 예외 발생`() {
+        //given
+        val invalidVoteId = 400000L
+
+        assertThatThrownBy { voteService.getVoteDetail(invalidVoteId) }
+            .isInstanceOf(BusinessException::class.java)
+    }
+
 
     private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
         // 유저 생성
@@ -93,7 +117,7 @@ internal class VoteServiceTest @Autowired constructor(
         return voteRepository.saveAll(sampleVotes)
     }
 
-    private fun saveDummyVotesDetailWithVoteAmount(amount: Int) {
+    private fun saveDummyVotesDetailWithVoteAmount(amount: Int): MutableList<Vote> {
         val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
         memberRepository.saveAll(listOf(memberA))
 
@@ -118,7 +142,7 @@ internal class VoteServiceTest @Autowired constructor(
                 voteOptionB.addVoteOptionMember(VoteOptionMember(memberA, voteOptionB))
             }
         }
-        voteRepository.saveAll(sampleVotes)
+        return voteRepository.saveAll(sampleVotes)
     }
 }
 
