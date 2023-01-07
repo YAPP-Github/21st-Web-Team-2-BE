@@ -8,11 +8,11 @@ import com.yapp.web2.web.api.response.OffsetIdSupport
 data class CommentDetailResponse(
     @JsonProperty("commentId")
     override val offsetId: Long,
-    val createdMemberId: Long,
-    val createdMemberName: String,
-    val createdMemberProfileImage: String?,
-    val createdMemberJobCategory: JobCategory,
-    val createdMemberWorkingYears: Int,
+    val memberId: Long,
+    val memberName: String,
+    val memberProfileImage: String?,
+    val memberJobCategory: JobCategory,
+    val memberWorkingYears: Int,
     val commentContent: String,
     val likeAmount: Int,
     val liked: Boolean,

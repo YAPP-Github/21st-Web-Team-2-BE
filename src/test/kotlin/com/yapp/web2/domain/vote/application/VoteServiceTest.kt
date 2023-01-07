@@ -44,8 +44,8 @@ internal class VoteServiceTest @Autowired constructor(
         val voteOptionPreview = latestVotesSlice[0]
         assertThat(voteOptionPreview.voteAmount).isEqualTo(3)
 
-        assertThat(voteOptionPreview.voteOptionPreviewResponse[0].votedAmount).isEqualTo(2)
-        assertThat(voteOptionPreview.voteOptionPreviewResponse[1].votedAmount).isEqualTo(1)
+        assertThat(voteOptionPreview.voteOptions[0].votedAmount).isEqualTo(2)
+        assertThat(voteOptionPreview.voteOptions[1].votedAmount).isEqualTo(1)
     }
 
     @Test
