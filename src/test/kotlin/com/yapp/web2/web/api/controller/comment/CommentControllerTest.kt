@@ -18,6 +18,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.payload.FieldDescriptor
+import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -65,11 +66,11 @@ internal class CommentControllerTest @Autowired constructor(
     private fun commentDataResponseFieldSnippet(): Array<FieldDescriptor> {
         return arrayOf(
             PayloadDocumentation.fieldWithPath("commentId").description("댓글 Id"),
-            PayloadDocumentation.fieldWithPath("createdMemberId").description("댓글 작성자 Id"),
-            PayloadDocumentation.fieldWithPath("createdMemberName").description("댓글 작성자 닉네임"),
-            PayloadDocumentation.fieldWithPath("createdMemberProfileImage").description("댓글 작성자 프로필 이미지"),
-            PayloadDocumentation.fieldWithPath("createdMemberJobCategory").description("댓글 작성자 직군 분야"),
-            PayloadDocumentation.fieldWithPath("createdMemberWorkingYears").description("댓글 작성자 연차"),
+            PayloadDocumentation.fieldWithPath("memberId").description("댓글 작성자 Id"),
+            PayloadDocumentation.fieldWithPath("memberName").description("댓글 작성자 닉네임"),
+            PayloadDocumentation.fieldWithPath("memberProfileImage").type(JsonFieldType.STRING).description("댓글 작성자 프로필 이미지").optional(),
+            PayloadDocumentation.fieldWithPath("memberJobCategory").description("댓글 작성자 직군 분야"),
+            PayloadDocumentation.fieldWithPath("memberWorkingYears").description("댓글 작성자 연차"),
             PayloadDocumentation.fieldWithPath("commentContent").description("댓글 내용"),
             PayloadDocumentation.fieldWithPath("likeAmount").description("댓글 좋아요 수"),
             PayloadDocumentation.fieldWithPath("liked").description("댓글 좋아요 여부"),

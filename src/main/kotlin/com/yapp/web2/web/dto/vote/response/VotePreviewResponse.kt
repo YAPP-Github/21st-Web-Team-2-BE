@@ -6,16 +6,16 @@ import com.yapp.web2.web.api.response.OffsetIdSupport
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
 
 data class VotePreviewResponse(
-    @JsonProperty("voteId")
+    @JsonProperty("topicId")
     override val offsetId: Long,
     val title: String,
     val contents: String,
-    val createdMemberId: Long,
-    val createdMemberName: String,
-    val createdMemberProfileImage: String?,
+    val memberId: Long,
+    val memberName: String,
+    val memberProfileImage: String?,
     val commentAmount: Int,
     val voteAmount: Int,
-    val voteOptionPreviewResponse: List<VoteOptionPreviewResponse>,
+    val voteOptions: List<VoteOptionPreviewResponse>,
 ) : OffsetIdSupport {
 
     companion object {
