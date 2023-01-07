@@ -17,9 +17,12 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
+import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.payload.ResponseFieldsSnippet
 import org.springframework.restdocs.request.RequestDocumentation.*
+import org.springframework.restdocs.snippet.Attributes.attributes
+import org.springframework.restdocs.snippet.Attributes.key
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -164,7 +167,7 @@ internal class VoteControllerTest @Autowired constructor(
             fieldWithPath("contents").description("투표 게시글 내용"),
             fieldWithPath("memberId").description("작성자 Id"),
             fieldWithPath("memberName").description("작성자 닉네임"),
-            fieldWithPath("memberProfileImage").description("작성자 프로필 이미지"),
+            fieldWithPath("memberProfileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
             subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
@@ -173,9 +176,9 @@ internal class VoteControllerTest @Autowired constructor(
 
     private fun voteOptionPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
-            fieldWithPath("text").description("투표 선택지 텍스트").optional(),
-            fieldWithPath("voteOptionImageFilename").description("투표 선택지 이미지").optional(),
-            fieldWithPath("codeBlock").description("투표 선택지 코드블럭").optional(),
+            fieldWithPath("text").description("투표 선택지 텍스트"),
+            fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("votedAmount").description("투표 선택지 투표 수"),
         )
