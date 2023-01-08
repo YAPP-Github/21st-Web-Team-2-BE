@@ -4,19 +4,20 @@ import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.like.model.VoteLikes
 import com.yapp.web2.domain.vote.model.Vote
-import com.yapp.web2.domain.vote.model.option.VoteOption
 import com.yapp.web2.domain.vote.model.option.VoteOptionMember
 import jakarta.persistence.*
 import org.hibernate.annotations.Where
 
 @Entity
 @Where(clause = "status = \'ACTIVE\'")
+@Table(indexes = [Index(name = "i_member", columnList = "email")])
 class Member constructor(
     var nickname: String,
 
-    @Enumerated(EnumType.STRING)
+    var email: String,
+
     @Column(length = 20)
-    var jobCategory: JobCategory,
+    var jobCategory: String,
 
     var workingYears: Int,
 
