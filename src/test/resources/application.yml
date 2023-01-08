@@ -13,3 +13,19 @@ spring:
                 default_batch_fetch_size: 1000
                 format_sql: true
         show-sql: true
+    OAuth2:
+      google:
+        client_id: client_id
+        client_secret: client_secret
+        url:
+          redirect: http://localhost:8080/authcode
+          token: https://oauth2.googleapis.com/token
+          profile: https://www.googleapis.com/oauth2/v3/userinfo
+          login: https://accounts.google.com/o/oauth2/v2/auth
+
+jwt:
+  secret: secretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkeytestsecretkeytest
+  access-token-expiry: 86400000 #1일
+  refresh-token-expiry: 2592000000 #1달
+  access-token-header: Authorization
+  refresh-token-header: Refresh-Token
