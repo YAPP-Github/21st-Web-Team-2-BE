@@ -1,4 +1,4 @@
-package com.yapp.web2.web.api.dto.jwt.response
+package com.yapp.web2.web.dto.jwt.response
 
 data class JwtTokens(
     val accessToken: String? = null,
