@@ -47,7 +47,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         dummyVotes.sortByDescending { it.createdAt }
 
         //when
-        val searchBySlice = voteQuerydslRepository.findLatestVotes()
+        val searchBySlice = voteQuerydslRepository.findLatestVotesByCategory()
 
         //then
         val content = searchBySlice.votes
@@ -66,11 +66,35 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
         //when
         //우선순위(최신순)으로 정렬된 데이터에서, id가 lastVoteId 이후에서 부터 조회
-        val searchBySlice = voteQuerydslRepository.findLatestVotes(lastVoteId)
+        val searchBySlice = voteQuerydslRepository.findLatestVotesByCategory(lastVoteId)
 
         //then
         val content = searchBySlice.votes
         assertThat(content).hasSize(2)
+        assertThat(searchBySlice.hasNext).isFalse
+    }
+
+    @Test
+    fun `투표 카테고리 필터 조회 테스트`() {
+        //given
+        val dummyVoteAmount = 3
+        saveDummyVotes(dummyVoteAmount) // JobCategory == DEVELOPER 인 게시글 3개 저장
+
+        val memberB = Member("MemberB", JobCategory.DESIGNER, 3)
+        memberRepository.save(memberB)
+        val sampleVotes: MutableList<Vote> = mutableListOf()
+        for (i in 1..3) {
+            sampleVotes.add(Vote("Vote$i", JobCategory.DESIGNER, "Content$i", VoteType.TEXT, createdBy = memberB))
+        }
+        voteRepository.saveAll(sampleVotes) // JobCategory == DESIGNER 인 게시글 3개 저장
+
+        //when
+        //우선순위(최신순)으로 정렬된 데이터에서, id가 lastVoteId 이후에서 부터 조회
+        val searchBySlice = voteQuerydslRepository.findLatestVotesByCategory(jobCategory = JobCategory.DEVELOPER)
+
+        //then
+        val content = searchBySlice.votes
+        assertThat(content).hasSize(3)
         assertThat(searchBySlice.hasNext).isFalse
     }
 
@@ -80,7 +104,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         saveDummyVotes(10)
 
         //when
-        val searchBySlice = voteQuerydslRepository.findLatestVotes()
+        val searchBySlice = voteQuerydslRepository.findLatestVotesByCategory()
 
         //then
         val content = searchBySlice.votes

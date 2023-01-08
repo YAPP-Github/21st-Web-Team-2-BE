@@ -8,12 +8,12 @@ import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.yapp.web2.domain.comment.model.QComment.comment
 import com.yapp.web2.domain.like.model.QVoteLikes.voteLikes
+import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.QMember.member
 import com.yapp.web2.domain.vote.application.vo.LatestVoteSliceVo
 import com.yapp.web2.domain.vote.application.vo.VoteDetailVo
 import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.QVote.vote
-import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.option.QVoteOption.voteOption
 import com.yapp.web2.domain.vote.model.option.QVoteOptionMember.voteOptionMember
 import org.springframework.stereotype.Component
@@ -25,7 +25,7 @@ const val POPULAR_VOTE_SIZE = 4
 class VoteQuerydslRepository(
     private val queryFactory: JPAQueryFactory
 ) {
-    fun findLatestVotes(lastVoteId: Long? = null): LatestVoteSliceVo {
+    fun findLatestVotesByCategory(lastVoteId: Long? = null, jobCategory: JobCategory? = null): LatestVoteSliceVo {
         val results = queryFactory.select(
             Projections.constructor(
                 VotePreviewVo::class.java,
@@ -35,7 +35,10 @@ class VoteQuerydslRepository(
             )
         )
             .from(vote)
-            .where(lastVoteId?.let { vote.id.lt(lastVoteId) })
+            .where(
+                lastVoteId?.let { vote.id.lt(lastVoteId) },
+                jobCategory?.let { vote.jobCategory.eq(jobCategory) }
+            )
             .orderBy(vote.createdAt.desc())
             .limit((LATEST_VOTE_SLICE_SIZE + 1).toLong())
             .join(vote.createdBy, member).fetchJoin()

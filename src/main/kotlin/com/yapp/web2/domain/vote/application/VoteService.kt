@@ -32,7 +32,7 @@ class VoteService(
     }
 
     fun getLatestVotesSlice(lastVoteId: Long?): Slice<VotePreviewResponse> {
-        val latestVoteSliceVo = voteQuerydslRepository.findLatestVotes(lastVoteId)
+        val latestVoteSliceVo = voteQuerydslRepository.findLatestVotesByCategory(lastVoteId)
 
         return SliceImpl(
             latestVoteSliceVo.votes.map { votePreviewVo ->
