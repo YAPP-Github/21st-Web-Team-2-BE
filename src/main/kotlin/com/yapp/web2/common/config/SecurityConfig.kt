@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val authInterceptor: AuthInterceptor
+    //private val authInterceptor: AuthInterceptor
 ) : WebMvcConfigurer {
     @Bean
     fun filterChain(http: HttpSecurity?): SecurityFilterChain {
@@ -21,10 +21,10 @@ class SecurityConfig(
             .csrf().disable()
         return http.build()
     }
-
-    override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(authInterceptor)
-            .addPathPatterns("/**")
-            .excludePathPatterns("/api/v1/auth/**", "/api/v1/vote/**", "/api/v1/comment/**")    //TODO 회원 도입 후 경로 제거
-    }
+//
+//    override fun addInterceptors(registry: InterceptorRegistry) {
+//        registry.addInterceptor(authInterceptor)
+//            .addPathPatterns("/**")
+//            .excludePathPatterns("/api/v1/auth/**", "/api/v1/vote/**", "/api/v1/comment/**")    //TODO 회원 도입 후 경로 제거
+//    }
 }
