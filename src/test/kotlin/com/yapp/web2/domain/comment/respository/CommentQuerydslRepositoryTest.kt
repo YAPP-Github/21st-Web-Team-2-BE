@@ -1,15 +1,14 @@
 package com.yapp.web2.domain.comment.respository
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
 import com.yapp.web2.domain.vote.repository.VoteRepository
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -64,7 +63,7 @@ internal class CommentQuerydslRepositoryTest @Autowired constructor(
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
     private fun saveDummyComments() {
         val member = memberRepository.save(
-            Member("MemberA", JobCategory.DEVELOPER, 3)
+            EntityFactory.testMemberA()
         )
 
         val vote = voteRepository.save(
