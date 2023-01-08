@@ -14,9 +14,10 @@ import org.hibernate.annotations.Where
 class Member constructor(
     var nickname: String,
 
-    @Enumerated(EnumType.STRING)
+    var email: String,
+
     @Column(length = 20)
-    var jobCategory: JobCategory,
+    var jobCategory: String,
 
     var workingYears: Int,
 

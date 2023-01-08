@@ -1,5 +1,6 @@
 package com.yapp.web2.domain.vote.model
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.common.entity.EntityStatus
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
@@ -28,7 +29,7 @@ internal class VoteTest(
         memberRepository.deleteAll()
         voteRepository.deleteAll()
 
-        val member = Member("MemberA", JobCategory.DEVELOPER, 3, null)
+        val member = EntityFactory.testMemberA()
         vote = Vote("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
         memberRepository.save(member)
         voteRepository.save(vote)
