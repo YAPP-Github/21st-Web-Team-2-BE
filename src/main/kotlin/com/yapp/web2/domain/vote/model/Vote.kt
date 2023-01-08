@@ -2,6 +2,7 @@ package com.yapp.web2.domain.vote.model
 
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
+import com.yapp.web2.domain.like.model.VoteLikes
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.vote.model.option.VoteOption
@@ -31,6 +32,9 @@ class Vote constructor(
 
     @OneToMany(mappedBy = "vote")
     val comments: MutableList<Comment> = mutableListOf(),
+
+    @OneToMany(mappedBy = "vote")
+    val voteLikes: MutableList<VoteLikes> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))

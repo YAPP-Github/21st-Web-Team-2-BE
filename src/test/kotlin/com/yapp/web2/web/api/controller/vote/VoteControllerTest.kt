@@ -129,7 +129,7 @@ internal class VoteControllerTest @Autowired constructor(
                     ),
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
-                        *votePreviewDataResponseFieldsSnippet(),
+                        *voteDetailDataResponseFieldsSnippet(),
                         fieldWithPath("liked").description("투표 게시글 좋아요 여부")
                     ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
                 ),
@@ -170,6 +170,23 @@ internal class VoteControllerTest @Autowired constructor(
             fieldWithPath("memberProfileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
+            subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
+        )
+    }
+
+    // 투표 게시글 상세조회 응답에 대한 Spring Rest Docs snippet
+    private fun voteDetailDataResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("topicId").description("투표 게시글 Id"),
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("memberId").description("작성자 Id"),
+            fieldWithPath("memberName").description("작성자 닉네임"),
+            fieldWithPath("memberProfileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
+            fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
+            fieldWithPath("voteAmount").description("투표 참여 수"),
+            fieldWithPath("likedAmount").description("좋아요 수"),
+            fieldWithPath("tags").description("태그"),
             subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
         )
     }

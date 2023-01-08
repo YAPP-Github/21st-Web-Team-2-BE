@@ -65,6 +65,7 @@ class VoteService(
                     voteVo.voteAmount.toInt(),
                     voteVo.commentCount.toInt(),
                     false, //TODO 좋아요 여부
+                    voteVo.likedAmount.toInt(),
                     getVoteOptionPreviewResponses(voteVo.vote),
                 )
             } ?: throw BusinessException(ErrorCode.NOT_FOUND_DATA)

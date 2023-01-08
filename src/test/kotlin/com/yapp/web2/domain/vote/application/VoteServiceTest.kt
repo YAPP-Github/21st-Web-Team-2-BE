@@ -73,7 +73,7 @@ internal class VoteServiceTest @Autowired constructor(
         val voteDetail = voteService.getVoteDetail(findVote.id)
 
         //then
-        assertThat(voteDetail?.title).isEqualTo(findVote.title)
+        assertThat(voteDetail.title).isEqualTo(findVote.title)
     }
 
     @Test

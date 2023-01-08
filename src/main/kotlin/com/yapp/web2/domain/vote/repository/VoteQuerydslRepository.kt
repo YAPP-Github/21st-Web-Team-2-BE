@@ -7,8 +7,10 @@ import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.yapp.web2.domain.comment.model.QComment.comment
+import com.yapp.web2.domain.like.model.QVoteLikes.voteLikes
 import com.yapp.web2.domain.member.model.QMember.member
 import com.yapp.web2.domain.vote.application.vo.LatestVoteSliceVo
+import com.yapp.web2.domain.vote.application.vo.VoteDetailVo
 import com.yapp.web2.domain.vote.application.vo.VotePreviewVo
 import com.yapp.web2.domain.vote.model.QVote.vote
 import com.yapp.web2.domain.vote.model.Vote
@@ -84,13 +86,14 @@ class VoteQuerydslRepository(
     private fun commentAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(comment.count()).from(comment).where(comment.vote.id.eq(vote.id))
 
-    fun findVoteById(voteId: Long): VotePreviewVo? {
+    fun findVoteById(voteId: Long): VoteDetailVo? {
         return queryFactory.select(
             Projections.constructor(
-                VotePreviewVo::class.java,
+                VoteDetailVo::class.java,
                 vote,
                 ExpressionUtils.`as`(commentAmountFindQuery(), "commentAmount"),
                 ExpressionUtils.`as`(voteAmountFindQuery(),"voteAmount"),
+                ExpressionUtils.`as`(voteLikedAmountFindQuery(),"likedAmount"),
             )
         )
             .distinct()
@@ -102,6 +105,11 @@ class VoteQuerydslRepository(
             .distinct()
             .first()
     }
+
+    private fun voteLikedAmountFindQuery(): JPQLQuery<Long> =
+        JPAExpressions.select(voteLikes.count()).from(voteLikes).where(
+            voteLikes.vote.id.eq(vote.id)
+        )
 
 
 }
