@@ -5,7 +5,6 @@ import com.yapp.web2.domain.member.model.Member
 class EntityFactory {
     companion object {
         fun testMemberA() = Member(
-            id = 1L,
             nickname = "MemberA",
             email = "MemberA@test.com",
             jobCategory = "developer",
@@ -13,7 +12,6 @@ class EntityFactory {
         )
 
         fun testMemberB() = Member(
-            id = 2L,
             nickname = "MemberB",
             email = "MemberB@test.com",
             jobCategory = "Designer",
@@ -21,7 +19,6 @@ class EntityFactory {
         )
 
         fun testMemberC() = Member(
-            id = 3L,
             nickname = "MemberC",
             email = "MemberC@test.com",
             jobCategory = "product_manager",

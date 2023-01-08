@@ -24,11 +24,11 @@ internal class VoteServiceTest @Autowired constructor(
     val memberRepository: MemberRepository,
 ) {
 
-//    @BeforeEach
-//    fun beforeEach() {
-//        memberRepository.deleteAll()
-//        voteRepository.deleteAll()
-//    }
+    @BeforeEach
+    fun beforeEach() {
+        memberRepository.deleteAll()
+        voteRepository.deleteAll()
+    }
 
 
     @Test

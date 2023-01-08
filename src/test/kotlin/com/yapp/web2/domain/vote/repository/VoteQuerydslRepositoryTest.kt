@@ -32,11 +32,11 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     @PersistenceContext
     lateinit var em: EntityManager
 
-//    @BeforeEach
-//    fun beforeEach() {
-//        memberRepository.deleteAll()
-//        voteRepository.deleteAll()
-//    }
+    @BeforeEach
+    fun beforeEach() {
+        memberRepository.deleteAll()
+        voteRepository.deleteAll()
+    }
 
     @Test
     fun `투표 페이징 조회 테스트`() {
