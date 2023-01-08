@@ -26,3 +26,6 @@ endif::[]
 === 2. Comment API
 ==== link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
 
+=== 3. Auth API
+==== link:post-signup.html[3.1 회원가입]
+

@@ -17,12 +17,13 @@ class SignService(
     private val authService: AuthService,
     private val jwtService: JwtService
 ) {
-    fun signIn(token: String): SignIn {
+    fun signIn(code: String): SignIn {
+        val token = authService.requestToken(code)
         val email = authService.getUserEmail(token)
-        val isExist = memberRepository.existsByEmail(email)
 
+        val isExist = memberRepository.existsByEmail(email)
         if (!isExist) {
-            return SignIn(false, JwtTokens())
+            return SignIn(false, JwtTokens(accessToken = token))
         }
 
         return SignIn(true, jwtService.issue(email))

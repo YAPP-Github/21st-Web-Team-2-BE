@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where
 
 @Entity
 @Where(clause = "status = \'ACTIVE\'")
+@Table(indexes = [Index(name = "i_member", columnList = "email")])
 class Member constructor(
     var nickname: String,
 

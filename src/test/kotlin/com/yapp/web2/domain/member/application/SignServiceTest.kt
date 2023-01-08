@@ -50,6 +50,7 @@ class SignServiceTest {
     @Test
     fun `기가입자라면 로그인 성공`() {
         every { authService.getUserEmail(any()) }.returns("MemberA@test.com")
+        every { authService.requestToken(any()) }.returns("token")
         every { memberRepository.existsByEmail("MemberA@test.com") }.returns(true)
         every { memberService.findByEmail("MemberA@test.com") }.returns(EntityFactory.testMemberA())
         every { jwtService.issue("MemberA@test.com") }.returns(JwtTokens("access-token", "refresh-token"))
@@ -66,6 +67,7 @@ class SignServiceTest {
     @Test
     fun `기가입자가 아니라면 로그인 실패`() {
         every { authService.getUserEmail(any()) }.returns("MemberA@test.com")
+        every { authService.requestToken(any()) }.returns("token")
         every { memberRepository.existsByEmail("MemberA@test.com") }.returns(false)
         every { memberService.findByEmail("MemberA@test.com") }.returns(EntityFactory.testMemberA())
         every { jwtService.issue("MemberA@test.com") }.returns(JwtTokens())
@@ -73,7 +75,7 @@ class SignServiceTest {
         val signInResponseDto = signService.signIn("token")
 
         assertAll(
-            { assertThat(signInResponseDto.jwtTokens.accessToken).isNull() },
+            { assertThat(signInResponseDto.jwtTokens.accessToken).isNotNull },
             { assertThat(signInResponseDto.jwtTokens.refreshToken).isNull() },
             { assertThat(signInResponseDto.isMember).isFalse() },
         )

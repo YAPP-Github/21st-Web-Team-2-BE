@@ -1,9 +1,6 @@
 package com.yapp.web2.domain.jwt.application.oauth
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.yapp.web2.domain.jwt.application.JwtService
-import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import org.springframework.beans.factory.annotation.Value
@@ -20,8 +17,9 @@ import org.springframework.web.client.RestTemplate
 @Transactional(readOnly = true)
 class GoogleAuthServiceImpl(
     private val restTemplate: RestTemplate,
-    private val objectMapper: ObjectMapper
 ) : AuthService {
+    val objectMapper: ObjectMapper = ObjectMapper()
+
     @Value("\${spring.OAuth2.google.url.token}")
     private lateinit var GOOGLE_TOKEN_REQUEST_URL: String
 
@@ -37,32 +35,22 @@ class GoogleAuthServiceImpl(
     @Value("\${spring.OAuth2.google.url.profile}")
     private lateinit var GOOGLE_PROFILE_URI: String
 
-    //몰러 구간 ㄱ-
-    override fun requestToken(authCode: String): ResponseEntity<String> {
+    override fun requestToken(authCode: String): String {
         val params = buildParam(authCode)
-
         val response: ResponseEntity<String> = try {
             restTemplate.postForEntity(
                 GOOGLE_TOKEN_REQUEST_URL,
                 params,
                 String::class.java)
         } catch (e: HttpClientErrorException) {
-            println(e)
-            println(e.localizedMessage)
-            println(e.responseBodyAsByteArray)
             throw BusinessException(ErrorCode.OAUTH2_FAIL_EXCEPTION)
         }
-
-        println(response.body)
-        return response
+        return objectMapper
+            .readValue(response.body, GoogleOAuthToken::class.java)
+            .access_token!!
     }
-    //서버 토큰으로 email 가져오기
+
     override fun getUserEmail(token: String): String {
-        val profile = getProfileFromProvider(token)
-        return profile.get("email").asText()
-    }
-
-    private fun getProfileFromProvider(token: String): JsonNode {
         val response: ResponseEntity<String> = try {
             restTemplate.postForEntity(
                 GOOGLE_PROFILE_URI,
@@ -72,6 +60,7 @@ class GoogleAuthServiceImpl(
             throw BusinessException(ErrorCode.OAUTH2_FAIL_EXCEPTION)
         }
         return objectMapper.readTree(response.body)
+            .get("email").asText()
     }
 
     private fun buildProfileRequest(token: String): HttpEntity<*> {
