@@ -1,10 +1,10 @@
 package com.yapp.web2.web.api.controller.comment
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
@@ -32,6 +32,7 @@ internal class CommentControllerTest @Autowired constructor(
 ) : ApiControllerTest(uri = "/api/v1/comment") {
 
     lateinit var vote: Vote
+
     @BeforeAll
     fun saveTestData() {
         vote = saveDummyComments()
@@ -78,15 +79,14 @@ internal class CommentControllerTest @Autowired constructor(
     }
 
 
-
     // voteId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
     private fun saveDummyComments(): Vote {
         val member = memberRepository.saveAll(
             listOf(
-                Member("MemberA", JobCategory.DEVELOPER, 3),
-                Member("MemberB", JobCategory.DESIGNER, 5),
-                Member("MemberC", JobCategory.PRODUCT_MANAGER, 4),
+                EntityFactory.testMemberA(),
+                EntityFactory.testMemberB(),
+                EntityFactory.testMemberC()
             )
         )
 

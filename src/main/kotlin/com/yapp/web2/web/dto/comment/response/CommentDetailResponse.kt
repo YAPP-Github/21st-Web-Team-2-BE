@@ -11,7 +11,7 @@ data class CommentDetailResponse(
     val memberId: Long,
     val memberName: String,
     val memberProfileImage: String?,
-    val memberJobCategory: JobCategory,
+    val memberJobCategory: String,
     val memberWorkingYears: Int,
     val commentContent: String,
     val likeAmount: Int,

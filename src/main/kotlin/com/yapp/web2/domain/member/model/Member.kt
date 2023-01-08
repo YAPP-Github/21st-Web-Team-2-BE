@@ -4,8 +4,8 @@ import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.like.model.VoteLikes
 import com.yapp.web2.domain.vote.model.Vote
-import com.yapp.web2.domain.vote.model.option.VoteOption
 import com.yapp.web2.domain.vote.model.option.VoteOptionMember
+import com.yapp.web2.web.api.dto.member.request.UpdateProfile
 import jakarta.persistence.*
 import org.hibernate.annotations.Where
 
@@ -14,9 +14,10 @@ import org.hibernate.annotations.Where
 class Member constructor(
     var nickname: String,
 
-    @Enumerated(EnumType.STRING)
+    var email: String,
+
     @Column(length = 20)
-    var jobCategory: JobCategory,
+    var jobCategory: String,
 
     var workingYears: Int,
 
@@ -39,5 +40,9 @@ class Member constructor(
     @Column(name = "member_id")
     val id: Long = 0L,
 ) : BaseEntity() {
-
+    fun update(update: UpdateProfile) {
+        this.jobCategory = update.jobCategory
+        this.nickname = update.nickname
+        this.workingYears = update.workingYears
+    }
 }
