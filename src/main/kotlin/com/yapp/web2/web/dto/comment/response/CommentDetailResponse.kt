@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.web.api.response.OffsetIdSupport
+import com.yapp.web2.web.dto.member.response.MemberResponse
 
 data class CommentDetailResponse(
     @JsonProperty("commentId")
     override val offsetId: Long,
-    val memberId: Long,
-    val memberName: String,
-    val memberProfileImage: String?,
-    val memberJobCategory: JobCategory,
-    val memberWorkingYears: Int,
+    val member: MemberResponse,
     val commentContent: String,
     val likeAmount: Int,
     val liked: Boolean,
@@ -22,11 +19,7 @@ data class CommentDetailResponse(
         fun of(comment:Comment, likeAmount: Int, liked: Boolean): CommentDetailResponse {
             return CommentDetailResponse(
                 comment.id,
-                comment.createdBy.id,
-                comment.createdBy.nickname,
-                comment.createdBy.profileImageFilename,
-                comment.createdBy.jobCategory,
-                comment.createdBy.workingYears,
+                MemberResponse.of(comment.createdBy),
                 comment.contents,
                 likeAmount,
                 liked,
