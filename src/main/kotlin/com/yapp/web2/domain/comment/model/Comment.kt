@@ -3,7 +3,7 @@ package com.yapp.web2.domain.comment.model
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.Member
-import com.yapp.web2.domain.vote.model.Vote
+import com.yapp.web2.domain.topic.model.Topic
 import jakarta.persistence.*
 import org.hibernate.annotations.Where
 
@@ -17,8 +17,8 @@ class Comment constructor(
     var contents: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    val vote: Vote,
+    @JoinColumn(name = "topic_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    val topic: Topic,
 
     @OneToMany(mappedBy = "comment")
     val replyComments: MutableList<ReplyComment> = mutableListOf(),

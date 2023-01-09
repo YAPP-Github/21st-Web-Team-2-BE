@@ -5,11 +5,10 @@ import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
-import com.yapp.web2.domain.vote.model.Vote
-import com.yapp.web2.domain.vote.model.VoteType
-import com.yapp.web2.domain.vote.repository.VoteRepository
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.*
+import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.repository.TopicRepository
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -24,7 +23,7 @@ internal class CommentQuerydslRepositoryTest @Autowired constructor(
     val commentRepository: CommentRepository,
     val commentQuerydslRepository: CommentQuerydslRepository,
     val memberRepository: MemberRepository,
-    val voteRepository: VoteRepository,
+    val topicRepository: TopicRepository,
 ) {
 
     @BeforeAll
@@ -67,13 +66,13 @@ internal class CommentQuerydslRepositoryTest @Autowired constructor(
             Member("MemberA", JobCategory.DEVELOPER, 3)
         )
 
-        val vote = voteRepository.save(
-            Vote("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
+        val topic = topicRepository.save(
+            Topic("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
         )
 
         val sampleComments: MutableList<Comment> = mutableListOf()
         for (i in 1..30) {
-            sampleComments.add(Comment(member, "Comment $i", vote))
+            sampleComments.add(Comment(member, "Comment $i", topic))
         }
 
         for (i in 0 until sampleComments.size) {

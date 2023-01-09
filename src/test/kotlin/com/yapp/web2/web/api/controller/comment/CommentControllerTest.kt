@@ -6,9 +6,9 @@ import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
-import com.yapp.web2.domain.vote.model.Vote
-import com.yapp.web2.domain.vote.model.VoteType
-import com.yapp.web2.domain.vote.repository.VoteRepository
+import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -26,23 +26,23 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class CommentControllerTest @Autowired constructor(
-    val voteRepository: VoteRepository,
+    val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
     val commentRepository: CommentRepository,
 ) : ApiControllerTest(uri = "/api/v1/comment") {
 
-    lateinit var vote: Vote
+    lateinit var topic: Topic
     @BeforeAll
     fun saveTestData() {
-        vote = saveDummyComments()
+        topic = saveDummyComments()
     }
 
     @Test
     fun `getCommentsNoOffsetTest`() {
-        val findVoteId = vote.id
-        val uri = "$uri/{voteId}/latest"
+        val findTopicId = topic.id
+        val uri = "$uri/{topicId}/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri, findVoteId)
+            RestDocumentationRequestBuilders.get(uri, findTopicId)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
@@ -53,7 +53,7 @@ internal class CommentControllerTest @Autowired constructor(
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
                     Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                     RequestDocumentation.pathParameters(
-                        RequestDocumentation.parameterWithName("voteId").description("투표 게시글 Id")
+                        RequestDocumentation.parameterWithName("topicId").description("투표 게시글 Id")
                     ),
                     PayloadDocumentation.responseFields(
                         PayloadDocumentation.beneathPath("data").withSubsectionId("data"),
@@ -86,9 +86,9 @@ internal class CommentControllerTest @Autowired constructor(
 
 
 
-    // voteId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
+    // topicId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
-    private fun saveDummyComments(): Vote {
+    private fun saveDummyComments(): Topic {
         val member = memberRepository.saveAll(
             listOf(
                 Member("MemberA", JobCategory.DEVELOPER, 3),
@@ -97,15 +97,15 @@ internal class CommentControllerTest @Autowired constructor(
             )
         )
 
-        val vote = voteRepository.save(
-            Vote("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member[0])
+        val topic = topicRepository.save(
+            Topic("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member[0])
         )
 
         val sampleComments: MutableList<Comment> = mutableListOf()
         for (i in 1..10) {
-            sampleComments.add(Comment(member[0], "Comment $i", vote))
-            sampleComments.add(Comment(member[1], "Comment $i", vote))
-            sampleComments.add(Comment(member[2], "Comment $i", vote))
+            sampleComments.add(Comment(member[0], "Comment $i", topic))
+            sampleComments.add(Comment(member[1], "Comment $i", topic))
+            sampleComments.add(Comment(member[2], "Comment $i", topic))
         }
 
         for (i in 0 until sampleComments.size) {
@@ -117,6 +117,6 @@ internal class CommentControllerTest @Autowired constructor(
         }
         commentRepository.saveAll(sampleComments)
 
-        return vote
+        return topic
     }
 }

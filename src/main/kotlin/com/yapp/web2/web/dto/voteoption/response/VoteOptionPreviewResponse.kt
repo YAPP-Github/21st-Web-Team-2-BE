@@ -1,6 +1,6 @@
 package com.yapp.web2.web.dto.voteoption.response
 
-import com.yapp.web2.domain.vote.model.option.VoteOption
+import com.yapp.web2.domain.topic.model.option.VoteOption
 
 data class VoteOptionPreviewResponse(
     val text: String?,
