@@ -1,7 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -210,7 +210,8 @@ internal class TopicControllerTest @Autowired constructor(
 
     // 테스트용 데이터 저장
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
+
         memberRepository.saveAll(listOf(memberA))
 
         val sampleTopics: MutableList<Topic> = mutableListOf()

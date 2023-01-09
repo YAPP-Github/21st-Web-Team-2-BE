@@ -1,10 +1,10 @@
 package com.yapp.web2.domain.comment.application
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -51,7 +51,7 @@ internal class CommentServiceTest @Autowired constructor(
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
     private fun saveDummyComments() {
         val member = memberRepository.save(
-            Member("MemberA", JobCategory.DEVELOPER, 3)
+            EntityFactory.testMemberA()
         )
 
         val topic = topicRepository.save(

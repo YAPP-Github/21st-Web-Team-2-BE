@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -88,9 +88,9 @@ internal class TopicServiceTest @Autowired constructor(
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
         // 유저 생성
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
-        val memberB = Member("MemberB", JobCategory.DESIGNER, 5)
-        val memberC = Member("MemberC", JobCategory.PRODUCT_MANAGER, 1)
+        val memberA = EntityFactory.testMemberA()
+        val memberB = EntityFactory.testMemberB()
+        val memberC = EntityFactory.testMemberC()
         memberRepository.saveAll(listOf(memberA, memberB, memberC))
 
         // 투표 게시글 생성
@@ -116,8 +116,9 @@ internal class TopicServiceTest @Autowired constructor(
 
         return topicRepository.saveAll(sampleTopics)
     }
+
     private fun saveDummyTopicsDetailWithVoteAmount(amount: Int): MutableList<Topic> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
         memberRepository.saveAll(listOf(memberA))
 
         val sampleTopics: MutableList<Topic> = mutableListOf()

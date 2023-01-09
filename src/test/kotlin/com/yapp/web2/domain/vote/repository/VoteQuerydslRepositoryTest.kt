@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.vote.repository
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -45,7 +45,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         val dummyVoteAmount = 20
         val pageSize = 6
 
-        val dummyVotes = saveDummyVotes(dummyVoteAmount)
+        val dummyVotes = saveDummyTopics(dummyVoteAmount)
         dummyVotes.sortByDescending { it.createdAt }
 
         //when
@@ -62,7 +62,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         //given
         val dummyVoteAmount = 20
 
-        val dummyVotes = saveDummyVotes(dummyVoteAmount)
+        val dummyVotes = saveDummyTopics(dummyVoteAmount)
         dummyVotes.sortByDescending { it.createdAt }
         val lastVoteId = dummyVotes[(dummyVoteAmount - 1) - 2].id // 마지막에서 2번째 부터 페이징 조회
 
@@ -80,9 +80,9 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     fun `투표 카테고리 필터 조회 테스트`() {
         //given
         val dummyVoteAmount = 3
-        saveDummyVotes(dummyVoteAmount) // JobCategory == DEVELOPER 인 게시글 3개 저장
+        saveDummyTopics(dummyVoteAmount) // JobCategory == DEVELOPER 인 게시글 3개 저장
 
-        val memberB = Member("MemberB", JobCategory.DESIGNER, 3)
+        val memberB = EntityFactory.testMemberB()
         memberRepository.save(memberB)
         val sampleVotes: MutableList<Topic> = mutableListOf()
         for (i in 1..3) {
@@ -103,7 +103,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     @Test
     fun `투표 페이징 멤버 페치 조인 테스트`() {
         //given
-        saveDummyVotes(10)
+        saveDummyTopics(10)
 
         //when
         val searchBySlice = topicQuerydslRepository.findLatestTopicsByCategory()
@@ -118,7 +118,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     fun `투표 개수 정렬 조회 테스트`() {
         //given
         val voteSize = 6
-        saveDummyVotesDetail(voteSize) // voteSize 가 6인 경우, voteAmount = [12, 10, 8, 6]
+        saveDummyTopicsDetail(voteSize) // voteSize 가 6인 경우, voteAmount = [12, 10, 8, 6]
 
         val expectedVoteAmounts = mutableListOf<Long>()
         for (i in 0..3) {
@@ -137,7 +137,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
     fun `투표 상세 페이지 조회 테스트`() {
         //given
         val voteSize = 3
-        val saveDummyVotes = saveDummyVotesDetail(voteSize) // voteSize 가 3인 경우, voteAmount = [6, 4, 2]
+        val saveDummyVotes = saveDummyTopicsDetail(voteSize) // voteSize 가 3인 경우, voteAmount = [6, 4, 2]
         val findVote = saveDummyVotes[0]
 
         //when
@@ -152,8 +152,8 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
 
     //test용 투표 저장
-    private fun saveDummyVotes(amount: Int): MutableList<Topic> {
-        val member = Member("MemberA", JobCategory.DEVELOPER, 3)
+    private fun saveDummyTopics(amount: Int): MutableList<Topic> {
+        val member = EntityFactory.testMemberA()
         memberRepository.save(member)
         val sampleVotes: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
@@ -163,8 +163,8 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         return topicRepository.saveAll(sampleVotes)
     }
 
-    private fun saveDummyVotesDetail(amount: Int): MutableList<Topic> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+    private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
+        val memberA = EntityFactory.testMemberA()
         memberRepository.saveAll(listOf(memberA))
 
         val sampleVotes: MutableList<Topic> = mutableListOf()

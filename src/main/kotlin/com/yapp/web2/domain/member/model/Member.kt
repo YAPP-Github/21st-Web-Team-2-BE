@@ -2,6 +2,7 @@ package com.yapp.web2.domain.member.model
 
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
+
 import com.yapp.web2.domain.like.model.TopicLikes
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
@@ -10,12 +11,14 @@ import org.hibernate.annotations.Where
 
 @Entity
 @Where(clause = "status = \'ACTIVE\'")
+@Table(indexes = [Index(name = "i_member", columnList = "email")])
 class Member constructor(
     var nickname: String,
 
-    @Enumerated(EnumType.STRING)
+    var email: String,
+
     @Column(length = 20)
-    var jobCategory: JobCategory,
+    var jobCategory: String,
 
     var workingYears: Int,
 

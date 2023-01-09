@@ -34,12 +34,21 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    // Spring Rest Docs
+    //Spring Rest Docs
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
     //query dsl
     implementation("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    //auth
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    //jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    //test
+    testImplementation("com.ninja-squad:springmockk:3.1.1")
 }
 
 jacoco {

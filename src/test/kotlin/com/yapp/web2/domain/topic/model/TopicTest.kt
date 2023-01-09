@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.topic.model
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -24,8 +24,9 @@ internal class TopicTest(
         memberRepository.deleteAll()
         topicRepository.deleteAll()
 
-        val member = Member("MemberA", JobCategory.DEVELOPER, 3, null)
+        val member = EntityFactory.testMemberA()
         topic = Topic("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
+
         memberRepository.save(member)
         topicRepository.save(topic)
     }

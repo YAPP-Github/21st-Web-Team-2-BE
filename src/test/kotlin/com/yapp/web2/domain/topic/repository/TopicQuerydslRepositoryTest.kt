@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.topic.repository
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -80,7 +80,7 @@ internal class TopicQuerydslRepositoryTest @Autowired constructor(
         val dummyTopicAmount = 3
         saveDummyTopics(dummyTopicAmount) // JobCategory == DEVELOPER 인 게시글 3개 저장
 
-        val memberB = Member("MemberB", JobCategory.DEVELOPER, 3)
+        val memberB = EntityFactory.testMemberB()
         memberRepository.save(memberB)
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..3) {
@@ -151,7 +151,7 @@ internal class TopicQuerydslRepositoryTest @Autowired constructor(
 
     //test용 투표 저장
     private fun saveDummyTopics(amount: Int): MutableList<Topic> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
         memberRepository.save(memberA)
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
@@ -162,7 +162,7 @@ internal class TopicQuerydslRepositoryTest @Autowired constructor(
     }
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
         memberRepository.saveAll(listOf(memberA))
 
         val sampleTopics: MutableList<Topic> = mutableListOf()

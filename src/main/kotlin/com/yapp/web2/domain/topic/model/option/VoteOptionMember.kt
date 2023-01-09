@@ -10,7 +10,7 @@ class VoteOptionMember constructor(
     val votedBy: Member,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "topic_option_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "vote_option_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val voteOption: VoteOption,
 
     @Id
