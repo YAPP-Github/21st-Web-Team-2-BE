@@ -27,7 +27,7 @@ class SecurityConfig(
             .addPathPatterns("/**")
             .excludePathPatterns(
                 "/api/v1/auth/**",
-                "/api/v1/vote/**",
+                "/api/v1/topic/**",
                 "/api/v1/comment/**",
                 "/docs/**",
             )    //TODO 회원 도입 후 경로 제거
