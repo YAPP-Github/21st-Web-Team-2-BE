@@ -5,5 +5,29 @@ spring:
     username: ${/prod/data-source/user}
     password: ${/prod/data-source/password}
 
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+
+  OAuth2:
+    google:
+      client_id: ${/prod/oauth2/google/client-id}
+      client_secret: ${/prod/oauth2/google/client-secret}
+      url:
+        redirect: http://localhost:8080/authcode
+        token: https://oauth2.googleapis.com/token
+        profile: https://www.googleapis.com/oauth2/v3/userinfo
+        login: https://accounts.google.com/o/oauth2/v2/auth
+
+jwt:
+  secret: ${/prod/jwt/secret}
+  access-token-expiry: 1296000000 #15일
+  refresh-token-expiry: 2592000000 #1달
+  access-token-header: Authorization
+  refresh-token-header: Refresh-Token
+
 awsParameterStorePropertySource:
   enabled: true
