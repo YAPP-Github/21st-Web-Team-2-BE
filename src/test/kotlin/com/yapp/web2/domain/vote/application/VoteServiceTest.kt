@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.vote.application
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
@@ -88,9 +88,9 @@ internal class VoteServiceTest @Autowired constructor(
 
     private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
         // 유저 생성
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
-        val memberB = Member("MemberB", JobCategory.DESIGNER, 5)
-        val memberC = Member("MemberC", JobCategory.PRODUCT_MANAGER, 1)
+        val memberA = EntityFactory.testMemberA()
+        val memberB = EntityFactory.testMemberB()
+        val memberC = EntityFactory.testMemberC()
         memberRepository.saveAll(listOf(memberA, memberB, memberC))
 
         // 투표 게시글 생성
@@ -118,7 +118,7 @@ internal class VoteServiceTest @Autowired constructor(
     }
 
     private fun saveDummyVotesDetailWithVoteAmount(amount: Int): MutableList<Vote> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
         memberRepository.saveAll(listOf(memberA))
 
         val sampleVotes: MutableList<Vote> = mutableListOf()

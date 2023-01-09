@@ -1,5 +1,6 @@
 package com.yapp.web2.web.api.controller.comment
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
@@ -91,9 +92,9 @@ internal class CommentControllerTest @Autowired constructor(
     private fun saveDummyComments(): Vote {
         val member = memberRepository.saveAll(
             listOf(
-                Member("MemberA", JobCategory.DEVELOPER, 3),
-                Member("MemberB", JobCategory.DESIGNER, 5),
-                Member("MemberC", JobCategory.PRODUCT_MANAGER, 4),
+                EntityFactory.testMemberA(),
+                EntityFactory.testMemberB(),
+                EntityFactory.testMemberC(),
             )
         )
 

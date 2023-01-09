@@ -1,7 +1,7 @@
 package com.yapp.web2.web.api.controller.vote
 
+import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.member.model.JobCategory
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.vote.model.Vote
 import com.yapp.web2.domain.vote.model.VoteType
@@ -19,10 +19,7 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.restdocs.payload.ResponseFieldsSnippet
 import org.springframework.restdocs.request.RequestDocumentation.*
-import org.springframework.restdocs.snippet.Attributes.attributes
-import org.springframework.restdocs.snippet.Attributes.key
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -34,6 +31,7 @@ internal class VoteControllerTest @Autowired constructor(
 ) : ApiControllerTest(uri = "/api/v1/vote") {
 
     lateinit var votes: MutableList<Vote>
+
     @BeforeAll
     fun dataInsert() {
         votes = saveDummyVotesDetail(15)
@@ -212,7 +210,7 @@ internal class VoteControllerTest @Autowired constructor(
 
     // 테스트용 데이터 저장
     private fun saveDummyVotesDetail(amount: Int): MutableList<Vote> {
-        val memberA = Member("MemberA", JobCategory.DEVELOPER, 3)
+        val memberA = EntityFactory.testMemberA()
         memberRepository.saveAll(listOf(memberA))
 
         val sampleVotes: MutableList<Vote> = mutableListOf()
