@@ -18,7 +18,7 @@ endif::[]
 //CAUTION: ""
 
 == Request
-// === Curl-Reqeust
+// === Curl-Request
 // include::{snippets}/{docname}/curl-request.adoc[]
 === Http-Request
 include::{snippets}/{docname}/http-request.adoc[]
@@ -41,7 +41,9 @@ include::{snippets}/{docname}/response-fields-data.adoc[]
 ==== 예외 케이스
 
 . 존재하지 않는 투표 게시글인 경우
-include::{snippets}/get-vote-detail-fail/response-fields.adoc[]
-include::{snippets}/get-vote-detail-fail/response-body.adoc[]
+
+include::{snippets}/get-topic-detail-fail/response-fields.adoc[]
+
+include::{snippets}/get-topic-detail-fail/response-body.adoc[]
 
 link:api-docs.html[back to api-docs]
