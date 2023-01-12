@@ -1,13 +1,10 @@
 package com.yapp.web2.domain.comment.respository
 
-import com.querydsl.jpa.JPAExpressions
-import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.model.QComment.comment
 import com.yapp.web2.domain.like.model.QCommentLikes.commentLikes
 import com.yapp.web2.domain.member.model.QMember.member
-import com.yapp.web2.domain.vote.model.QVote.vote
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
@@ -21,7 +18,7 @@ class CommentQuerydslRepository(
 ) {
     fun findComments(voteId: Long, lastCommentId: Long? = null): Slice<Comment> {
         val results = queryFactory.selectFrom(comment)
-            .where(comment.vote.id.eq(voteId), lastCommentId?.let { comment.id.lt(lastCommentId) })
+            .where(comment.topic.id.eq(voteId), lastCommentId?.let { comment.id.lt(lastCommentId) })
             .orderBy(comment.createdAt.desc())
             .limit((COMMENT_SLICE_SIZE + 1).toLong())
             .join(comment.createdBy, member).fetchJoin()

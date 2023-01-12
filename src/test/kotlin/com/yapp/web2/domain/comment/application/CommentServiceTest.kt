@@ -6,9 +6,9 @@ import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
 import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
-import com.yapp.web2.domain.vote.model.Vote
-import com.yapp.web2.domain.vote.model.VoteType
-import com.yapp.web2.domain.vote.repository.VoteRepository
+import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.repository.TopicRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 internal class CommentServiceTest @Autowired constructor(
     val commentService: CommentService,
-    val voteRepository: VoteRepository,
+    val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
     val commentRepository: CommentRepository,
 ) {
@@ -54,13 +54,13 @@ internal class CommentServiceTest @Autowired constructor(
             EntityFactory.testMemberA()
         )
 
-        val vote = voteRepository.save(
-            Vote("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
+        val topic = topicRepository.save(
+            Topic("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
         )
 
         val sampleComments: MutableList<Comment> = mutableListOf()
         for (i in 1..30) {
-            sampleComments.add(Comment(member, "Comment $i", vote))
+            sampleComments.add(Comment(member, "Comment $i", topic))
         }
 
         for (i in 0 until sampleComments.size) {

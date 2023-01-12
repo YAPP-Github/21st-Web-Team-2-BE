@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 /**
  * 공통 응답 Spring rest docs snippet 생성용 테스트
  */
-internal class VoteControllerTest : ApiControllerTest(uri = "/api/v1/vote") {
+internal class TopicControllerTest : ApiControllerTest(uri = "/api/v1/topic") {
 
     // 일반적인 공통응답인 경우
     @Test
