@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -9,6 +10,8 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.dto.topic.request.TopicPostDto
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostDto
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -102,6 +105,31 @@ internal class TopicServiceTest @Autowired constructor(
         assertThatThrownBy { topicService.getTopicDetail(invalidVoteId) }
             .isInstanceOf(BusinessException::class.java)
     }
+
+    @Test
+    fun `투표 게시글 저장 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        val topicPostDto = TopicPostDto(
+            "TopicA",
+            "Contents A",
+            listOf(
+                VoteOptionPostDto("OptionA", null, null),
+                VoteOptionPostDto("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        //when
+        topicService.saveTopic(testMemberA, topicPostDto)
+
+        //then
+        val findOne = topicRepository.findAll()[0]
+        assertThat(findOne.title).isEqualTo("TopicA")
+        assertThat(findOne.voteType).isEqualTo(VoteType.TEXT)
+    }
+
 
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {

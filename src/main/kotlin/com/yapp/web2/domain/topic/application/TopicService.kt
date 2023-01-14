@@ -1,10 +1,15 @@
 package com.yapp.web2.domain.topic.application
 
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.repository.TopicQuerydslRepository
+import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
+import com.yapp.web2.web.dto.topic.request.TopicPostDto
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
@@ -19,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TopicService(
     private val topicQuerydslRepository: TopicQuerydslRepository,
+    private val topicRepository: TopicRepository,
 ) {
     fun getPopularTopics(): List<TopicPreviewResponse> {
         val popularTopics = topicQuerydslRepository.findPopularTopics()
@@ -73,5 +79,29 @@ class TopicService(
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
+    }
+
+    fun saveTopic(member: Member, requestDto: TopicPostDto): Long {
+        val voteType = VoteType.from(requestDto.voteOptions[0])
+
+        val topic = Topic(
+            requestDto.title,
+            requestDto.topicCategory,
+            requestDto.contents,
+            voteType,
+            createdBy = member,
+        )
+
+        for (voteOptionDto in requestDto.voteOptions) {
+            val voteOption = VoteOption(
+                voteOptionDto.text,
+                voteOptionDto.voteOptionImageFilename,
+                voteOptionDto.codeBlock,
+                topic
+            )
+            topic.addVoteOption(voteOption)
+        }
+
+        return topicRepository.save(topic).id
     }
 }
