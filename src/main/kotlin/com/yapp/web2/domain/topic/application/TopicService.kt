@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.repository.TopicQuerydslRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
@@ -31,8 +32,8 @@ class TopicService(
         }
     }
 
-    fun getLatestTopicsSlice(lastTopicId: Long?): Slice<TopicPreviewResponse> {
-        val latestTopicSliceVo = topicQuerydslRepository.findLatestTopicsByCategory(lastTopicId)
+    fun getLatestTopicsSlice(lastTopicId: Long?, topicCategory: TopicCategory): Slice<TopicPreviewResponse> {
+        val latestTopicSliceVo = topicQuerydslRepository.findLatestTopicsByCategory(lastTopicId, topicCategory)
 
         return SliceImpl(
             latestTopicSliceVo.topics.map { topicPreviewVo ->

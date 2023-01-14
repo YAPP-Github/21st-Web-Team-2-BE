@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
 import com.yapp.web2.domain.topic.application.TopicService
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.web.api.response.ApiResponse
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
@@ -20,8 +21,8 @@ class TopicController(
     }
 
     @GetMapping("/latest")
-    fun getTopicsSlice(@RequestParam lastOffset: String?): ApiResponse<List<TopicPreviewResponse>> {
-        val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong()) //TODO toLong() 예외처리
+    fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory): ApiResponse<List<TopicPreviewResponse>> {
+        val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestTopicsSlice)
     }
