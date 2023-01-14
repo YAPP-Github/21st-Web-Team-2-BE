@@ -21,7 +21,7 @@ class TopicController(
     }
 
     @GetMapping("/latest")
-    fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory): ApiResponse<List<TopicPreviewResponse>> {
+    fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory?): ApiResponse<List<TopicPreviewResponse>> {
         val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestTopicsSlice)
