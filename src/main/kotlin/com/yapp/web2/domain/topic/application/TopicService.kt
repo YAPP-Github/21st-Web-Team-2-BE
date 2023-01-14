@@ -32,7 +32,7 @@ class TopicService(
         }
     }
 
-    fun getLatestTopicsSlice(lastTopicId: Long?, topicCategory: TopicCategory): Slice<TopicPreviewResponse> {
+    fun getLatestTopicsSlice(lastTopicId: Long?, topicCategory: TopicCategory?): Slice<TopicPreviewResponse> {
         val latestTopicSliceVo = topicQuerydslRepository.findLatestTopicsByCategory(lastTopicId, topicCategory)
 
         return SliceImpl(

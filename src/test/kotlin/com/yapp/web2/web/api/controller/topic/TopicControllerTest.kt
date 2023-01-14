@@ -161,6 +161,47 @@ internal class TopicControllerTest @Autowired constructor(
             )
     }
 
+    @Test
+    fun `투표게시글 최신순 조회 API, 카테고리 필터 적용`() {
+        val createdBy = topics[0].createdBy
+        val topics = listOf(
+            Topic("Topic CareerA", TopicCategory.CAREER, "Content CareerA", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerB", TopicCategory.CAREER, "Content CareerB", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
+        )
+        for (topic in topics) {
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+        }
+
+        topicRepository.saveAll(topics)
+
+        val uri = "$uri/latest"
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.get(uri)
+                .param("topicCategory", "CAREER")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "get-latest-topic-category",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    queryParameters(
+                        parameterWithName("topicCategory").description("투표 게시글 카테고리").optional()
+                    ),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicPreviewDataResponseFieldsSnippet(),
+                        *memberPreviewDataResponseFieldsSnippet(),
+                    ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                ),
+            )
+    }
+
+
     // 투표 게시글 미리보기 응답에 대한 Spring Rest Docs snippet
     private fun topicPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
