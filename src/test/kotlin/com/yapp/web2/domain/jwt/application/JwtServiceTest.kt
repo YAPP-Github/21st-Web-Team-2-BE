@@ -31,7 +31,7 @@ class JwtServiceTest {
     @Test
     fun `토큰 발급`() {
         every { memberService.findByEmail(testMemberA.email) }.returns(testMemberA)
-        every { jwtProvider.createAccessToken(testMemberA.email) }.returns("access-token")
+        every { jwtProvider.createAccessToken(testMemberA.id, testMemberA.email) }.returns("access-token")
         every { jwtProvider.createRefreshToken() }.returns("refresh-token")
 
         val jwtTokens = jwtService.issue(testMemberA.email)
