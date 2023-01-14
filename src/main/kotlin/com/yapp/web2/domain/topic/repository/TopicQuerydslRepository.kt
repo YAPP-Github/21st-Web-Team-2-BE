@@ -7,9 +7,8 @@ import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.yapp.web2.domain.comment.model.QComment.comment
-import com.yapp.web2.domain.like.model.QTopicLikes
 import com.yapp.web2.domain.like.model.QTopicLikes.*
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.model.QMember.member
 import com.yapp.web2.domain.topic.application.vo.LatestTopicSliceVo
 import com.yapp.web2.domain.topic.application.vo.TopicDetailVo
@@ -27,7 +26,7 @@ const val POPULAR_VOTE_SIZE = 4
 class TopicQuerydslRepository(
     private val queryFactory: JPAQueryFactory
 ) {
-    fun findLatestTopicsByCategory(lastTopicId: Long? = null, jobCategory: JobCategory? = null): LatestTopicSliceVo {
+    fun findLatestTopicsByCategory(lastTopicId: Long? = null, topicCategory: TopicCategory? = null): LatestTopicSliceVo {
         val results = queryFactory.select(
             Projections.constructor(
                 TopicPreviewVo::class.java,
@@ -39,7 +38,7 @@ class TopicQuerydslRepository(
             .from(topic)
             .where(
                 lastTopicId?.let { topic.id.lt(lastTopicId) },
-                jobCategory?.let { topic.jobCategory.eq(jobCategory) }
+                topicCategory?.let { topic.topicCategory.eq(topicCategory) }
             )
             .orderBy(topic.createdAt.desc())
             .limit((LATEST_VOTE_SLICE_SIZE + 1).toLong())

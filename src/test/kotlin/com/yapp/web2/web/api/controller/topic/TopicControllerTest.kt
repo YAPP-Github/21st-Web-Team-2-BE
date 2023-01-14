@@ -1,7 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -216,7 +216,7 @@ internal class TopicControllerTest @Autowired constructor(
 
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         for (topic in sampleTopics) {

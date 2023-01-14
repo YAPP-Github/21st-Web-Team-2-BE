@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -96,7 +96,7 @@ internal class TopicServiceTest @Autowired constructor(
         // 투표 게시글 생성
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         // 투표 게시글 마다 2개의 옵션이 존재
@@ -123,7 +123,7 @@ internal class TopicServiceTest @Autowired constructor(
 
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         for (vote in sampleTopics) {

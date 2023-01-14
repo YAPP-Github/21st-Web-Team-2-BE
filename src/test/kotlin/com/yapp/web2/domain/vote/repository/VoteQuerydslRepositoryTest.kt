@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.vote.repository
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -86,13 +86,13 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         memberRepository.save(memberB)
         val sampleVotes: MutableList<Topic> = mutableListOf()
         for (i in 1..3) {
-            sampleVotes.add(Topic("Vote$i", JobCategory.DESIGNER, "Content$i", VoteType.TEXT, createdBy = memberB))
+            sampleVotes.add(Topic("Vote$i", TopicCategory.DESIGNER, "Content$i", VoteType.TEXT, createdBy = memberB))
         }
         topicRepository.saveAll(sampleVotes) // JobCategory == DESIGNER 인 게시글 3개 저장
 
         //when
         //우선순위(최신순)으로 정렬된 데이터에서, id가 lastVoteId 이후에서 부터 조회
-        val searchBySlice = topicQuerydslRepository.findLatestTopicsByCategory(jobCategory = JobCategory.DEVELOPER)
+        val searchBySlice = topicQuerydslRepository.findLatestTopicsByCategory(topicCategory = TopicCategory.DEVELOPER)
 
         //then
         val content = searchBySlice.topics
@@ -157,7 +157,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         memberRepository.save(member)
         val sampleVotes: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleVotes.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = member))
+            sampleVotes.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = member))
         }
 
         return topicRepository.saveAll(sampleVotes)
@@ -169,7 +169,7 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
 
         val sampleVotes: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleVotes.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleVotes.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         for (vote in sampleVotes) {
