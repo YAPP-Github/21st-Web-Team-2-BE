@@ -95,7 +95,7 @@ internal class AuthControllerTest : ApiControllerTest(uri = "/api/v1/auth") {
             .andDo(MockMvcResultHandlers.print())
             .andDo(
                 MockMvcRestDocumentation.document(
-                    "signin-not-member",
+                    "signin-member",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
                     Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                     PayloadDocumentation.responseFields(
