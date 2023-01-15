@@ -1,6 +1,10 @@
 package com.yapp.web2.web.api.controller.topic
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.domain.jwt.application.AuthService
+import com.yapp.web2.domain.jwt.util.JwtProvider
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -9,10 +13,19 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.dto.auth.request.SignUpRequest
+import com.yapp.web2.web.dto.jwt.response.JwtTokens
+import com.yapp.web2.web.dto.topic.request.TopicPostDto
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostDto
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
@@ -28,6 +41,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 internal class TopicControllerTest @Autowired constructor(
     val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
+    val jwtProvider: JwtProvider,
 ) : ApiControllerTest(uri = "/api/v1/topic") {
 
     lateinit var topics: MutableList<Topic>
@@ -197,6 +211,51 @@ internal class TopicControllerTest @Autowired constructor(
                         *topicPreviewDataResponseFieldsSnippet(),
                         *memberPreviewDataResponseFieldsSnippet(),
                     ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                ),
+            )
+    }
+
+
+    @Test
+    fun `투표게시글 등록 API 테스트`() {
+        val testMemberA = EntityFactory.testMemberA()
+        val member = memberRepository.save(testMemberA)
+        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+
+        val topicPostDto = TopicPostDto(
+            "TopicA",
+            "Contents A",
+            listOf(
+                VoteOptionPostDto("OptionA", null, null),
+                VoteOptionPostDto("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        val uri = "$uri"
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicPostDto))
+                .header("Authorization", accessToken)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    responseFields(
+                        fieldWithPath("code").description(".."),
+                        fieldWithPath("message").description("..."),
+                        fieldWithPath("data").description("저장된 투표 게시글 id"),
+                    )
                 ),
             )
     }
