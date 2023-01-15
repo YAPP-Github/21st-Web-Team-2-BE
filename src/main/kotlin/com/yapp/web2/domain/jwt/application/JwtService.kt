@@ -14,6 +14,7 @@ class JwtService(
     private val jwtProvider: JwtProvider,
     private val memberService: MemberService,
     private val memberRepository: MemberRepository,
+    private val memberService: MemberService,
 ) {
     fun issue(email: String): JwtTokens {
         val member = memberService.findByEmail(email)
