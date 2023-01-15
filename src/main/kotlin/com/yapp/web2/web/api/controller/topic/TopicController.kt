@@ -4,7 +4,7 @@ import com.yapp.web2.domain.jwt.application.JwtService
 import com.yapp.web2.domain.topic.application.TopicService
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.web.api.response.ApiResponse
-import com.yapp.web2.web.dto.topic.request.TopicPostDto
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import org.springframework.web.bind.annotation.*
@@ -40,10 +40,10 @@ class TopicController(
     @PostMapping
     fun createTopic(
         @RequestHeader("Authorization") accessToken: String,
-        @RequestBody topicPostDto: TopicPostDto,
+        @RequestBody topicPostRequest: TopicPostRequest,
     ): ApiResponse<Long> {
         val member = jwtService.findAccessTokenMember(accessToken)
-        val topicTitle = topicService.saveTopic(member, topicPostDto)
+        val topicTitle = topicService.saveTopic(member, topicPostRequest)
 
         return ApiResponse.success(topicTitle)
     }

@@ -10,8 +10,8 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
-import com.yapp.web2.web.dto.topic.request.TopicPostDto
-import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostDto
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -110,19 +110,19 @@ internal class TopicServiceTest @Autowired constructor(
     fun `투표 게시글 저장 테스트`() {
         //given
         val testMemberA = EntityFactory.testMemberA()
-        val topicPostDto = TopicPostDto(
+        val topicPostRequest = TopicPostRequest(
             "TopicA",
             "Contents A",
             listOf(
-                VoteOptionPostDto("OptionA", null, null),
-                VoteOptionPostDto("OptionB", null, null),
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
             ),
             TopicCategory.DEVELOPER,
             listOf("tagA", "tagB")
         )
 
         //when
-        topicService.saveTopic(testMemberA, topicPostDto)
+        topicService.saveTopic(testMemberA, topicPostRequest)
 
         //then
         val findOne = topicRepository.findAll()[0]

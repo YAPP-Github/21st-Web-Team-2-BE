@@ -9,7 +9,7 @@ import com.yapp.web2.domain.topic.repository.TopicQuerydslRepository
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
-import com.yapp.web2.web.dto.topic.request.TopicPostDto
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
@@ -81,7 +81,7 @@ class TopicService(
         }
     }
 
-    fun saveTopic(member: Member, requestDto: TopicPostDto): Long {
+    fun saveTopic(member: Member, requestDto: TopicPostRequest): Long {
         val voteType = VoteType.from(requestDto.voteOptions[0])
 
         val topic = Topic(

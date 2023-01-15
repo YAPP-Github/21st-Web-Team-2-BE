@@ -2,9 +2,7 @@ package com.yapp.web2.web.api.controller.topic
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.jwt.application.AuthService
 import com.yapp.web2.domain.jwt.util.JwtProvider
-import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -13,16 +11,12 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
-import com.yapp.web2.web.dto.auth.request.SignUpRequest
-import com.yapp.web2.web.dto.jwt.response.JwtTokens
-import com.yapp.web2.web.dto.topic.request.TopicPostDto
-import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostDto
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
@@ -222,12 +216,12 @@ internal class TopicControllerTest @Autowired constructor(
         val member = memberRepository.save(testMemberA)
         val accessToken = jwtProvider.createAccessToken(member.id, member.email)
 
-        val topicPostDto = TopicPostDto(
+        val topicPostRequest = TopicPostRequest(
             "TopicA",
             "Contents A",
             listOf(
-                VoteOptionPostDto("OptionA", null, null),
-                VoteOptionPostDto("OptionB", null, null),
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
             ),
             TopicCategory.DEVELOPER,
             listOf("tagA", "tagB")
@@ -237,7 +231,7 @@ internal class TopicControllerTest @Autowired constructor(
         mockMvc.perform(
             RestDocumentationRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicPostDto))
+                .content(ObjectMapper().writeValueAsString(topicPostRequest))
                 .header("Authorization", accessToken)
         )
             .andExpect(status().isOk)
