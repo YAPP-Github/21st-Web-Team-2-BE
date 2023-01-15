@@ -1,5 +1,6 @@
 package com.yapp.web2.domain.jwt.application
 
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.member.application.MemberService
 import com.yapp.web2.domain.member.model.Member
@@ -14,7 +15,6 @@ class JwtService(
     private val jwtProvider: JwtProvider,
     private val memberService: MemberService,
     private val memberRepository: MemberRepository,
-    private val memberService: MemberService,
 ) {
     fun issue(email: String): JwtTokens {
         val member = memberService.findByEmail(email)
