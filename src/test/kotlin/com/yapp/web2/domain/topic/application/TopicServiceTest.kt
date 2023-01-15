@@ -1,7 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -36,7 +36,7 @@ internal class TopicServiceTest @Autowired constructor(
         saveDummyTopicsDetail(2)
 
         //when
-        val latestTopicsSlice = topicService.getLatestTopicsSlice(null).content
+        val latestTopicsSlice = topicService.getLatestTopicsSlice(null, null).content
 
         //then
         assertThat(latestTopicsSlice).hasSize(2)
@@ -46,6 +46,24 @@ internal class TopicServiceTest @Autowired constructor(
 
         assertThat(voteOptionPreview.voteOptions[0].votedAmount).isEqualTo(2)
         assertThat(voteOptionPreview.voteOptions[1].votedAmount).isEqualTo(1)
+    }
+
+    @Test
+    fun `최신순 페이지 조회 카테고리 필터 테스트`() {
+        //given
+        val topics = saveDummyTopicsDetail(2)
+        val createdBy = topics[0].createdBy
+        topicRepository.saveAll(listOf(
+            Topic("Topic CareerA", TopicCategory.CAREER, "Content CareerA", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerB", TopicCategory.CAREER, "Content CareerB", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
+        ))
+
+        //when
+        val latestTopicsSlice = topicService.getLatestTopicsSlice(null, TopicCategory.CAREER).content
+
+        //then
+        assertThat(latestTopicsSlice).hasSize(3)
     }
 
     @Test
@@ -96,7 +114,7 @@ internal class TopicServiceTest @Autowired constructor(
         // 투표 게시글 생성
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         // 투표 게시글 마다 2개의 옵션이 존재
@@ -123,7 +141,7 @@ internal class TopicServiceTest @Autowired constructor(
 
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         for (vote in sampleTopics) {

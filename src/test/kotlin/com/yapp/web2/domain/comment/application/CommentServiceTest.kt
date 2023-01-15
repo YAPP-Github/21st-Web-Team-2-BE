@@ -4,7 +4,7 @@ import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -55,7 +55,7 @@ internal class CommentServiceTest @Autowired constructor(
         )
 
         val topic = topicRepository.save(
-            Topic("VoteA", JobCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
+            Topic("VoteA", TopicCategory.DEVELOPER, "ContentA", VoteType.TEXT, createdBy = member)
         )
 
         val sampleComments: MutableList<Comment> = mutableListOf()

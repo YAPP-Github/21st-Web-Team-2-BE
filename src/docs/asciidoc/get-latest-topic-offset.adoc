@@ -24,6 +24,12 @@ endif::[]
 // include::{snippets}/{docname}/curl-request.adoc[]
 === Http-Request
 include::{snippets}/{docname}/http-request.adoc[]
+[source,http,options="nowrap"]
+----
+GET /api/v1/topic/latest?lastOffset=16&category=CAREER HTTP/1.1
+Host: localhost:8080
+
+----
 // === Request-Headers
 // include::{snippets}/{docname}/request-headers.adoc[]
 === Request-Parameters
@@ -33,6 +39,22 @@ include::{snippets}/{docname}/http-request.adoc[]
 |`+lastOffset+`
 |마지막 투표 게시글 Id
 |true
+|`+topicCategory+`
+|투표 게시글 카테고리
+|true
+|===
+==== Topic Category
+|===
+|Parameter|Description
+
+|`+CAREER+`
+|커리어
+|`+DEVELOPER+`
+|개발
+|`+DESIGN+`
+|디자인
+|`+PRODUCT_MANAGER+`
+|기획
 |===
 
 == Response

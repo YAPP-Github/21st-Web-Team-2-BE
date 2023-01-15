@@ -15,14 +15,14 @@ endif::[]
 :toclevels: 5
 :sectlinks:
 
-=== 0. Check API
-==== link:actuator-health.html[1. Check Api Status]
+= 0. Check API
+=== link:actuator-health.html[1. Check Api Status]
 
-=== 1. Vote API
-==== link:get-popular-topic.html[1.1 인기 투표 게시글 조회]
-==== link:get-latest-topic-offset.html[1.2 최신 투표 게시글 조회]
-==== link:get-topic-detail.html[1.3 투표 게시글 상세 조회]
+= 1. Vote API
+=== link:get-popular-topic.html[1.1 인기 투표 게시글 조회]
+=== link:get-latest-topic-offset.html[1.2 최신 투표 게시글 조회]
+=== link:get-topic-detail.html[1.3 투표 게시글 상세 조회]
 
-=== 2. Comment API
-==== link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
+= 2. Comment API
+=== link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
 

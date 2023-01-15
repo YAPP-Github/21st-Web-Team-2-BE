@@ -1,7 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.member.model.JobCategory
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.VoteType
@@ -161,6 +161,47 @@ internal class TopicControllerTest @Autowired constructor(
             )
     }
 
+    @Test
+    fun `투표게시글 최신순 조회 API, 카테고리 필터 적용`() {
+        val createdBy = topics[0].createdBy
+        val topics = listOf(
+            Topic("Topic CareerA", TopicCategory.CAREER, "Content CareerA", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerB", TopicCategory.CAREER, "Content CareerB", VoteType.TEXT, createdBy = createdBy),
+            Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
+        )
+        for (topic in topics) {
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+        }
+
+        topicRepository.saveAll(topics)
+
+        val uri = "$uri/latest"
+        mockMvc.perform(
+            RestDocumentationRequestBuilders.get(uri)
+                .param("topicCategory", "CAREER")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "get-latest-topic-category",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    queryParameters(
+                        parameterWithName("topicCategory").description("투표 게시글 카테고리").optional()
+                    ),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicPreviewDataResponseFieldsSnippet(),
+                        *memberPreviewDataResponseFieldsSnippet(),
+                    ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                ),
+            )
+    }
+
+
     // 투표 게시글 미리보기 응답에 대한 Spring Rest Docs snippet
     private fun topicPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
@@ -216,7 +257,7 @@ internal class TopicControllerTest @Autowired constructor(
 
         val sampleTopics: MutableList<Topic> = mutableListOf()
         for (i in 1..amount) {
-            sampleTopics.add(Topic("Vote$i", JobCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
+            sampleTopics.add(Topic("Vote$i", TopicCategory.DEVELOPER, "Content$i", VoteType.TEXT, createdBy = memberA))
         }
 
         for (topic in sampleTopics) {

@@ -3,7 +3,6 @@ package com.yapp.web2.domain.topic.model
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.like.model.TopicLikes
-import com.yapp.web2.domain.member.model.JobCategory
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.model.option.VoteOption
 import jakarta.persistence.*
@@ -15,7 +14,7 @@ class Topic constructor(
     var title: String,
 
     @Enumerated(EnumType.STRING)
-    var jobCategory: JobCategory,
+    var topicCategory: TopicCategory,
 
     @Column(length = 1000)
     var contents: String,
