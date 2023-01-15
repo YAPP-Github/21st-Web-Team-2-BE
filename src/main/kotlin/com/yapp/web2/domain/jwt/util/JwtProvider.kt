@@ -20,14 +20,14 @@ class JwtProvider(
 ) {
 	private val key: Key = Keys.hmacShaKeyFor(SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
 
-	fun createAccessToken(email: String): String {
-		val claims: Claims = Jwts.claims().setSubject(email)
+	fun createAccessToken(memberId: Long, email: String): String {
 		val now = Date()
 		return Jwts.builder()
-			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(Date(now.time + accessTokenValidTime))
 			.signWith(key)
+            .claim("id", memberId)
+            .claim("email", email)
 			.compact()
 	}
 

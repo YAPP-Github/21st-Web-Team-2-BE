@@ -13,10 +13,10 @@ class JwtService(
     private val memberService: MemberService,
 ) {
     fun issue(email: String): JwtTokens {
-        memberService.findByEmail(email)
+        val member = memberService.findByEmail(email)
             ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
 
-        val accessToken: String = jwtProvider.createAccessToken(email)
+        val accessToken: String = jwtProvider.createAccessToken(member.id, email)
         val refreshToken: String = jwtProvider.createRefreshToken()
 
         return JwtTokens(
