@@ -16,6 +16,7 @@ enum class ErrorCode(
     EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "2002", "만료된 엑세스 토큰입니다."),
     INVALID_JWT(HttpStatus.UNAUTHORIZED, "2003", "유효하지 않는 엑세스 토큰입니다."),
     NULL_JWT(HttpStatus.UNAUTHORIZED, "2003", "엑세스 토큰이 필요합니다."),
+    INVALID_NICKNAME(HttpStatus.BAD_REQUEST, "2004", "닉네임 형식이 옳지 않습니다"),
 
     // Data base
     NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "4000", "존재하지 않는 리소스 요청입니다."),
