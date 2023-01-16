@@ -82,6 +82,7 @@ class TopicService(
         }
     }
 
+    @Transactional
     fun saveTopic(member: Member, requestDto: TopicPostRequest): TopicPostResponse {
         val voteType = VoteType.from(requestDto.voteOptions[0])
 
