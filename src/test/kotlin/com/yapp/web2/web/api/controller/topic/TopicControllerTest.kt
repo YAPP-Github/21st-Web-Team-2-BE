@@ -240,6 +240,7 @@ internal class TopicControllerTest @Autowired constructor(
 
     private fun voteOptionPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
+            fieldWithPath("id").description("투표 선택지 Id"),
             fieldWithPath("text").description("투표 선택지 텍스트"),
             fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
