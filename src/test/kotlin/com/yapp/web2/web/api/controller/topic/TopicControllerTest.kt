@@ -3,9 +3,9 @@ package com.yapp.web2.web.api.controller.topic
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.jwt.util.JwtProvider
-import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
@@ -21,7 +21,8 @@ import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
@@ -49,7 +50,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `인기 투표 게시글 조회 API`() {
         val uri = "$uri/popular"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -72,7 +73,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `투표게시글 최신순 조회 API, 첫 페이지`() {
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -95,7 +96,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `투표게시글 최신순 조회 API, offset 적용`() {
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
                 .param("lastOffset", "${topics.last().id}")
         )
             .andExpect(status().isOk)
@@ -123,7 +124,7 @@ internal class TopicControllerTest @Autowired constructor(
         val findTopicId = 2L
         val uri = "$uri/{topicId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri, findTopicId)
+            get(uri, findTopicId)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -151,7 +152,7 @@ internal class TopicControllerTest @Autowired constructor(
         val findTopicId = 12450L
         val uri = "$uri/{topicId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri, findTopicId)
+            get(uri, findTopicId)
         )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("존재하지 않는 리소스 요청입니다."))
@@ -186,7 +187,7 @@ internal class TopicControllerTest @Autowired constructor(
 
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
                 .param("topicCategory", "CAREER")
         )
             .andExpect(status().isOk)
@@ -229,7 +230,7 @@ internal class TopicControllerTest @Autowired constructor(
 
         val uri = "$uri"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.post(uri)
+            post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(topicPostRequest))
                 .header("Authorization", accessToken)
