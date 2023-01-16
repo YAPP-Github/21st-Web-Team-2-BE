@@ -246,9 +246,8 @@ internal class TopicControllerTest @Autowired constructor(
                         headerWithName("Authorization").description("회원 AccessToken")
                     ),
                     responseFields(
-                        fieldWithPath("code").description(".."),
-                        fieldWithPath("message").description("..."),
-                        fieldWithPath("data").description("저장된 투표 게시글 id"),
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicPostResponseFieldsSnippet(),
                     )
                 ),
             )
@@ -299,6 +298,15 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("votedAmount").description("투표 선택지 투표 수"),
+        )
+    }
+
+    private fun topicPostResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("topicId").description("투표 게시글 Id"),
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("voteType").description("투표 게시글 형식"),
+            subsectionWithPath("postMemberNickname").description("투표 게시글 작성자 닉네임"),
         )
     }
 
