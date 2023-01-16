@@ -20,4 +20,5 @@ enum class ErrorCode(
 
     // Data base
     NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "4000", "존재하지 않는 리소스 요청입니다."),
+    NULL_VALUE(HttpStatus.BAD_REQUEST, "4001", "필수값이 포함되지 않았습니다."),
 }

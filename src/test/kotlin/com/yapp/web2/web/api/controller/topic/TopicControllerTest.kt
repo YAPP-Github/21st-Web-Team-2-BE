@@ -257,6 +257,49 @@ internal class TopicControllerTest @Autowired constructor(
             )
     }
 
+    @Test
+    fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
+        val testMemberA = EntityFactory.testMemberA()
+        val member = memberRepository.save(testMemberA)
+        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+
+        val topicPostRequest = TopicPostRequest(
+            null,
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest(null, null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        val uri = "$uri"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .header("Authorization", accessToken)
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.message").value("필수값이 포함되지 않았습니다."))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic-required-value-exception",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    responseFields(
+                        fieldWithPath("code").description("요청 결과 상태 코드"),
+                        fieldWithPath("message").description("상태 메세지"),
+                    )
+                ),
+            )
+    }
+
 
     // 투표 게시글 미리보기 응답에 대한 Spring Rest Docs snippet
     private fun topicPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {

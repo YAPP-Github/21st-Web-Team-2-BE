@@ -87,16 +87,16 @@ class TopicService(
         val voteType = VoteType.from(requestDto.voteOptions[0])
 
         val topic = Topic(
-            requestDto.title,
-            requestDto.topicCategory,
-            requestDto.contents,
+            requestDto.title?: nullValueException(),
+            requestDto.topicCategory?: nullValueException(),
+            requestDto.contents?: nullValueException(),
             voteType,
             createdBy = member,
         )
 
         for (voteOptionDto in requestDto.voteOptions) {
             val voteOption = VoteOption(
-                voteOptionDto.text,
+                voteOptionDto.text?: nullValueException(),
                 voteOptionDto.voteOptionImageFilename,
                 voteOptionDto.codeBlock,
                 topic
@@ -105,5 +105,9 @@ class TopicService(
         }
         val savedTopic = topicRepository.save(topic)
         return TopicPostResponse.from(savedTopic)
+    }
+
+    private fun nullValueException(): Nothing {
+        throw BusinessException(ErrorCode.NULL_VALUE)
     }
 }

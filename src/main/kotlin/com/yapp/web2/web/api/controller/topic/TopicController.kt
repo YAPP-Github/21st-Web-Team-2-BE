@@ -3,11 +3,15 @@ package com.yapp.web2.web.api.controller.topic
 import com.yapp.web2.domain.jwt.application.JwtService
 import com.yapp.web2.domain.topic.application.TopicService
 import com.yapp.web2.domain.topic.model.TopicCategory
+import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.api.response.ApiResponse
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
+import jakarta.validation.Valid
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/api/v1/topic")
@@ -41,8 +45,13 @@ class TopicController(
     @PostMapping
     fun createTopic(
         @RequestHeader("Authorization") accessToken: String,
-        @RequestBody topicPostRequest: TopicPostRequest,
+        @Valid @RequestBody topicPostRequest: TopicPostRequest,
+        bindingResult: BindingResult,
     ): ApiResponse<TopicPostResponse> {
+        if(bindingResult.hasErrors()) {
+            throw BusinessException(ErrorCode.NULL_VALUE)
+        }
+
         val member = jwtService.findAccessTokenMember(accessToken)
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 

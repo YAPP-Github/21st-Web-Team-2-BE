@@ -49,6 +49,9 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
     //test
     testImplementation("com.ninja-squad:springmockk:3.1.1")
+
+    //validation
+    implementation ("org.springframework.boot:spring-boot-starter-validation")
 }
 
 jacoco {
