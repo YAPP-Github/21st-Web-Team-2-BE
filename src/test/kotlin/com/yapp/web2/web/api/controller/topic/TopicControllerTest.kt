@@ -246,6 +246,9 @@ internal class TopicControllerTest @Autowired constructor(
                     requestHeaders(
                         headerWithName("Authorization").description("회원 AccessToken")
                     ),
+                    requestFields(
+                        *topicPostRequestFieldsSnippet()
+                    ).andWithPrefix("voteOptions[].",*voteOptionPostRequestFieldsSnippet()),
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *topicPostResponseFieldsSnippet(),
@@ -299,6 +302,24 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("votedAmount").description("투표 선택지 투표 수"),
+        )
+    }
+
+    private fun topicPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 선택지 형식"),
+            subsectionWithPath("voteOptions").description("투표 선택지"),
+            fieldWithPath("tags[]").description("태그").optional(),
+        )
+    }
+
+    private fun voteOptionPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("text").description("투표 선택지 텍스트"),
+            fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
         )
     }
 

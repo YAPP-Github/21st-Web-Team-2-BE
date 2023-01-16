@@ -8,5 +8,5 @@ data class TopicPostRequest(
     val contents: String,
     val voteOptions: List<VoteOptionPostRequest>,
     val topicCategory: TopicCategory,
-    val hashTags: List<String>,
+    val tags: List<String>,
 )

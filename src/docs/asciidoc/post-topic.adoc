@@ -30,6 +30,23 @@ include::{snippets}/{docname}/http-request.adoc[]
 |회원 AccessToken
 |False
 |===
+=== Request-Field
+include::{snippets}/{docname}/request-fields.adoc[]
+
+==== Topic Category
+|===
+|Parameter|Description
+
+|`+CAREER+`
+|커리어
+|`+DEVELOPER+`
+|개발
+|`+DESIGN+`
+|디자인
+|`+PRODUCT_MANAGER+`
+|기획
+|===
+
 === Request-Body
 include::{snippets}/{docname}/request-body.adoc[]
 == Response
