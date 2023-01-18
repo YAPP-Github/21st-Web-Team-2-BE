@@ -1,11 +1,17 @@
 package com.yapp.web2.domain.topic.application
 
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.repository.TopicQuerydslRepository
+import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
+import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
 import org.springframework.data.domain.Pageable
@@ -19,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class TopicService(
     private val topicQuerydslRepository: TopicQuerydslRepository,
+    private val topicRepository: TopicRepository,
 ) {
     fun getPopularTopics(): List<TopicPreviewResponse> {
         val popularTopics = topicQuerydslRepository.findPopularTopics()
@@ -73,5 +80,34 @@ class TopicService(
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
+    }
+
+    @Transactional
+    fun saveTopic(member: Member, requestDto: TopicPostRequest): TopicPostResponse {
+        val voteType = VoteType.from(requestDto.voteOptions[0])
+
+        val topic = Topic(
+            requestDto.title?: nullValueException(),
+            requestDto.topicCategory?: nullValueException(),
+            requestDto.contents?: nullValueException(),
+            voteType,
+            createdBy = member,
+        )
+
+        for (voteOptionDto in requestDto.voteOptions) {
+            val voteOption = VoteOption(
+                voteOptionDto.text?: nullValueException(),
+                voteOptionDto.voteOptionImageFilename,
+                voteOptionDto.codeBlock,
+                topic
+            )
+            topic.addVoteOption(voteOption)
+        }
+        val savedTopic = topicRepository.save(topic)
+        return TopicPostResponse.from(savedTopic)
+    }
+
+    private fun nullValueException(): Nothing {
+        throw BusinessException(ErrorCode.NULL_VALUE)
     }
 }

@@ -4,6 +4,7 @@ import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.jwt.util.JwtUtil
 import com.yapp.web2.domain.member.application.MemberService
+import com.yapp.web2.domain.member.repository.MemberRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -25,6 +26,9 @@ class JwtServiceTest {
 
     @MockK
     lateinit var memberService: MemberService
+
+    @MockK
+    lateinit var memberRepository: MemberRepository
 
     private val testMemberA = EntityFactory.testMemberA()
 
