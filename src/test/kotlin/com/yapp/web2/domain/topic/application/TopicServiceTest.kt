@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -9,12 +10,16 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.api.error.ErrorCode
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 internal class TopicServiceTest @Autowired constructor(
@@ -102,6 +107,53 @@ internal class TopicServiceTest @Autowired constructor(
         assertThatThrownBy { topicService.getTopicDetail(invalidVoteId) }
             .isInstanceOf(BusinessException::class.java)
     }
+
+    @Test
+    fun `투표 게시글 저장 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val topicPostRequest = TopicPostRequest(
+            "TopicA",
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        //when
+        topicService.saveTopic(testMemberA, topicPostRequest)
+
+        //then
+        val findOne = topicRepository.findAll()[0]
+        assertThat(findOne.title).isEqualTo("TopicA")
+        assertThat(findOne.voteType).isEqualTo(VoteType.TEXT)
+    }
+
+    @Test
+    fun `투표 게시글 저장시, 데이터가 누락된 경우 예외 발생`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val topicPostRequest = TopicPostRequest(
+            null, // 예외 케이스
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        //when
+        assertThatThrownBy { topicService.saveTopic(testMemberA, topicPostRequest) }
+            .isInstanceOf(BusinessException::class.java)
+    }
+
 
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {

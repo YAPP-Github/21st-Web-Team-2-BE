@@ -1,20 +1,28 @@
 package com.yapp.web2.web.api.controller.topic
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.topic.model.TopicCategory
+import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
@@ -28,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 internal class TopicControllerTest @Autowired constructor(
     val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
+    val jwtProvider: JwtProvider,
 ) : ApiControllerTest(uri = "/api/v1/topic") {
 
     lateinit var topics: MutableList<Topic>
@@ -41,7 +50,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `인기 투표 게시글 조회 API`() {
         val uri = "$uri/popular"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -64,7 +73,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `투표게시글 최신순 조회 API, 첫 페이지`() {
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -87,7 +96,7 @@ internal class TopicControllerTest @Autowired constructor(
     fun `투표게시글 최신순 조회 API, offset 적용`() {
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
                 .param("lastOffset", "${topics.last().id}")
         )
             .andExpect(status().isOk)
@@ -115,7 +124,7 @@ internal class TopicControllerTest @Autowired constructor(
         val findTopicId = 2L
         val uri = "$uri/{topicId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri, findTopicId)
+            get(uri, findTopicId)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -143,7 +152,7 @@ internal class TopicControllerTest @Autowired constructor(
         val findTopicId = 12450L
         val uri = "$uri/{topicId}"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri, findTopicId)
+            get(uri, findTopicId)
         )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("존재하지 않는 리소스 요청입니다."))
@@ -178,7 +187,7 @@ internal class TopicControllerTest @Autowired constructor(
 
         val uri = "$uri/latest"
         mockMvc.perform(
-            RestDocumentationRequestBuilders.get(uri)
+            get(uri)
                 .param("topicCategory", "CAREER")
         )
             .andExpect(status().isOk)
@@ -197,6 +206,96 @@ internal class TopicControllerTest @Autowired constructor(
                         *topicPreviewDataResponseFieldsSnippet(),
                         *memberPreviewDataResponseFieldsSnippet(),
                     ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                ),
+            )
+    }
+
+
+    @Test
+    fun `투표게시글 등록 API 테스트`() {
+        val testMemberA = EntityFactory.testMemberA()
+        val member = memberRepository.save(testMemberA)
+        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+
+        val topicPostRequest = TopicPostRequest(
+            "TopicA",
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        val uri = "$uri"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .header("Authorization", accessToken)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    requestFields(
+                        *topicPostRequestFieldsSnippet()
+                    ).andWithPrefix("voteOptions[].",*voteOptionPostRequestFieldsSnippet()),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicPostResponseFieldsSnippet(),
+                    )
+                ),
+            )
+    }
+
+    @Test
+    fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
+        val testMemberA = EntityFactory.testMemberA()
+        val member = memberRepository.save(testMemberA)
+        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+
+        val topicPostRequest = TopicPostRequest(
+            null,
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest(null, null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        val uri = "$uri"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .header("Authorization", accessToken)
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.message").value("필수값이 포함되지 않았습니다."))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic-required-value-exception",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    responseFields(
+                        fieldWithPath("code").description("요청 결과 상태 코드"),
+                        fieldWithPath("message").description("상태 메세지"),
+                    )
                 ),
             )
     }
@@ -246,6 +345,33 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("votedAmount").description("투표 선택지 투표 수"),
+        )
+    }
+
+    private fun topicPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 선택지 형식"),
+            subsectionWithPath("voteOptions").description("투표 선택지"),
+            fieldWithPath("tags[]").description("태그").optional(),
+        )
+    }
+
+    private fun voteOptionPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("text").description("투표 선택지 텍스트"),
+            fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
+        )
+    }
+
+    private fun topicPostResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("topicId").description("투표 게시글 Id"),
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("voteType").description("투표 게시글 형식"),
+            subsectionWithPath("postMemberNickname").description("투표 게시글 작성자 닉네임"),
         )
     }
 
