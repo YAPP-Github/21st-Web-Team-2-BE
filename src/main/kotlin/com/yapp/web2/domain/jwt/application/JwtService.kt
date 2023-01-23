@@ -9,6 +9,7 @@ import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class JwtService(
@@ -34,5 +35,30 @@ class JwtService(
         val memberId = claimsJws.body["id"].toString().toLong()
 
         return memberRepository.findByIdOrThrow(memberId)
+    }
+
+    fun refresh(refreshToken: String, email: String, memberId: Long): JwtTokens {
+        if (isValidate(refreshToken)) {
+            throw BusinessException(ErrorCode.EXPIRED_REFRESH_TOKEN)
+        }
+        val accessToken = jwtProvider.createAccessToken(memberId, email)
+
+        var localRefreshToken = refreshToken
+        if (isRefreshable(refreshToken)) {
+            localRefreshToken = jwtProvider.createRefreshToken()
+        }
+        return JwtTokens(accessToken, localRefreshToken)
+    }
+
+    private fun isValidate(refreshToken: String): Boolean {
+        val now = Date()
+        return !jwtProvider.isExpired(refreshToken, now)
+    }
+
+    private fun isRefreshable(refreshToken: String): Boolean {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        calendar.time = Date()
+        calendar.add(Calendar.DATE, 3)
+        return !jwtProvider.isExpired(refreshToken, calendar.time)
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Component
 @Transactional(readOnly = true)
@@ -35,22 +34,9 @@ class JwtUtil(
         return request.getHeader(ACCESS_TOKEN_HEADER).replace("Bearer", "").trim()
     }
 
-    fun resolveRefreshToken(request: HttpServletRequest): String {
-        return request.getHeader(REFRESH_TOKEN_HEADER)
-    }
-
-    fun isExpired(token: String, date: Date): Boolean {
-        return try {
-            val claims: Jws<Claims> = jwtProvider.parseToken(token)
-            !claims.body.expiration.before(date)
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     private fun getUserPk(token: String): String {
         return try {
-            jwtProvider.parseToken(token).body.subject
+            jwtProvider.parseToken(token).body["email"].toString()
         } catch (e: ExpiredJwtException) {
             e.claims.subject
         }
