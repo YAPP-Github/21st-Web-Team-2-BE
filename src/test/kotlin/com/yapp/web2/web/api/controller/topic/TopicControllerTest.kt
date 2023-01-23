@@ -307,6 +307,7 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("topicId").description("투표 게시글 Id"),
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
             subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
@@ -319,9 +320,10 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("topicId").description("투표 게시글 Id"),
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
-            fieldWithPath("likedAmount").description("좋아요 수"),
+            fieldWithPath("likeAmount").description("좋아요 수"),
             fieldWithPath("tags").description("태그"),
             subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
         )
@@ -329,8 +331,8 @@ internal class TopicControllerTest @Autowired constructor(
 
     private fun memberPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
-            fieldWithPath("member.id").description("작성자 Id"),
-            fieldWithPath("member.name").description("작성자 닉네임"),
+            fieldWithPath("member.memberId").description("작성자 Id"),
+            fieldWithPath("member.nickname").description("작성자 닉네임"),
             fieldWithPath("member.profileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
             fieldWithPath("member.jobCategory").description("작성자 직군"),
             fieldWithPath("member.workingYears").description("작성자 연차"),
@@ -339,12 +341,12 @@ internal class TopicControllerTest @Autowired constructor(
 
     private fun voteOptionPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
-            fieldWithPath("id").description("투표 선택지 Id"),
+            fieldWithPath("voteOptionId").description("투표 선택지 Id"),
             fieldWithPath("text").description("투표 선택지 텍스트"),
-            fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("image").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
-            fieldWithPath("votedAmount").description("투표 선택지 투표 수"),
+            fieldWithPath("voteAmount").description("투표 선택지 투표 수"),
         )
     }
 
@@ -352,7 +354,7 @@ internal class TopicControllerTest @Autowired constructor(
         return arrayOf(
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
-            fieldWithPath("topicCategory").description("투표 선택지 형식"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             subsectionWithPath("voteOptions").description("투표 선택지"),
             fieldWithPath("tags[]").description("태그").optional(),
         )
@@ -361,7 +363,7 @@ internal class TopicControllerTest @Autowired constructor(
     private fun voteOptionPostRequestFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
             fieldWithPath("text").description("투표 선택지 텍스트"),
-            fieldWithPath("voteOptionImageFilename").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("image").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
         )
     }

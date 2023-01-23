@@ -2,6 +2,7 @@ package com.yapp.web2.web.dto.topic.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.web.api.response.OffsetIdSupport
 import com.yapp.web2.web.dto.member.response.MemberResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
@@ -11,6 +12,7 @@ data class TopicPreviewResponse(
     override val offsetId: Long,
     val title: String,
     val contents: String,
+    val topicCategory: TopicCategory,
     val member: MemberResponse,
     val commentAmount: Int,
     val voteAmount: Int,
@@ -23,6 +25,7 @@ data class TopicPreviewResponse(
                 topic.id,
                 topic.title,
                 topic.contents,
+                topic.topicCategory,
                 MemberResponse.of(topic.createdBy),
                 commentCount,
                 voteAmount,

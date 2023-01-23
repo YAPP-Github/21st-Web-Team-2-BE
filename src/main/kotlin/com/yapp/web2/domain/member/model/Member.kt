@@ -22,7 +22,7 @@ class Member constructor(
 
     var workingYears: Int,
 
-    var profileImageFilename: String? = null,
+    var profileImage: String? = null,
 
     @OneToMany(mappedBy = "createdBy")
     val comments: MutableList<Comment> = mutableListOf(),
