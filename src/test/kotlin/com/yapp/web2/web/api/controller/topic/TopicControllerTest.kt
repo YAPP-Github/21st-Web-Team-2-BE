@@ -307,6 +307,7 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("topicId").description("투표 게시글 Id"),
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
             subsectionWithPath("voteOptions").description("투표 게시글 선택지 내용"),
@@ -319,6 +320,7 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("topicId").description("투표 게시글 Id"),
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             fieldWithPath("commentAmount").description("투표 게시글 댓글 수"),
             fieldWithPath("voteAmount").description("투표 참여 수"),
             fieldWithPath("likeAmount").description("좋아요 수"),
@@ -352,7 +354,7 @@ internal class TopicControllerTest @Autowired constructor(
         return arrayOf(
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("contents").description("투표 게시글 내용"),
-            fieldWithPath("topicCategory").description("투표 선택지 형식"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
             subsectionWithPath("voteOptions").description("투표 선택지"),
             fieldWithPath("tags[]").description("태그").optional(),
         )
