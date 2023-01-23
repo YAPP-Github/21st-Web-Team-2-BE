@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.jwt.application.oauth
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.yapp.web2.common.util.logger
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import org.springframework.beans.factory.annotation.Value
@@ -43,7 +44,7 @@ class GoogleOAuthServiceImpl(
                 params,
                 String::class.java)
         } catch (e: HttpClientErrorException) {
-            print(e)
+            logger().info(e.message)
             throw BusinessException(ErrorCode.OAUTH2_FAIL_EXCEPTION)
         }
         return objectMapper
