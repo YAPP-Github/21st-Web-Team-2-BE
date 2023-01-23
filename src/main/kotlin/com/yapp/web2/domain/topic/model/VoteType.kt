@@ -11,12 +11,12 @@ enum class VoteType {
     companion object {
         fun from(voteOptionPostRequest: VoteOptionPostRequest): VoteType {
             return if (voteOptionPostRequest.codeBlock != null
-                && voteOptionPostRequest.voteOptionImageFilename != null
+                && voteOptionPostRequest.image != null
             ) {
                 TEXT_IMAGE_CODE_BLOCK
             } else if (voteOptionPostRequest.codeBlock != null) {
                 TEXT_CODE_BLOCK
-            } else if (voteOptionPostRequest.voteOptionImageFilename != null) {
+            } else if (voteOptionPostRequest.image != null) {
                 TEXT_IMAGE
             } else {
                 TEXT

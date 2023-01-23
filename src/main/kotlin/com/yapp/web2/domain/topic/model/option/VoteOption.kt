@@ -10,7 +10,7 @@ import org.hibernate.annotations.Where
 class VoteOption constructor(
     val text: String?,
 
-    val voteOptionImageFilename: String?,
+    val image: String?,
 
     val codeBlock: String?,
 

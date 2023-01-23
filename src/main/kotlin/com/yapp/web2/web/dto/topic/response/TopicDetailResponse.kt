@@ -12,7 +12,7 @@ data class TopicDetailResponse(
     val commentAmount: Int,
     val voteAmount: Int,
     val liked: Boolean,
-    val likedAmount: Int,
+    val likeAmount: Int,
     val tags: List<String>,
     val voteOptions: List<VoteOptionPreviewResponse>
 ) {

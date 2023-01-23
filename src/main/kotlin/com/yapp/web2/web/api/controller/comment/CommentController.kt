@@ -12,7 +12,7 @@ class CommentController(
 ) {
 
     @GetMapping("/{voteId}/latest")
-    fun getVotesSlice(@PathVariable voteId: String, @RequestParam lastOffset: String?): ApiResponse<List<CommentDetailResponse>> {
+    fun getCommentsSlice(@PathVariable voteId: String, @RequestParam lastOffset: String?): ApiResponse<List<CommentDetailResponse>> {
         val latestCommentSlice = commentService.getLatestComments(voteId.toLong(), lastOffset?.toLong()) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestCommentSlice)

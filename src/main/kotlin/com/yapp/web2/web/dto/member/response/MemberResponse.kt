@@ -3,8 +3,8 @@ package com.yapp.web2.web.dto.member.response
 import com.yapp.web2.domain.member.model.Member
 
 data class MemberResponse(
-    val id: Long,
-    val name: String,
+    val memberId: Long,
+    val nickname: String,
     val profileImage: String?,
     val jobCategory: String,
     val workingYears: Int,
@@ -15,7 +15,7 @@ data class MemberResponse(
             return MemberResponse(
                 member.id,
                 member.nickname,
-                member.profileImageFilename,
+                member.profileImage,
                 member.jobCategory,
                 member.workingYears,
             )

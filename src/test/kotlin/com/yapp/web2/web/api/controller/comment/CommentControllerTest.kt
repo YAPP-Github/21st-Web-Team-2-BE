@@ -67,7 +67,7 @@ internal class CommentControllerTest @Autowired constructor(
     private fun commentDataResponseFieldSnippet(): Array<FieldDescriptor> {
         return arrayOf(
             PayloadDocumentation.fieldWithPath("commentId").description("댓글 Id"),
-            PayloadDocumentation.fieldWithPath("commentContent").description("댓글 내용"),
+            PayloadDocumentation.fieldWithPath("contents").description("댓글 내용"),
             PayloadDocumentation.fieldWithPath("likeAmount").description("댓글 좋아요 수"),
             PayloadDocumentation.fieldWithPath("liked").description("댓글 좋아요 여부"),
         )
@@ -76,8 +76,8 @@ internal class CommentControllerTest @Autowired constructor(
 
     private fun memberPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
-            PayloadDocumentation.fieldWithPath("member.id").description("작성자 Id"),
-            PayloadDocumentation.fieldWithPath("member.name").description("작성자 닉네임"),
+            PayloadDocumentation.fieldWithPath("member.memberId").description("작성자 Id"),
+            PayloadDocumentation.fieldWithPath("member.nickname").description("작성자 닉네임"),
             PayloadDocumentation.fieldWithPath("member.profileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
             PayloadDocumentation.fieldWithPath("member.jobCategory").description("작성자 직군"),
             PayloadDocumentation.fieldWithPath("member.workingYears").description("작성자 연차"),

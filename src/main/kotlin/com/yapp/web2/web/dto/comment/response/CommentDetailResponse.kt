@@ -9,7 +9,7 @@ data class CommentDetailResponse(
     @JsonProperty("commentId")
     override val offsetId: Long,
     val member: MemberResponse,
-    val commentContent: String,
+    val contents: String,
     val likeAmount: Int,
     val liked: Boolean,
 ) : OffsetIdSupport {

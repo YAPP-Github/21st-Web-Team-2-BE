@@ -97,7 +97,7 @@ class TopicService(
         for (voteOptionDto in requestDto.voteOptions) {
             val voteOption = VoteOption(
                 voteOptionDto.text?: nullValueException(),
-                voteOptionDto.voteOptionImageFilename,
+                voteOptionDto.image,
                 voteOptionDto.codeBlock,
                 topic
             )

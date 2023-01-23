@@ -1,7 +1,6 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -10,7 +9,6 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
-import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 internal class TopicServiceTest @Autowired constructor(
@@ -49,8 +46,8 @@ internal class TopicServiceTest @Autowired constructor(
         val voteOptionPreview = latestTopicsSlice[0]
         assertThat(voteOptionPreview.voteAmount).isEqualTo(3)
 
-        assertThat(voteOptionPreview.voteOptions[0].votedAmount).isEqualTo(2)
-        assertThat(voteOptionPreview.voteOptions[1].votedAmount).isEqualTo(1)
+        assertThat(voteOptionPreview.voteOptions[0].voteAmount).isEqualTo(2)
+        assertThat(voteOptionPreview.voteOptions[1].voteAmount).isEqualTo(1)
     }
 
     @Test

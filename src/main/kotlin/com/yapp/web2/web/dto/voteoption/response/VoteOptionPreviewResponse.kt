@@ -3,12 +3,12 @@ package com.yapp.web2.web.dto.voteoption.response
 import com.yapp.web2.domain.topic.model.option.VoteOption
 
 data class VoteOptionPreviewResponse(
-    val id: Long,
+    val voteOptionId: Long,
     val text: String?,
-    val voteOptionImageFilename: String?,
+    val image: String?,
     val codeBlock: String?,
     val voted: Boolean,
-    val votedAmount: Int,
+    val voteAmount: Int,
 ) {
 
     companion object {
@@ -16,7 +16,7 @@ data class VoteOptionPreviewResponse(
             return VoteOptionPreviewResponse(
                 voteOption.id,
                 voteOption.text,
-                voteOption.voteOptionImageFilename,
+                voteOption.image,
                 voteOption.codeBlock,
                 voted,
                 voteOption.voteOptionMembers.size
