@@ -4,6 +4,7 @@ import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.jwt.application.oauth.OAuthService
 import com.yapp.web2.domain.member.application.MemberService
 import com.yapp.web2.domain.member.repository.MemberRepository
+import com.yapp.web2.infra.redis.RedisService
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.auth.request.SignUpRequest
 import io.mockk.every
@@ -32,11 +33,15 @@ class AuthServiceTest {
     @MockK
     lateinit var jwtService: JwtService
 
+    @MockK
+    lateinit var redisService: RedisService
+
     @Test
     fun `회원가입 성공`() {
         every { oAuthService.getUserEmail(any()) }.returns("MemberA@test.com")
         every { memberRepository.save(any()) } returns EntityFactory.testMemberA()
         every { jwtService.issue("MemberA@test.com") }.returns(JwtTokens("access-token", "refresh-token"))
+        every { redisService.setValue(any(), any(), any()) }.returns(Unit) //do nothing
 
         val signUpRequestDto = SignUpRequest("MemberA", "developer", 3)
         val signUpResponseDto = authService.signup("token", signUpRequestDto)
@@ -54,6 +59,7 @@ class AuthServiceTest {
         every { memberRepository.existsByEmail("MemberA@test.com") }.returns(true)
         every { memberService.findByEmail("MemberA@test.com") }.returns(EntityFactory.testMemberA())
         every { jwtService.issue("MemberA@test.com") }.returns(JwtTokens("access-token", "refresh-token"))
+        every { redisService.setValue(any(), any(), any()) }.returns(Unit) //do nothing
 
         val signInResponseDto = authService.signIn("token")
 
