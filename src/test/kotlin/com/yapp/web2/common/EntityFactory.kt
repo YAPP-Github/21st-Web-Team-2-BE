@@ -29,13 +29,13 @@ class EntityFactory {
             workingYears = 1
         )
 
-        fun testTopicA(member: Member): Topic {
+        fun testTopicA(createdBy: Member): Topic {
             val topic = Topic(
                 "VoteA",
                 TopicCategory.DEVELOPER,
                 "ContentA",
                 VoteType.TEXT,
-                createdBy = member,
+                createdBy = createdBy,
             )
 
             topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
