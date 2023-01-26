@@ -2,7 +2,7 @@ package com.yapp.web2.web.api.controller.topic
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.jwt.util.JwtProvider
+import com.yapp.web2.domain.jwt.application.JwtService
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
@@ -11,12 +11,15 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
@@ -36,10 +39,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 internal class TopicControllerTest @Autowired constructor(
     val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
-    val jwtProvider: JwtProvider,
 ) : ApiControllerTest(uri = "/api/v1/topic") {
 
     lateinit var topics: MutableList<Topic>
+
+    @MockBean
+    lateinit var jwtService: JwtService
+    private val jwtTokens = JwtTokens("access-token", "refresh-token")
 
     @BeforeAll
     fun dataInsert() {
@@ -214,8 +220,8 @@ internal class TopicControllerTest @Autowired constructor(
     @Test
     fun `투표게시글 등록 API 테스트`() {
         val testMemberA = EntityFactory.testMemberA()
-        val member = memberRepository.save(testMemberA)
-        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+        memberRepository.save(testMemberA)
+        `when`(jwtService.findAccessTokenMember(jwtTokens.accessToken!!)).thenReturn(testMemberA)
 
         val topicPostRequest = TopicPostRequest(
             "TopicA",
@@ -233,7 +239,7 @@ internal class TopicControllerTest @Autowired constructor(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(topicPostRequest))
-                .header("Authorization", accessToken)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -260,8 +266,7 @@ internal class TopicControllerTest @Autowired constructor(
     @Test
     fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
         val testMemberA = EntityFactory.testMemberA()
-        val member = memberRepository.save(testMemberA)
-        val accessToken = jwtProvider.createAccessToken(member.id, member.email)
+        memberRepository.save(testMemberA)
 
         val topicPostRequest = TopicPostRequest(
             null,
@@ -279,7 +284,7 @@ internal class TopicControllerTest @Autowired constructor(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(topicPostRequest))
-                .header("Authorization", accessToken)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.message").value("필수값이 포함되지 않았습니다."))

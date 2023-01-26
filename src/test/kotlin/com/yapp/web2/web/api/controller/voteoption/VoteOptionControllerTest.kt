@@ -3,11 +3,14 @@ package com.yapp.web2.web.api.controller.voteoption
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.clear
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.domain.jwt.application.AuthService
+import com.yapp.web2.domain.jwt.application.JwtService
 import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.application.option.VoteOptionService
 import com.yapp.web2.domain.topic.repository.option.VoteOptionMemberRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.voteoption.request.VotePostRequest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -27,12 +30,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
 internal class VoteOptionControllerTest @Autowired constructor(
-    val jwtProvider: JwtProvider,
     val memberRepository: MemberRepository,
 ) : ApiControllerTest(uri = "/api/v1/vote/option") {
 
     @MockBean
     lateinit var voteOptionService: VoteOptionService
+
+    @MockBean
+    lateinit var jwtService: JwtService
+
+    private val jwtTokens = JwtTokens("access-token", "refresh-token")
 
     @Test
     fun `투표 참여 테스트`() {
@@ -42,14 +49,14 @@ internal class VoteOptionControllerTest @Autowired constructor(
 
         val votePostRequest = VotePostRequest(topicA.id, topicA.voteOptions[0].id)
         doNothing().`when`(voteOptionService).vote(testMemberA, votePostRequest)
+        `when`(jwtService.findAccessTokenMember("token")).thenReturn(testMemberA)
 
-        val accessToken = jwtProvider.createAccessToken(testMemberA.id, testMemberA.email)
         val uri = "$uri"
         mockMvc.perform(
             RestDocumentationRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(votePostRequest))
-                .header("Authorization", accessToken)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
