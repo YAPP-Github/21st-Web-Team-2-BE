@@ -35,7 +35,7 @@ internal class VoteOptionControllerTest @Autowired constructor(
     lateinit var voteOptionService: VoteOptionService
 
     @Test
-    fun `투표 등록 테스트`() {
+    fun `투표 참여 테스트`() {
         val testMemberA = EntityFactory.testMemberA()
         memberRepository.save(testMemberA)
         val topicA = EntityFactory.testTopicA(testMemberA)
