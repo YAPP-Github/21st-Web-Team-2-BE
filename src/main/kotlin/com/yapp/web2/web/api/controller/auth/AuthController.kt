@@ -26,4 +26,9 @@ class AuthController(
                @RequestBody signUpRequest: SignUpRequest): ApiResponse<JwtTokens> {
         return ApiResponse.success(authService.signup(token, signUpRequest))
     }
+
+    @PostMapping("/refresh")
+    fun refresh(@RequestHeader(value = "refresh-token") refreshToken: String): ApiResponse<JwtTokens> {
+        return ApiResponse.success(authService.refresh(refreshToken))
+    }
 }

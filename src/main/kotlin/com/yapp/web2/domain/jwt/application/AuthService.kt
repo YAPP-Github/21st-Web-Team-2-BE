@@ -3,9 +3,13 @@ package com.yapp.web2.domain.jwt.application
 import com.yapp.web2.domain.jwt.application.oauth.OAuthService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
+import com.yapp.web2.infra.redis.RedisService
+import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.auth.response.SignInResponse
 import com.yapp.web2.web.dto.auth.request.SignUpRequest
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,8 +18,13 @@ import org.springframework.transaction.annotation.Transactional
 class AuthService(
     private val memberRepository: MemberRepository,
     private val oAuthService: OAuthService,
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val redisService: RedisService
 ) {
+    @Value("\${jwt.refresh-token-expiry}")
+    private val refreshTokenExpiry: Long = 0
+
+    @Transactional
     fun signIn(code: String): SignInResponse {
         val token = oAuthService.requestToken(code)
         val email = oAuthService.getUserEmail(token)
@@ -25,14 +34,33 @@ class AuthService(
             return SignInResponse(false, JwtTokens(accessToken = token))
         }
 
-        return SignInResponse(true, jwtService.issue(email))
+        val tokens = jwtService.issue(email)
+        storeRefresh(tokens, email)
+        return SignInResponse(true, tokens)
     }
 
     @Transactional
     fun signup(token: String, signUpRequest: SignUpRequest): JwtTokens {
         val email = oAuthService.getUserEmail(token)
         join(email, signUpRequest)
-        return jwtService.issue(email)
+
+        val tokens = jwtService.issue(email)
+        storeRefresh(tokens, email)
+        return tokens
+    }
+
+    @Transactional
+    fun refresh(refreshToken: String): JwtTokens {
+        val email = redisService.getValue("$REFRESH_TOKEN_PREFIX:${refreshToken}") as String?
+            ?: throw BusinessException(ErrorCode.EXPIRED_REFRESH_TOKEN)
+
+        val member: Member = memberRepository.findByEmail(email)
+            ?: throw BusinessException(ErrorCode.MEMBER_NOT_FOUND)
+
+        val jwtToken = jwtService.refresh(refreshToken, email, member.id)
+        storeRefresh(jwtToken, member.email)
+        redisService.deleteValue("$REFRESH_TOKEN_PREFIX:${refreshToken}")
+        return jwtToken
     }
 
     private fun join(email: String, signUpRequest: SignUpRequest) {
@@ -44,5 +72,17 @@ class AuthService(
                 workingYears = signUpRequest.workingYears
             )
         )
+    }
+
+    private fun storeRefresh(jwtToken: JwtTokens, email: String) {
+        redisService.setValue(
+            "$REFRESH_TOKEN_PREFIX:${jwtToken.refreshToken}",
+            email,
+            refreshTokenExpiry
+        )
+    }
+
+    companion object {
+        const val REFRESH_TOKEN_PREFIX = "refresh"
     }
 }

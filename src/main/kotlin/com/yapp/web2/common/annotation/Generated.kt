@@ -1,4 +1,4 @@
-package com.yapp.web2.common.anotiation
+package com.yapp.web2.common.annotation
 
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)

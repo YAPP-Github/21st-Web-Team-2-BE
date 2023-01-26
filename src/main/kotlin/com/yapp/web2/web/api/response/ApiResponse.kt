@@ -1,7 +1,7 @@
 package com.yapp.web2.web.api.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.yapp.web2.common.anotiation.Generated
+import com.yapp.web2.common.annotation.Generated
 import com.yapp.web2.web.api.error.ErrorCode
 import org.springframework.data.domain.Slice
 

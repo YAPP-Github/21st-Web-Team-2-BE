@@ -22,6 +22,11 @@ spring:
         profile: https://www.googleapis.com/oauth2/v3/userinfo
         login: https://accounts.google.com/o/oauth2/v2/auth
 
+  data:
+    redis:
+      host: ${/prod/redis/host}
+      port: 6379
+
 jwt:
   secret: ${/prod/jwt/secret}
   access-token-expiry: 1296000000 #15일
