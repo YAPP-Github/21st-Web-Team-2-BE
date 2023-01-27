@@ -30,7 +30,8 @@ class SecurityConfig(
                 "/api/v1/topic/**",
                 "/api/v1/comment/**",
                 "/docs/**",
-                "/api/v1/nickname-duplication"
+                "/api/v1/nickname-duplication",
+                "/api/v1/vote/option"
             )    //TODO 회원 도입 후 경로 제거
     }
 }

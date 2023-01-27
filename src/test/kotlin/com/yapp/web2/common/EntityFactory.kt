@@ -1,6 +1,10 @@
 package com.yapp.web2.common
 
 import com.yapp.web2.domain.member.model.Member
+import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
+import com.yapp.web2.domain.topic.model.VoteType
+import com.yapp.web2.domain.topic.model.option.VoteOption
 
 class EntityFactory {
     companion object {
@@ -24,5 +28,20 @@ class EntityFactory {
             jobCategory = "product_manager",
             workingYears = 1
         )
+
+        fun testTopicA(createdBy: Member): Topic {
+            val topic = Topic(
+                "VoteA",
+                TopicCategory.DEVELOPER,
+                "ContentA",
+                VoteType.TEXT,
+                createdBy = createdBy,
+            )
+
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+
+            return topic
+        }
     }
 }
