@@ -2,7 +2,7 @@ package com.yapp.web2.web.api.controller.topic
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.jwt.application.JwtService
+import com.yapp.web2.common.TestMember
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
@@ -17,9 +17,8 @@ import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
@@ -43,9 +42,8 @@ internal class TopicControllerTest @Autowired constructor(
 
     lateinit var topics: MutableList<Topic>
 
-    @MockBean
-    lateinit var jwtService: JwtService
     private val jwtTokens = JwtTokens("access-token", "refresh-token")
+    private val testMemberA = EntityFactory.testMemberA()
 
     @BeforeAll
     fun dataInsert() {
@@ -218,11 +216,8 @@ internal class TopicControllerTest @Autowired constructor(
 
 
     @Test
+    @TestMember
     fun `투표게시글 등록 API 테스트`() {
-        val testMemberA = EntityFactory.testMemberA()
-        memberRepository.save(testMemberA)
-        `when`(jwtService.findAccessTokenMember(jwtTokens.accessToken!!)).thenReturn(testMemberA)
-
         val topicPostRequest = TopicPostRequest(
             "TopicA",
             "Contents A",
@@ -254,7 +249,7 @@ internal class TopicControllerTest @Autowired constructor(
                     ),
                     requestFields(
                         *topicPostRequestFieldsSnippet()
-                    ).andWithPrefix("voteOptions[].",*voteOptionPostRequestFieldsSnippet()),
+                    ).andWithPrefix("voteOptions[].", *voteOptionPostRequestFieldsSnippet()),
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *topicPostResponseFieldsSnippet(),
@@ -264,8 +259,8 @@ internal class TopicControllerTest @Autowired constructor(
     }
 
     @Test
+    @TestMember
     fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
-        val testMemberA = EntityFactory.testMemberA()
         memberRepository.save(testMemberA)
 
         val topicPostRequest = TopicPostRequest(
