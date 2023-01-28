@@ -53,7 +53,6 @@ class TopicController(
             throw BusinessException(ErrorCode.NULL_VALUE)
         }
 
-        println("${member.id} gpgp")
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
         return ApiResponse.success(topicPostResponse)
