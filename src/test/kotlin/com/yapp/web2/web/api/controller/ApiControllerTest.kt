@@ -10,8 +10,8 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureMockMvc
 @SpringBootTest
 class ApiControllerTest constructor(
-	protected val uri: String?
-){
-	@Autowired
-	protected lateinit var mockMvc: MockMvc
+    protected val uri: String?
+) {
+    @Autowired
+    protected lateinit var mockMvc: MockMvc
 }

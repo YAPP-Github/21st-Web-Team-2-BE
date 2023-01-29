@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @TestConfiguration
 @EnableWebSecurity
-class TestSecurityConfig(
+class SecurityConfig(
     private val jwtInterceptor: JwtInterceptor
 ) : WebMvcConfigurer {
     @Bean
