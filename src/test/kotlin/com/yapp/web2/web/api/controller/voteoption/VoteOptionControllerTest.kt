@@ -1,14 +1,11 @@
 package com.yapp.web2.web.api.controller.voteoption
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ninjasquad.springmockk.clear
 import com.yapp.web2.common.EntityFactory
-import com.yapp.web2.domain.jwt.application.AuthService
+import com.yapp.web2.common.TestMember
 import com.yapp.web2.domain.jwt.application.JwtService
-import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.application.option.VoteOptionService
-import com.yapp.web2.domain.topic.repository.option.VoteOptionMemberRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.voteoption.request.VotePostRequest
@@ -42,6 +39,7 @@ internal class VoteOptionControllerTest @Autowired constructor(
     private val jwtTokens = JwtTokens("access-token", "refresh-token")
 
     @Test
+    @TestMember
     fun `투표 참여 테스트`() {
         val testMemberA = EntityFactory.testMemberA()
         memberRepository.save(testMemberA)

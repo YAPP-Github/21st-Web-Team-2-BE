@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
-import com.yapp.web2.domain.jwt.application.JwtService
+import com.yapp.web2.common.annotation.CurrentMember
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.application.TopicService
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.web.api.error.BusinessException
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class TopicController(
     private val topicService: TopicService,
-    private val jwtService: JwtService,
 ) {
 
     @GetMapping("/popular")
@@ -44,15 +44,14 @@ class TopicController(
 
     @PostMapping
     fun createTopic(
-        @RequestHeader("Authorization") accessToken: String,
+        @CurrentMember member: Member,
         @Valid @RequestBody topicPostRequest: TopicPostRequest,
         bindingResult: BindingResult,
     ): ApiResponse<TopicPostResponse> {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw BusinessException(ErrorCode.NULL_VALUE)
         }
 
-        val member = jwtService.findAccessTokenMember(accessToken)
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
         return ApiResponse.success(topicPostResponse)

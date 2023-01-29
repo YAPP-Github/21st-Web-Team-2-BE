@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.controller.voteoption
 
-import com.yapp.web2.domain.jwt.application.JwtService
+import com.yapp.web2.common.annotation.CurrentMember
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.application.option.VoteOptionService
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
@@ -14,20 +15,18 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class VoteOptionController(
     private val voteOptionService: VoteOptionService,
-    private val jwtService: JwtService,
-)  {
+) {
 
     @PostMapping
     fun vote(
-        @RequestHeader("Authorization") accessToken: String,
+        @CurrentMember votedBy: Member,
         @Valid @RequestBody votePostRequest: VotePostRequest,
         bindingResult: BindingResult,
     ): ApiResponse<Nothing> {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw BusinessException(ErrorCode.NULL_VALUE)
         }
 
-        val votedBy = jwtService.findAccessTokenMember(accessToken)
         voteOptionService.vote(votedBy, votePostRequest)
 
         return ApiResponse.success()

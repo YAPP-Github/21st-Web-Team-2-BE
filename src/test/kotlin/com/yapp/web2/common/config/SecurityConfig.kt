@@ -1,15 +1,15 @@
 package com.yapp.web2.common.config
 
 import com.yapp.web2.domain.jwt.interceptor.JwtInterceptor
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-@Configuration
+@TestConfiguration
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtInterceptor: JwtInterceptor
@@ -27,13 +27,11 @@ class SecurityConfig(
             .addPathPatterns("/**")
             .excludePathPatterns(
                 "/api/v1/auth/**",
-                "/api/v1/topic/popular",
-                "/api/v1/topic/latest",
-                "/api/v1/topic/{topicId}",
+                "/api/v1/topic/**",
                 "/api/v1/comment/**",
                 "/docs/**",
                 "/api/v1/nickname-duplication",
-            )    //TODO 회원 도입 후 경로 제거
-
+                "/api/v1/vote/option"
+            )
     }
 }

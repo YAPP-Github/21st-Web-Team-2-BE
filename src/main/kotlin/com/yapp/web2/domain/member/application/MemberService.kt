@@ -15,9 +15,17 @@ class MemberService(
 ) {
     fun findByEmail(email: String) = memberRepository.findByEmail(email)
     fun existsByNickname(nicknameDuplicationRequest: NicknameDuplicationRequest): NicknameDuplicationResponse {
-        if (!nicknameDuplicationRequest.isValid()) {
+        if (!isValid(nicknameDuplicationRequest.nickname)) {
             throw BusinessException(ErrorCode.INVALID_NICKNAME)
         }
         return NicknameDuplicationResponse(memberRepository.existsByNickname(nicknameDuplicationRequest.nickname))
+    }
+
+    fun isValid(nickname: String): Boolean {
+        return nickname.length <= NICKNAME_MAX_LENGTH
+    }
+
+    companion object {
+        const val NICKNAME_MAX_LENGTH = 20
     }
 }

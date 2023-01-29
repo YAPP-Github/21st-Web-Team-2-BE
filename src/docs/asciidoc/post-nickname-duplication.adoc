@@ -1,0 +1,27 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+= {docname} API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== Request
+=== Http-Request
+include::{snippets}/{docname}/http-request.adoc[]
+
+== Response
+=== Http-Response
+include::{snippets}/{docname}/http-response.adoc[]
+
+=== Response-Fields
+==== Common
+include::{snippets}/common/response-fields.adoc[]
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
+
+link:api-docs.html[back to api-docs]
+
