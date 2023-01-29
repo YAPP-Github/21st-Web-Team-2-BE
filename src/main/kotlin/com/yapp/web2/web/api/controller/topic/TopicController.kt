@@ -1,7 +1,6 @@
 package com.yapp.web2.web.api.controller.topic
 
 import com.yapp.web2.common.annotation.CurrentMember
-import com.yapp.web2.domain.jwt.application.JwtService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.application.TopicService
 import com.yapp.web2.domain.topic.model.TopicCategory
