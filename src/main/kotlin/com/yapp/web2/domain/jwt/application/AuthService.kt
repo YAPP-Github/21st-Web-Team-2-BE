@@ -1,5 +1,6 @@
 package com.yapp.web2.domain.jwt.application
 
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.jwt.application.oauth.OAuthService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
@@ -73,6 +74,12 @@ class AuthService(
         redisService.deleteValue("$REFRESH_TOKEN_PREFIX:$refreshToken")
 
         storeLogoutAccessToken(accessToken)
+    }
+
+    @Transactional
+    fun withdraw(memberId: Long) {
+        val member = memberRepository.findByIdOrThrow(memberId)
+        member.softDelete()
     }
 
     private fun join(email: String, signUpRequest: SignUpRequest) {
