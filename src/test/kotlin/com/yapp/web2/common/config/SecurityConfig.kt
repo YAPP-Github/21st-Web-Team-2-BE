@@ -29,6 +29,7 @@ class SecurityConfig(
                 "/api/v1/auth/**",
                 "/api/v1/topic/**",
                 "/api/v1/comment/**",
+                "/api/v1/member/**",
                 "/docs/**",
                 "/api/v1/nickname-duplication",
                 "/api/v1/vote/option"
