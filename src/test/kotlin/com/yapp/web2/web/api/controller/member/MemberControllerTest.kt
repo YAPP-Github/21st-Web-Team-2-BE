@@ -46,7 +46,7 @@ internal class MemberControllerTest(
 
     private fun nicknameDuplicationDataResponseFieldsSnippet(): Array<FieldDescriptor> {
         return arrayOf(
-            PayloadDocumentation.fieldWithPath("isDuplicated").description("중복되었는지 확인")
+            PayloadDocumentation.fieldWithPath("isDuplicated").description("중복되었다면 true, 중복되지 않는다면 false")
         )
     }
 }
