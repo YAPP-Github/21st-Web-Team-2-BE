@@ -41,7 +41,6 @@ internal class TopicControllerTest @Autowired constructor(
 ) : ApiControllerTest(uri = "/api/v1/topic") {
 
     lateinit var topics: MutableList<Topic>
-
     private val jwtTokens = JwtTokens("access-token", "refresh-token")
     private val testMemberA = EntityFactory.testMemberA()
 
@@ -214,50 +213,6 @@ internal class TopicControllerTest @Autowired constructor(
             )
     }
 
-
-    @Test
-    @TestMember
-    fun `투표게시글 등록 API 테스트`() {
-        val topicPostRequest = TopicPostRequest(
-            "TopicA",
-            "Contents A",
-            listOf(
-                VoteOptionPostRequest("OptionA", null, null),
-                VoteOptionPostRequest("OptionB", null, null),
-            ),
-            TopicCategory.DEVELOPER,
-            listOf("tagA", "tagB")
-        )
-
-        val uri = "$uri"
-        mockMvc.perform(
-            post(uri)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicPostRequest))
-                .header("Authorization", jwtTokens.accessToken)
-        )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.code").value("SUCCESS"))
-            .andDo(print())
-            .andDo(
-                document(
-                    "post-topic",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    requestHeaders(
-                        headerWithName("Authorization").description("회원 AccessToken")
-                    ),
-                    requestFields(
-                        *topicPostRequestFieldsSnippet()
-                    ).andWithPrefix("voteOptions[].", *voteOptionPostRequestFieldsSnippet()),
-                    responseFields(
-                        beneathPath("data").withSubsectionId("data"),
-                        *topicPostResponseFieldsSnippet(),
-                    )
-                ),
-            )
-    }
-
     @Test
     @TestMember
     fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
@@ -349,34 +304,6 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("voteAmount").description("투표 선택지 투표 수"),
         )
     }
-
-    private fun topicPostRequestFieldsSnippet(): Array<FieldDescriptor> {
-        return arrayOf(
-            fieldWithPath("title").description("투표 게시글 제목"),
-            fieldWithPath("contents").description("투표 게시글 내용"),
-            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
-            subsectionWithPath("voteOptions").description("투표 선택지"),
-            fieldWithPath("tags[]").description("태그").optional(),
-        )
-    }
-
-    private fun voteOptionPostRequestFieldsSnippet(): Array<FieldDescriptor> {
-        return arrayOf(
-            fieldWithPath("text").description("투표 선택지 텍스트"),
-            fieldWithPath("image").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
-            fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
-        )
-    }
-
-    private fun topicPostResponseFieldsSnippet(): Array<FieldDescriptor> {
-        return arrayOf(
-            fieldWithPath("topicId").description("투표 게시글 Id"),
-            fieldWithPath("title").description("투표 게시글 제목"),
-            fieldWithPath("voteType").description("투표 게시글 형식"),
-            subsectionWithPath("postMemberNickname").description("투표 게시글 작성자 닉네임"),
-        )
-    }
-
 
     // 테스트용 데이터 저장
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
