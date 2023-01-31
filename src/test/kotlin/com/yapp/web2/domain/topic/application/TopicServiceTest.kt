@@ -151,6 +151,24 @@ internal class TopicServiceTest @Autowired constructor(
             .isInstanceOf(BusinessException::class.java)
     }
 
+    @Test
+    fun `투표 게시글 조회시 투표 이력 응답 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        val testTopicA = EntityFactory.testTopicA(testMemberA)
+        memberRepository.save(testMemberA)
+        val voteOption = testTopicA.voteOptions[0]
+        voteOption.addVoteOptionMember(VoteOptionMember(testMemberA, voteOption))
+
+        topicRepository.save(testTopicA)
+
+        //when
+        val topicDetail = topicService.getTopicDetail(testTopicA.id, testMemberA)
+
+        //then
+        assertThat(topicDetail.voteOptions[0].voted).isTrue
+    }
+
 
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
