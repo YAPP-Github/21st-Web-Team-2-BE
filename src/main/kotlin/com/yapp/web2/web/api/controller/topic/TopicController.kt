@@ -21,6 +21,7 @@ class TopicController(
     private val topicService: TopicService,
 ) {
 
+    //TODO Token이 없을때도 조회가 가능하도록 변경 필요
     @GetMapping("/popular")
     fun getPopularTopics(): ApiResponse<List<TopicPreviewResponse>> {
         val topicsByPopular = topicService.getPopularTopics()
@@ -28,6 +29,7 @@ class TopicController(
         return ApiResponse.success(topicsByPopular)
     }
 
+    //TODO Token이 없을때도 조회가 가능하도록 변경 필요
     @GetMapping("/latest")
     fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory?): ApiResponse<List<TopicPreviewResponse>> {
         val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
@@ -35,6 +37,7 @@ class TopicController(
         return ApiResponse.success(latestTopicsSlice)
     }
 
+    //TODO Token이 없을때도 조회가 가능하도록 변경 필요
     @GetMapping("/{topicId}")
     fun getTopicDetail(@PathVariable topicId: String): ApiResponse<TopicDetailResponse> {
         val topicDetail = topicService.getTopicDetail(topicId.toLong()) //TODO toLong() 예외처리
