@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.comment.application
 
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
@@ -34,11 +35,6 @@ internal class CommentServiceTest @Autowired constructor(
         saveDummyComments()
     }
 
-    @BeforeEach
-    fun deleteComments() {
-        commentRepository.deleteAll()
-    }
-
     @Test
     fun `댓글 최신순 조회 테스트`() {
         //when
@@ -68,10 +64,10 @@ internal class CommentServiceTest @Autowired constructor(
         val postRequest = CommentPostRequest(topic.id, commentContents)
 
         //when
-        commentService.saveComment(member, postRequest)
+        val saveComment = commentService.saveComment(member, postRequest)
 
         //then
-        val findComment = commentRepository.findAll()[0]
+        val findComment = commentRepository.findByIdOrThrow(saveComment.commentId)
         assertThat(findComment.contents).isEqualTo(commentContents)
         assertThat(findComment.topic).isEqualTo(topic)
     }
