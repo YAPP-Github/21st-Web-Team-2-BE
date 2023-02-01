@@ -117,6 +117,7 @@ class TopicService(
         throw BusinessException(ErrorCode.NULL_VALUE)
     }
 
+    @Transactional
     fun toggleTopicLikes(member: Member, requestDto: TopicLikePostRequest): TopicLikePostResponse {
         val topic = topicRepository.findByIdOrThrow(requestDto.topicId)
         val topicLikes = topicLikesRepository.findByLikedByAndTopic(member, topic)
