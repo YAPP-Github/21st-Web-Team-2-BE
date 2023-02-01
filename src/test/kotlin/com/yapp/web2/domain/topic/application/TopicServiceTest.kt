@@ -174,7 +174,7 @@ internal class TopicServiceTest @Autowired constructor(
         val testMemberA = EntityFactory.testMemberA()
         memberRepository.save(testMemberA)
         val testTopicA = EntityFactory.testTopicA(testMemberA)
-        testTopicA.addLikeTopic(TopicLikes(testMemberA, testTopicA))
+        testTopicA.addTopicLike(TopicLikes(testMemberA, testTopicA))
         topicRepository.save(testTopicA)
 
         //when

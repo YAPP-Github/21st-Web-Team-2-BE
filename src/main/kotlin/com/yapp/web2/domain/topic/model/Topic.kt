@@ -49,7 +49,7 @@ class Topic constructor(
         this.voteOptions.add(voteOption)
     }
 
-    fun addLikeTopic(topicLikes: TopicLikes) {
+    fun addTopicLike(topicLikes: TopicLikes) {
         this.topicLikes.add(topicLikes)
     }
 }

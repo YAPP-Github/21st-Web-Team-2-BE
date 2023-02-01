@@ -125,18 +125,18 @@ class TopicService(
         return if (topicLikes == null) {
             return likeTopic(member, topic)
         } else {
-            unLikeTopic(topicLikes)
+            unlikeTopic(topicLikes)
         }
     }
 
-    private fun unLikeTopic(topicLikes: TopicLikes): TopicLikePostResponse {
+    private fun unlikeTopic(topicLikes: TopicLikes): TopicLikePostResponse {
         topicLikesRepository.delete(topicLikes)
         return TopicLikePostResponse(topicLikes.topic.id, false)
     }
 
     private fun likeTopic(member: Member, topic: Topic): TopicLikePostResponse {
         val topicLikes = TopicLikes(member, topic)
-        topic.addLikeTopic(topicLikes)
+        topic.addTopicLike(topicLikes)
 
         topicLikesRepository.save(topicLikes)
         return TopicLikePostResponse(topicLikes.topic.id, true)
