@@ -1,7 +1,6 @@
 package com.yapp.web2.web.api.controller.comment
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ninjasquad.springmockk.MockkBean
 import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.common.TestMember
 import com.yapp.web2.domain.comment.model.Comment
@@ -13,6 +12,7 @@ import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.dto.comment.request.CommentLikePostRequest
 import com.yapp.web2.web.dto.comment.request.CommentPostRequest
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import org.junit.jupiter.api.BeforeAll
@@ -48,7 +48,7 @@ internal class CommentControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `getCommentsNoOffsetTest`() {
+    fun `댓글 조회 테스트`() {
         val findTopicId = topic.id
         val uri = "$uri/{topicId}/latest"
         mockMvc.perform(
@@ -76,8 +76,8 @@ internal class CommentControllerTest @Autowired constructor(
 
     @Test
     @TestMember
-    fun `postCommentTest`() {
-        val topicPostRequest = CommentPostRequest(
+    fun `댓글 등록 테스트`() {
+        val commentPostRequest = CommentPostRequest(
             topic.id,
             "Comment content"
         )
@@ -86,7 +86,7 @@ internal class CommentControllerTest @Autowired constructor(
         mockMvc.perform(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .content(ObjectMapper().writeValueAsString(commentPostRequest))
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -104,6 +104,41 @@ internal class CommentControllerTest @Autowired constructor(
                     responseFields(
                         beneathPath("data").withSubsectionId("data"),
                         *commentPostResponseFieldSnippet(),
+                    )
+                ),
+            )
+    }
+
+    @Test
+    @TestMember
+    fun `댓글 좋아요 테스트`() {
+        val commentId = commentRepository.findAll()[0].id
+        val commentLikesRequest = CommentLikePostRequest(
+            commentId
+        )
+
+        val uri = "$uri/likes"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(commentLikesRequest))
+                .header("Authorization", jwtTokens.accessToken)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "post-comment-like",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                    HeaderDocumentation.requestHeaders(
+                        HeaderDocumentation.headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    requestFields(*commentLikesPostRequestFieldSnippet()),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *commentLikesPostResponseFieldSnippet(),
                     )
                 ),
             )
@@ -140,6 +175,19 @@ internal class CommentControllerTest @Autowired constructor(
             fieldWithPath("member.profileImage").type(JsonFieldType.STRING).description("작성자 프로필 이미지").optional(),
             fieldWithPath("member.jobCategory").description("작성자 직군"),
             fieldWithPath("member.workingYears").description("작성자 연차"),
+        )
+    }
+
+    private fun commentLikesPostRequestFieldSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("commentId").description("좋아요 한 댓글 Id"),
+        )
+    }
+
+    private fun commentLikesPostResponseFieldSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("commentId").description("좋아요 한 댓글 Id"),
+            fieldWithPath("liked").description("좋아요 여부"),
         )
     }
 
