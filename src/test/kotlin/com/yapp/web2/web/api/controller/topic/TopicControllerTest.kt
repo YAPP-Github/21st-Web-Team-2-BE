@@ -12,6 +12,7 @@ import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
+import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import io.mockk.every
@@ -49,7 +50,6 @@ internal class TopicControllerTest @Autowired constructor(
 
     lateinit var topics: MutableList<Topic>
     private val jwtTokens = JwtTokens("access-token", "refresh-token")
-    private val testMemberA = EntityFactory.testMemberA()
 
     @BeforeAll
     fun dataInsert() {
@@ -266,8 +266,6 @@ internal class TopicControllerTest @Autowired constructor(
     @Test
     @TestMember
     fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
-        memberRepository.save(testMemberA)
-
         val topicPostRequest = TopicPostRequest(
             null,
             "Contents A",
@@ -300,6 +298,37 @@ internal class TopicControllerTest @Autowired constructor(
                     responseFields(
                         fieldWithPath("code").description("요청 결과 상태 코드"),
                         fieldWithPath("message").description("상태 메세지"),
+                    )
+                ),
+            )
+    }
+
+    @Test
+    @TestMember
+    fun `투표게시글 좋아요 테스트`() {
+        val topicLikePostRequest = TopicLikePostRequest(topics[0].id)
+        val uri = "$uri/likes"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicLikePostRequest))
+                .header("Authorization", jwtTokens.accessToken)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.message").value("성공"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic-like",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    requestFields(fieldWithPath("topicId").description("좋아요 한 투표 게시글 Id")),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicLikesPostResponseFieldsSnippet(),
                     )
                 ),
             )
@@ -379,6 +408,13 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("title").description("투표 게시글 제목"),
             fieldWithPath("voteType").description("투표 게시글 형식"),
             subsectionWithPath("postMemberNickname").description("투표 게시글 작성자 닉네임"),
+        )
+    }
+
+    private fun topicLikesPostResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("topicId").description("투표 게시글 Id"),
+            fieldWithPath("liked").description("좋아요 여부"),
         )
     }
 
