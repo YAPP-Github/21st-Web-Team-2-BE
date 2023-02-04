@@ -23,7 +23,7 @@ class Comment constructor(
     @OneToMany(mappedBy = "comment")
     val replyComments: MutableList<ReplyComment> = mutableListOf(),
 
-    @OneToMany(mappedBy = "comment", cascade = [CascadeType.PERSIST])
+    @OneToMany(mappedBy = "comment", cascade = [CascadeType.ALL])
     val commentLikes: MutableList<CommentLikes> = mutableListOf(),
 
     @Id

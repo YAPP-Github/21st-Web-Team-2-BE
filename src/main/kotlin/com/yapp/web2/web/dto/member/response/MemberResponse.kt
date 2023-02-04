@@ -7,7 +7,7 @@ data class MemberResponse(
     val nickname: String,
     val profileImage: String?,
     val jobCategory: String,
-    val workingYears: Int,
+    val workingYears: String,
 ) {
 
     companion object {
@@ -17,8 +17,14 @@ data class MemberResponse(
                 member.nickname,
                 member.profileImage,
                 member.jobCategory,
-                member.workingYears,
+                this.convertIntToString(member.workingYears),
             )
+        }
+
+        private fun convertIntToString(years: Int) = when (years) {
+            0 -> "1년 미만"
+            in 1..9 -> "${years}년차"
+            else -> "10년 이상"
         }
     }
 }

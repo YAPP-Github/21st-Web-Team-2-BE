@@ -27,11 +27,19 @@ endif::[]
 
 === link:post-topic.html[1.4 투표 게시글 등록]
 === link:post-vote.html[1.5 투표 참여]
+=== link:post-vote-like.html[1.6 투표 게시글 좋아요]
 
 = 2. Comment API
 === link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
+=== link:post-comment.html[2.2 댓글 등록]
+=== link:post-comment-like.html[2.3 댓글 좋아요]
 
 = 3. Auth API
+auth 관련 api (탈퇴, refresh, 로그아웃)는 노션 참고 link:https://www.notion.so/yapp-workspace/API-b4d5aa9b272d42c199161f0910472f77[notion 바로가기]
+
 === link:signup.html[3.1 회원가입]
 === link:signin.html[3.2 로그인]
 === link:post-nickname-duplication.html[3.3 닉네임 중복 확인]
+
+= 4. Member API
+=== link:get-member.html[4.1 회원정보 조회]
