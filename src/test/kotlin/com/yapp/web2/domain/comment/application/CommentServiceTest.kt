@@ -5,15 +5,15 @@ import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.comment.model.Comment
 import com.yapp.web2.domain.comment.respository.CommentRepository
 import com.yapp.web2.domain.like.model.CommentLikes
-import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.repository.TopicRepository
+import com.yapp.web2.web.dto.comment.request.CommentLikePostRequest
 import com.yapp.web2.web.dto.comment.request.CommentPostRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
@@ -70,6 +70,36 @@ internal class CommentServiceTest @Autowired constructor(
         val findComment = commentRepository.findByIdOrThrow(saveComment.commentId)
         assertThat(findComment.contents).isEqualTo(commentContents)
         assertThat(findComment.topic).isEqualTo(topic)
+    }
+
+    @Test
+    fun `댓글 좋아요 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val commentId = commentRepository.findAll()[0].id
+
+        //when
+        val toggleCommentLikes = commentService.toggleCommentLikes(testMemberA, CommentLikePostRequest(commentId))
+
+        //then
+        assertThat(toggleCommentLikes.liked).isTrue
+    }
+
+    @Test
+    fun `댓글 좋아요 취소 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val comment = commentRepository.findAll()[0]
+        comment.addCommentLikes(CommentLikes(testMemberA, comment))
+        commentRepository.save(comment)
+
+        //when
+        val toggleCommentLikes = commentService.toggleCommentLikes(testMemberA, CommentLikePostRequest(comment.id))
+
+        //then
+        assertThat(toggleCommentLikes.liked).isFalse
     }
 
 

@@ -6,8 +6,10 @@ import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.api.response.ApiResponse
+import com.yapp.web2.web.dto.comment.request.CommentLikePostRequest
 import com.yapp.web2.web.dto.comment.request.CommentPostRequest
 import com.yapp.web2.web.dto.comment.response.CommentDetailResponse
+import com.yapp.web2.web.dto.comment.response.CommentLikePostResponse
 import com.yapp.web2.web.dto.comment.response.CommentPostResponse
 import jakarta.validation.Valid
 import org.springframework.validation.BindingResult
@@ -42,6 +44,20 @@ class CommentController(
         val commentPostResponse = commentService.saveComment(member, requestDto)
 
         return ApiResponse.success(commentPostResponse)
+    }
+
+    @PostMapping("/likes")
+    fun likeComment(
+        @CurrentMember member: Member,
+        @Valid @RequestBody requestDto: CommentLikePostRequest,
+        bindingResult: BindingResult,
+    ): ApiResponse<CommentLikePostResponse> {
+        if (bindingResult.hasErrors()) {
+            throw BusinessException(ErrorCode.NULL_VALUE)
+        }
+        val commentLikePostResponse = commentService.toggleCommentLikes(member, requestDto)
+
+        return ApiResponse.success(commentLikePostResponse)
     }
 
 }

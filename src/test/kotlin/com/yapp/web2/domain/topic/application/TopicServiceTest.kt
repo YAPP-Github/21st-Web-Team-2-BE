@@ -1,6 +1,7 @@
 package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
+import com.yapp.web2.domain.like.model.TopicLikes
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.domain.topic.model.Topic
@@ -9,6 +10,7 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
+import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.assertj.core.api.Assertions.assertThat
@@ -150,6 +152,38 @@ internal class TopicServiceTest @Autowired constructor(
         assertThatThrownBy { topicService.saveTopic(testMemberA, topicPostRequest) }
             .isInstanceOf(BusinessException::class.java)
     }
+
+    @Test
+    fun `투표 좋아요 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val testTopicA = EntityFactory.testTopicA(testMemberA)
+        topicRepository.save(testTopicA)
+
+        //when
+        val toggleTopicLikes = topicService.toggleTopicLikes(testMemberA, TopicLikePostRequest(testTopicA.id))
+
+        //then
+        assertThat(toggleTopicLikes.liked).isTrue
+    }
+
+    @Test
+    fun `투표 좋아요 해제 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA()
+        memberRepository.save(testMemberA)
+        val testTopicA = EntityFactory.testTopicA(testMemberA)
+        testTopicA.addTopicLike(TopicLikes(testMemberA, testTopicA))
+        topicRepository.save(testTopicA)
+
+        //when
+        val toggleTopicLikes = topicService.toggleTopicLikes(testMemberA, TopicLikePostRequest(testTopicA.id))
+
+        //then
+        assertThat(toggleTopicLikes.liked).isFalse
+    }
+
 
 
 
