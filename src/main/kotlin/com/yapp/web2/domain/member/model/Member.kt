@@ -2,7 +2,6 @@ package com.yapp.web2.domain.member.model
 
 import com.yapp.web2.common.entity.BaseEntity
 import com.yapp.web2.domain.comment.model.Comment
-
 import com.yapp.web2.domain.like.model.TopicLikes
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember

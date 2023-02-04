@@ -1,6 +1,8 @@
 package com.yapp.web2.web.api.controller.auth
 
+import com.yapp.web2.common.annotation.CurrentMember
 import com.yapp.web2.domain.jwt.application.AuthService
+import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.auth.response.SignInResponse
 import com.yapp.web2.web.dto.auth.request.SignUpRequest
@@ -38,6 +40,12 @@ class AuthController(
         @RequestHeader(value = "Refresh-Token") refreshToken: String
     ): ApiResponse<Nothing> {
         authService.logout(accessToken, refreshToken)
+        return ApiResponse.success()
+    }
+
+    @PostMapping("/withdrawal")
+    fun withdraw(@CurrentMember member: Member): ApiResponse<Nothing> {
+        authService.withdraw(member.id)
         return ApiResponse.success()
     }
 }

@@ -23,7 +23,6 @@ class JwtInterceptor(
         try {
             val accessToken = jwtUtil.resolveAccessToken(request)
             jwtProvider.parseToken(accessToken)
-            println(accessToken)
             if (isLogout(accessToken)) {
                 throw BusinessException(ErrorCode.INVALID_JWT)
             }
