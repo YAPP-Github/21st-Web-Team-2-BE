@@ -1,0 +1,35 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+= {docname} API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+== Request
+=== Http-Request
+include::{snippets}/{docname}/http-request.adoc[]
+
+=== description
+memberId 없이 /api/v1/member 로 요청한다면 현재 로그인한 유저 정보 가져옴
+
+- 나의 정보 조회: /api/v1/member
+- 다른 사람 정보 조회: /api/v1/member/{memberId}
+
+=== Request-Headers
+include::{snippets}/{docname}/request-headers.adoc[]
+
+== Response
+=== Http-Response
+include::{snippets}/{docname}/http-response.adoc[]
+=== Response-Fields
+==== Common
+include::{snippets}/common/response-fields.adoc[]
+
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
+
+link:api-docs.html[back to api-docs]

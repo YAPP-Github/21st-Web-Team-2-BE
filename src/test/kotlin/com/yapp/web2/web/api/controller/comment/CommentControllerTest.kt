@@ -87,6 +87,7 @@ internal class CommentControllerTest @Autowired constructor(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(commentPostRequest))
+                .content(ObjectMapper().writeValueAsString(commentPostRequest))
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -190,7 +191,6 @@ internal class CommentControllerTest @Autowired constructor(
             fieldWithPath("liked").description("좋아요 여부"),
         )
     }
-
 
     // topicId == 1인 투표 게시글에 대한 댓글 30개를 저장합니다.
     // 댓글에 좋아요는 (30 - id) +1 만큼 추가됩니다. ex) [id: 1, likeAmount: 30], [id: 2, likeAmount: 29], ... [id: 30, likeAmount: 1]
