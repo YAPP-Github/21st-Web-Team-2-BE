@@ -14,23 +14,30 @@ import com.yapp.web2.web.api.controller.ApiControllerTest
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
+import io.mockk.every
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
+import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -215,6 +222,49 @@ internal class TopicControllerTest @Autowired constructor(
 
     @Test
     @TestMember
+    fun `투표게시글 등록 API 테스트`() {
+        val topicPostRequest = TopicPostRequest(
+            "TopicA",
+            "Contents A",
+            listOf(
+                VoteOptionPostRequest("OptionA", null, null),
+                VoteOptionPostRequest("OptionB", null, null),
+            ),
+            TopicCategory.DEVELOPER,
+            listOf("tagA", "tagB")
+        )
+
+        val uri = "$uri"
+        mockMvc.perform(
+            post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .header("Authorization", jwtTokens.accessToken)
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value("SUCCESS"))
+            .andDo(print())
+            .andDo(
+                document(
+                    "post-topic",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestHeaders(
+                        headerWithName("Authorization").description("회원 AccessToken")
+                    ),
+                    requestFields(
+                        *topicPostRequestFieldsSnippet()
+                    ).andWithPrefix("voteOptions[].", *voteOptionPostRequestFieldsSnippet()),
+                    responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        *topicPostResponseFieldsSnippet(),
+                    )
+                ),
+            )
+    }
+
+    @Test
+    @TestMember
     fun `투표게시글 등록시 필수값이 누락된 경우 예외 발생`() {
         memberRepository.save(testMemberA)
 
@@ -302,6 +352,33 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("voteAmount").description("투표 선택지 투표 수"),
+        )
+    }
+
+    private fun topicPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("contents").description("투표 게시글 내용"),
+            fieldWithPath("topicCategory").description("투표 게시글 카테고리"),
+            subsectionWithPath("voteOptions").description("투표 선택지"),
+            fieldWithPath("tags[]").description("태그").optional(),
+        )
+    }
+
+    private fun voteOptionPostRequestFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("text").description("투표 선택지 텍스트"),
+            fieldWithPath("image").type(JsonFieldType.STRING).description("투표 선택지 이미지").optional(),
+            fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
+        )
+    }
+
+    private fun topicPostResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("topicId").description("투표 게시글 Id"),
+            fieldWithPath("title").description("투표 게시글 제목"),
+            fieldWithPath("voteType").description("투표 게시글 형식"),
+            subsectionWithPath("postMemberNickname").description("투표 게시글 작성자 닉네임"),
         )
     }
 

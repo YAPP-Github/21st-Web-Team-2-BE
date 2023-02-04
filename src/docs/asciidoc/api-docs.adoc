@@ -30,6 +30,7 @@ endif::[]
 
 = 2. Comment API
 === link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
+=== link:post-comment.html[2.2 댓글 등록]
 
 = 3. Auth API
 auth 관련 api (탈퇴, refresh, 로그아웃)는 노션 참고 link:https://www.notion.so/yapp-workspace/API-b4d5aa9b272d42c199161f0910472f77[notion 바로가기]
