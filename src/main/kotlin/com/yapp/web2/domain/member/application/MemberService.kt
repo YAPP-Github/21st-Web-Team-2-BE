@@ -1,9 +1,11 @@
 package com.yapp.web2.domain.member.application
 
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.member.repository.MemberRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.member.request.NicknameDuplicationRequest
+import com.yapp.web2.web.dto.member.response.MemberResponse
 import com.yapp.web2.web.dto.member.response.NicknameDuplicationResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +26,8 @@ class MemberService(
     fun isValid(nickname: String): Boolean {
         return nickname.length <= NICKNAME_MAX_LENGTH
     }
+
+    fun getMember(memberId: Long) = MemberResponse.of(memberRepository.findByIdOrThrow(memberId))
 
     companion object {
         const val NICKNAME_MAX_LENGTH = 20
