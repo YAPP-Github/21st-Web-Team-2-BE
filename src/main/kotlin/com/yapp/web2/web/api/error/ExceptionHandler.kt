@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.error
 
 import com.yapp.web2.web.api.response.ApiResponse
+import jakarta.validation.ConstraintViolationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -15,6 +16,12 @@ class ExceptionHandler {
     fun handleBaseException(e: BusinessException): ResponseEntity<ApiResponse<ErrorCode>> {
         log.error(e.errorCode.message)
         return ResponseEntity.status(e.errorCode.status).body(ApiResponse.failure(e.errorCode))
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolation(ex: ConstraintViolationException): ResponseEntity<ApiResponse<ErrorCode>> {
+        val message = ex.constraintViolations.joinToString(", ") { "${it.propertyPath.last()}(은)는 ${it.message}" }
+        return ResponseEntity.badRequest().body(ApiResponse.failure(ErrorCode.INVALID_REQUEST, message = message))
     }
 
     @ExceptionHandler(Exception::class)

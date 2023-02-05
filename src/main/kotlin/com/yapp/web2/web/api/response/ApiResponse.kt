@@ -52,5 +52,11 @@ data class ApiResponse<T>(
             message = errorCode.message,
             data = null,
         )
+
+        fun failure(errorCode: ErrorCode, message: String) = ApiResponse<ErrorCode>(
+            code = errorCode.code,
+            message = message,
+            data = null
+        )
     }
 }
