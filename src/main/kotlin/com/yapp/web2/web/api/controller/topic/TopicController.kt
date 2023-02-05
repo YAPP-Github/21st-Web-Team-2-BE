@@ -59,10 +59,6 @@ class TopicController(
         @Valid @RequestBody topicPostRequest: TopicPostRequest,
         bindingResult: BindingResult,
     ): ApiResponse<TopicPostResponse> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
-
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
         return ApiResponse.success(topicPostResponse)
@@ -88,6 +84,6 @@ class TopicController(
         @RequestParam(required = false, defaultValue = "0") @Min(0) page: Int,
     ): ApiResponse<List<TopicPreviewResponse>> {
         val pageable = PageRequest.of(page, 6)
-        return ApiResponse.success(topicService.searchTopic(topicSearchRequest, pageable))
+        return ApiResponse.successWithPage(topicService.searchTopic(topicSearchRequest, pageable))
     }
 }

@@ -281,7 +281,7 @@ internal class TopicControllerTest @Autowired constructor(
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isBadRequest)
-            .andExpect(jsonPath("$.message").value("필수값이 포함되지 않았습니다."))
+            .andExpect(jsonPath("$.code").value("1001"))
             .andDo(print())
             .andDo(
                 document(

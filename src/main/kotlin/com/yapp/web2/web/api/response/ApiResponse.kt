@@ -47,6 +47,15 @@ data class ApiResponse<T>(
             offsetId = if (!slice.hasContent()) null else slice.content.last().offsetId,
         )
 
+        fun <T : OffsetIdSupport> successWithPage(slice: Slice<T>) = ApiResponse(
+            code = "SUCCESS",
+            message = "성공",
+            data = slice.content,
+            hasNext = slice.hasNext(),
+            pageNumber = slice.number,
+            offsetId = null,
+        )
+
         fun failure(errorCode: ErrorCode) = ApiResponse<ErrorCode>(
             code = errorCode.code,
             message = errorCode.message,
