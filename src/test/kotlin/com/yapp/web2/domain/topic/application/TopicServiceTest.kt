@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
 import java.util.stream.Stream
 
 @SpringBootTest
@@ -117,6 +118,7 @@ internal class TopicServiceTest @Autowired constructor(
             .isInstanceOf(BusinessException::class.java)
     }
 
+    @Transactional
     @Test
     fun `투표 게시글 저장 테스트`() {
         //given
@@ -140,6 +142,7 @@ internal class TopicServiceTest @Autowired constructor(
         val findOne = topicRepository.findAll()[0]
         assertThat(findOne.title).isEqualTo("TopicA")
         assertThat(findOne.voteType).isEqualTo(VoteType.TEXT)
+        assertThat(findOne.hashTags[0].hashTag).isEqualTo("tagA")
     }
 
     @Test
