@@ -1,5 +1,6 @@
 package com.yapp.web2.domain.jwt.application
 
+import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.jwt.application.oauth.OAuthService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.member.repository.MemberRepository
@@ -23,6 +24,9 @@ class AuthService(
 ) {
     @Value("\${jwt.refresh-token-expiry}")
     private val refreshTokenExpiry: Long = 0
+
+    @Value("\${jwt.access-token-expiry}")
+    private val accessTokenExpiry: Long = 0
 
     @Transactional
     fun signIn(code: String): SignInResponse {
@@ -63,6 +67,21 @@ class AuthService(
         return jwtToken
     }
 
+    @Transactional
+    fun logout(accessToken: String, refreshToken: String) {
+        redisService.getValue("$REFRESH_TOKEN_PREFIX:$refreshToken")
+            ?: throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
+        redisService.deleteValue("$REFRESH_TOKEN_PREFIX:$refreshToken")
+
+        storeLogoutAccessToken(accessToken)
+    }
+
+    @Transactional
+    fun withdraw(memberId: Long) {
+        val member = memberRepository.findByIdOrThrow(memberId)
+        member.softDelete()
+    }
+
     private fun join(email: String, signUpRequest: SignUpRequest) {
         memberRepository.save(
             Member(
@@ -82,7 +101,16 @@ class AuthService(
         )
     }
 
+    private fun storeLogoutAccessToken(accessToken: String) {
+        redisService.setValue(
+            "$LOGOUT_ACCESS_TOKEN_PREFIX:${accessToken}",
+            "logout",
+            accessTokenExpiry
+        )
+    }
+
     companion object {
         const val REFRESH_TOKEN_PREFIX = "refresh"
+        const val LOGOUT_ACCESS_TOKEN_PREFIX = "logout"
     }
 }

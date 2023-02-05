@@ -1,6 +1,10 @@
 package com.yapp.web2.domain.topic.application
 
+import com.yapp.web2.common.util.findByIdOrThrow
+import com.yapp.web2.domain.like.model.TopicLikes
+import com.yapp.web2.domain.like.repository.TopicLikesRepository
 import com.yapp.web2.domain.member.model.Member
+import com.yapp.web2.domain.topic.model.HashTag
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
@@ -10,8 +14,10 @@ import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.domain.topic.repository.option.VoteOptionMemberRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
+import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
+import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
@@ -28,6 +34,7 @@ class TopicService(
     private val topicQuerydslRepository: TopicQuerydslRepository,
     private val topicRepository: TopicRepository,
     private val voteOptionMemberRepository: VoteOptionMemberRepository,
+    private val topicLikesRepository: TopicLikesRepository,
 ) {
     fun getPopularTopics(member: Member? = null): List<TopicPreviewResponse> {
         val popularTopics = topicQuerydslRepository.findPopularTopics()
@@ -108,10 +115,13 @@ class TopicService(
             createdBy = member,
         )
 
+        requestDto.tags?.map { tag -> topic.addTags(HashTag(topic, tag)) }
+
         for (voteOptionDto in requestDto.voteOptions) {
             val voteOption = VoteOption(
                 voteOptionDto.text ?: nullValueException(),
                 voteOptionDto.image,
+                voteOptionDto.language,
                 voteOptionDto.codeBlock,
                 topic
             )
@@ -123,5 +133,30 @@ class TopicService(
 
     private fun nullValueException(): Nothing {
         throw BusinessException(ErrorCode.NULL_VALUE)
+    }
+
+    @Transactional
+    fun toggleTopicLikes(member: Member, requestDto: TopicLikePostRequest): TopicLikePostResponse {
+        val topic = topicRepository.findByIdOrThrow(requestDto.topicId)
+        val topicLikes = topicLikesRepository.findByLikedByAndTopic(member, topic)
+
+        return if (topicLikes == null) {
+            return likeTopic(member, topic)
+        } else {
+            unlikeTopic(topicLikes)
+        }
+    }
+
+    private fun unlikeTopic(topicLikes: TopicLikes): TopicLikePostResponse {
+        topicLikesRepository.delete(topicLikes)
+        return TopicLikePostResponse(topicLikes.topic.id, false)
+    }
+
+    private fun likeTopic(member: Member, topic: Topic): TopicLikePostResponse {
+        val topicLikes = TopicLikes(member, topic)
+        topic.addTopicLike(topicLikes)
+
+        topicLikesRepository.save(topicLikes)
+        return TopicLikePostResponse(topicLikes.topic.id, true)
     }
 }

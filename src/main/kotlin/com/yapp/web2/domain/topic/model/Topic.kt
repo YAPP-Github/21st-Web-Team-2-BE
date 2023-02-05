@@ -26,13 +26,13 @@ class Topic constructor(
     @OneToMany(mappedBy = "topic", cascade = [CascadeType.PERSIST])
     val voteOptions: MutableList<VoteOption> = mutableListOf(),
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = [CascadeType.PERSIST])
     val hashTags: MutableList<HashTag> = mutableListOf(),
 
     @OneToMany(mappedBy = "topic")
     val comments: MutableList<Comment> = mutableListOf(),
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = [CascadeType.ALL])
     val topicLikes: MutableList<TopicLikes> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,5 +47,13 @@ class Topic constructor(
 
     fun addVoteOption(voteOption: VoteOption) {
         this.voteOptions.add(voteOption)
+    }
+
+    fun addTopicLike(topicLikes: TopicLikes) {
+        this.topicLikes.add(topicLikes)
+    }
+
+    fun addTags(hashTag: HashTag) {
+        this.hashTags.add(hashTag)
     }
 }

@@ -1,0 +1,57 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+= {docname} API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+//NOTE: ""
+
+//TIP: ""
+
+//IMPORTANT: ""
+
+//CAUTION: ""
+
+== Request
+// === Curl-Request
+// include::{snippets}/{docname}/curl-request.adoc[]
+=== Http-Request
+include::{snippets}/{docname}/http-request.adoc[]
+=== Request-Headers
+|===
+|Name|Description|Nullable
+
+|`+Authorization+`
+|회원 AccessToken
+|False
+|===
+=== Request-Field
+include::{snippets}/{docname}/request-fields.adoc[]
+
+=== Request-Body
+include::{snippets}/{docname}/request-body.adoc[]
+== Response
+=== Http-Response
+include::{snippets}/{docname}/http-response.adoc[]
+=== Response-Fields
+==== Common
+include::{snippets}/common/response-fields.adoc[]
+
+==== Data
+include::{snippets}/{docname}/response-fields-data.adoc[]
+
+
+==== 예외 케이스
+
+. 필수값이 누락된 요청인 경우
+
+include::{snippets}/post-topic-required-value-exception/response-fields.adoc[]
+
+include::{snippets}/post-topic-required-value-exception/response-body.adoc[]
+
+link:api-docs.html[back to api-docs]

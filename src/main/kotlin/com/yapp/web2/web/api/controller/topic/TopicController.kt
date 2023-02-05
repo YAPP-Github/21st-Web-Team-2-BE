@@ -7,8 +7,10 @@ import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.api.response.ApiResponse
+import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
+import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import jakarta.validation.Valid
@@ -58,5 +60,19 @@ class TopicController(
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
         return ApiResponse.success(topicPostResponse)
+    }
+
+    @PostMapping("/likes")
+    fun likeTopic(
+        @CurrentMember member: Member,
+        @Valid @RequestBody topicLikePostRequest: TopicLikePostRequest,
+        bindingResult: BindingResult,
+    ): ApiResponse<TopicLikePostResponse> {
+        if (bindingResult.hasErrors()) {
+            throw BusinessException(ErrorCode.NULL_VALUE)
+        }
+
+        val topicLikesResponse = topicService.toggleTopicLikes(member, topicLikePostRequest)
+        return ApiResponse.success(topicLikesResponse)
     }
 }
