@@ -4,6 +4,7 @@ import com.yapp.web2.common.util.findByIdOrThrow
 import com.yapp.web2.domain.like.model.TopicLikes
 import com.yapp.web2.domain.like.repository.TopicLikesRepository
 import com.yapp.web2.domain.member.model.Member
+import com.yapp.web2.domain.topic.model.HashTag
 import com.yapp.web2.domain.topic.model.Topic
 import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
@@ -99,6 +100,8 @@ class TopicService(
             voteType,
             createdBy = member,
         )
+
+        requestDto.tags?.map { tag -> topic.addTags(HashTag(topic, tag)) }
 
         for (voteOptionDto in requestDto.voteOptions) {
             val voteOption = VoteOption(
