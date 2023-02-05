@@ -26,8 +26,12 @@ endif::[]
 === link:get-topic-detail.html[1.3 투표 게시글 상세 조회]
 
 === link:post-topic.html[1.4 투표 게시글 등록]
+
 === link:post-vote.html[1.5 투표 참여]
+
 === link:post-vote-like.html[1.6 투표 게시글 좋아요]
+
+=== link:search-topic.html[1.7 투표 검색]
 
 = 2. Comment API
 === link:get-comments.html[2.1 투표 게시글 내 댓글 조회]
