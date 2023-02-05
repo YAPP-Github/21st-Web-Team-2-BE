@@ -40,8 +40,8 @@ class MockTopicControllerTest : ApiControllerTest(uri = "/api/v1/topic") {
             "TopicA",
             "Contents A",
             listOf(
-                VoteOptionPostRequest("OptionA", null, null),
-                VoteOptionPostRequest("OptionB", null, null),
+                VoteOptionPostRequest("OptionA", null, null, null),
+                VoteOptionPostRequest("OptionB", null, null, null),
             ),
             TopicCategory.DEVELOPER,
             listOf("tagA", "tagB")

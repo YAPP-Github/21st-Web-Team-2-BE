@@ -171,8 +171,8 @@ internal class TopicQuerydslRepositoryTest @Autowired constructor(
         }
 
         for (topic in sampleTopics) {
-            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
-            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, null, topic))
         }
 
         // 투표 게시글 크기의 2배 만큼 투표수를 받음

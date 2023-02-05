@@ -104,6 +104,7 @@ class TopicService(
             val voteOption = VoteOption(
                 voteOptionDto.text?: nullValueException(),
                 voteOptionDto.image,
+                voteOptionDto.language,
                 voteOptionDto.codeBlock,
                 topic
             )

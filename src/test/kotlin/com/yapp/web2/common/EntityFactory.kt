@@ -38,8 +38,8 @@ class EntityFactory {
                 createdBy = createdBy,
             )
 
-            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
-            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, null, topic))
 
             return topic
         }

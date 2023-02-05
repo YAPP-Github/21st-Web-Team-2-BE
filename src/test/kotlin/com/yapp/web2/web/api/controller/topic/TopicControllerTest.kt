@@ -181,8 +181,8 @@ internal class TopicControllerTest @Autowired constructor(
             Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
         )
         for (topic in topics) {
-            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
-            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, null, topic))
         }
 
         topicRepository.saveAll(topics)
@@ -219,8 +219,8 @@ internal class TopicControllerTest @Autowired constructor(
             "TopicA",
             "Contents A",
             listOf(
-                VoteOptionPostRequest("OptionA", null, null),
-                VoteOptionPostRequest("OptionB", null, null),
+                VoteOptionPostRequest("OptionA", null, null, null),
+                VoteOptionPostRequest("OptionB", null, null, null),
             ),
             TopicCategory.DEVELOPER,
             listOf("tagA", "tagB")
@@ -261,8 +261,8 @@ internal class TopicControllerTest @Autowired constructor(
             null,
             "Contents A",
             listOf(
-                VoteOptionPostRequest(null, null, null),
-                VoteOptionPostRequest("OptionB", null, null),
+                VoteOptionPostRequest(null, null, null, null),
+                VoteOptionPostRequest("OptionB", null, null, null),
             ),
             TopicCategory.DEVELOPER,
             listOf("tagA", "tagB")
@@ -420,8 +420,8 @@ internal class TopicControllerTest @Autowired constructor(
         }
 
         for (topic in sampleTopics) {
-            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, topic))
-            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionA", null, null, null, topic))
+            topic.addVoteOption(VoteOption("${topic.contents} OptionB", null, null, null, topic))
         }
 
         // 투표 게시글 크기의 2배 만큼 투표수를 받음

@@ -173,8 +173,8 @@ internal class VoteQuerydslRepositoryTest @Autowired constructor(
         }
 
         for (vote in sampleVotes) {
-            vote.addVoteOption(VoteOption("${vote.contents} OptionA", null, null, vote))
-            vote.addVoteOption(VoteOption("${vote.contents} OptionB", null, null, vote))
+            vote.addVoteOption(VoteOption("${vote.contents} OptionA", null, null, null, vote))
+            vote.addVoteOption(VoteOption("${vote.contents} OptionB", null, null, null, vote))
         }
 
         // 투표 게시글 크기의 2배 만큼 투표수를 받음
