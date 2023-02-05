@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.controller.comment
 
 import com.yapp.web2.common.annotation.CurrentMember
+import com.yapp.web2.common.annotation.NonMember
 import com.yapp.web2.domain.comment.application.CommentService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.web.api.error.BusinessException
@@ -21,13 +22,15 @@ class CommentController(
     private val commentService: CommentService,
 ) {
 
+    @NonMember
     @GetMapping("/{voteId}/latest")
     fun getCommentsSlice(
+        @CurrentMember member: Member?,
         @PathVariable voteId: String,
         @RequestParam lastOffset: String?
     ): ApiResponse<List<CommentDetailResponse>> {
         val latestCommentSlice =
-            commentService.getLatestComments(voteId.toLong(), lastOffset?.toLong()) //TODO toLong() 예외처리
+            commentService.getLatestComments(voteId.toLong(), lastOffset?.toLong(), member) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestCommentSlice)
     }

@@ -93,7 +93,7 @@ class TopicService(
                     voteVo.topic,
                     voteVo.voteAmount.toInt(),
                     voteVo.commentCount.toInt(),
-                    isLiked(voteVo.topic, member), //TODO 좋아요 여부
+                    isLiked(voteVo.topic, member),
                     voteVo.likedAmount.toInt(),
                     getVoteOptionPreviewResponses(voteVo.topic, member),
                 )
