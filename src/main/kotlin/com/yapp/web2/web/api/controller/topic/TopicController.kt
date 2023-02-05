@@ -62,7 +62,6 @@ class TopicController(
     fun createTopic(
         @CurrentMember member: Member,
         @Valid @RequestBody topicPostRequest: TopicPostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<TopicPostResponse> {
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
@@ -73,12 +72,7 @@ class TopicController(
     fun likeTopic(
         @CurrentMember member: Member,
         @Valid @RequestBody topicLikePostRequest: TopicLikePostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<TopicLikePostResponse> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
-
         val topicLikesResponse = topicService.toggleTopicLikes(member, topicLikePostRequest)
         return ApiResponse.success(topicLikesResponse)
     }

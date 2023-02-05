@@ -39,11 +39,7 @@ class CommentController(
     fun createComment(
         @CurrentMember member: Member,
         @Valid @RequestBody requestDto: CommentPostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<CommentPostResponse> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
         val commentPostResponse = commentService.saveComment(member, requestDto)
 
         return ApiResponse.success(commentPostResponse)
@@ -53,11 +49,7 @@ class CommentController(
     fun likeComment(
         @CurrentMember member: Member,
         @Valid @RequestBody requestDto: CommentLikePostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<CommentLikePostResponse> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
         val commentLikePostResponse = commentService.toggleCommentLikes(member, requestDto)
 
         return ApiResponse.success(commentLikePostResponse)

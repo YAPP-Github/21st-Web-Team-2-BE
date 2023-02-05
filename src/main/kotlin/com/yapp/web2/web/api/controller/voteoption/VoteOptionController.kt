@@ -21,12 +21,7 @@ class VoteOptionController(
     fun vote(
         @CurrentMember votedBy: Member,
         @Valid @RequestBody votePostRequest: VotePostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<Nothing> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
-
         voteOptionService.vote(votedBy, votePostRequest)
 
         return ApiResponse.success()
