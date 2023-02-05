@@ -53,6 +53,7 @@ internal class TopicControllerTest @Autowired constructor(
         val uri = "$uri/popular"
         mockMvc.perform(
             get(uri)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -76,6 +77,7 @@ internal class TopicControllerTest @Autowired constructor(
         val uri = "$uri/latest"
         mockMvc.perform(
             get(uri)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -127,6 +129,7 @@ internal class TopicControllerTest @Autowired constructor(
         val uri = "$uri/{topicId}"
         mockMvc.perform(
             get(uri, findTopicId)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
@@ -191,6 +194,7 @@ internal class TopicControllerTest @Autowired constructor(
         mockMvc.perform(
             get(uri)
                 .param("topicCategory", "CAREER")
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.code").value("SUCCESS"))
