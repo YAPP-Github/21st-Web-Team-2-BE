@@ -16,6 +16,7 @@ import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.topic.request.TopicSearchRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
@@ -152,6 +153,22 @@ class TopicService(
             return likeTopic(member, topic)
         } else {
             unlikeTopic(topicLikes)
+        }
+    }
+
+    fun searchTopic(
+        searchRequest: TopicSearchRequest,
+        pageable: Pageable,
+        member: Member? = null,
+    ): Slice<TopicPreviewResponse> {
+        val topic = topicQuerydslRepository.searchByTitleAndContentOrTag(searchRequest, pageable)
+        return topic.map { topicPreviewVo ->
+            TopicPreviewResponse.of(
+                topicPreviewVo.topic,
+                topicPreviewVo.commentCount.toInt(),
+                topicPreviewVo.voteAmount.toInt(),
+                getVoteOptionPreviewResponses(topicPreviewVo.topic, member),
+            )
         }
     }
 

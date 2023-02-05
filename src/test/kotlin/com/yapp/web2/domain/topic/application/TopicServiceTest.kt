@@ -2,30 +2,39 @@ package com.yapp.web2.domain.topic.application
 
 import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.domain.like.model.TopicLikes
-import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.member.repository.MemberRepository
+import com.yapp.web2.domain.topic.model.HashTag
 import com.yapp.web2.domain.topic.model.Topic
+import com.yapp.web2.domain.topic.model.TopicCategory
 import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
+import com.yapp.web2.domain.topic.repository.HashTagRepository
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.topic.request.TopicSearchRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.transaction.annotation.Transactional
+import java.util.stream.Stream
 
 @SpringBootTest
 internal class TopicServiceTest @Autowired constructor(
     val topicService: TopicService,
     val topicRepository: TopicRepository,
     val memberRepository: MemberRepository,
+    val hashTagRepository: HashTagRepository
 ) {
 
     @BeforeEach
@@ -33,7 +42,6 @@ internal class TopicServiceTest @Autowired constructor(
         memberRepository.deleteAll()
         topicRepository.deleteAll()
     }
-
 
     @Test
     fun `최신순 페이지 조회 테스트`() {
@@ -58,11 +66,13 @@ internal class TopicServiceTest @Autowired constructor(
         //given
         val topics = saveDummyTopicsDetail(2)
         val createdBy = topics[0].createdBy
-        topicRepository.saveAll(listOf(
-            Topic("Topic CareerA", TopicCategory.CAREER, "Content CareerA", VoteType.TEXT, createdBy = createdBy),
-            Topic("Topic CareerB", TopicCategory.CAREER, "Content CareerB", VoteType.TEXT, createdBy = createdBy),
-            Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
-        ))
+        topicRepository.saveAll(
+            listOf(
+                Topic("Topic CareerA", TopicCategory.CAREER, "Content CareerA", VoteType.TEXT, createdBy = createdBy),
+                Topic("Topic CareerB", TopicCategory.CAREER, "Content CareerB", VoteType.TEXT, createdBy = createdBy),
+                Topic("Topic CareerC", TopicCategory.CAREER, "Content CareerC", VoteType.TEXT, createdBy = createdBy),
+            )
+        )
 
         //when
         val latestTopicsSlice = topicService.getLatestTopicsSlice(null, TopicCategory.CAREER).content
@@ -204,6 +214,33 @@ internal class TopicServiceTest @Autowired constructor(
         assertThat(toggleTopicLikes.liked).isFalse
     }
 
+    @ParameterizedTest
+    @MethodSource("searchQueryAndHashTag")
+    fun `태그, 검색어로 검색 테스트`(searchQuery: String?, hastTag: String?, expectResult: Int) {
+        //given
+        val amount = 7
+        val sampleTopics = saveDummyTopicsDetail(amount)
+
+        val sampleHashTags = IntArray(6) { it + 1 }.map {
+            HashTag(
+                sampleTopics[it],
+                hashTag = if (it % 2 == 0) "tag1" else "tag1$it",
+            )
+        }
+        hashTagRepository.saveAll(sampleHashTags)
+
+        //when
+        val topicSearchRequest = TopicSearchRequest(
+            searchQuery = searchQuery,
+            hashTag = hastTag
+        )
+
+        val pageable = PageRequest.of(0, 6)
+        val result = topicService.searchTopic(topicSearchRequest, pageable)
+
+        //then
+        assertThat(result.content.size).isEqualTo(expectResult)
+    }
 
     private fun saveDummyTopicsDetail(amount: Int): MutableList<Topic> {
         // 유저 생성
@@ -263,6 +300,16 @@ internal class TopicServiceTest @Autowired constructor(
         }
         return topicRepository.saveAll(sampleTopics)
     }
+
+    companion object {
+        @JvmStatic
+        private fun searchQueryAndHashTag(): Stream<Arguments> {
+            return Stream.of(
+                Arguments.of("Vote", "tag1", 3),
+                Arguments.of(null, "TAG1", 3),
+                Arguments.of("CONTENT", null, 6),
+                Arguments.of("VOtE", null, 6)
+            )
+        }
+    }
 }
-
-

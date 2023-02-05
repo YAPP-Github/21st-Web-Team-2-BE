@@ -29,7 +29,7 @@ class SecurityConfig(
                 "/api/v1/auth/signin",
                 "/api/v1/auth/signup",
                 "/api/v1/auth/refresh",
-//                "/api/v1/comment/**",
+                "/api/v1/topic/search",
                 "/docs/**",
                 "/api/v1/nickname-duplication",
             )    //TODO 회원 도입 후 경로 제거
