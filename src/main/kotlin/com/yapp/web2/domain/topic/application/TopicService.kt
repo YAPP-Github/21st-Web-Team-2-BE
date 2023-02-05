@@ -11,6 +11,7 @@ import com.yapp.web2.domain.topic.model.VoteType
 import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.repository.TopicQuerydslRepository
 import com.yapp.web2.domain.topic.repository.TopicRepository
+import com.yapp.web2.domain.topic.repository.option.VoteOptionMemberRepository
 import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
@@ -33,21 +34,26 @@ import org.springframework.transaction.annotation.Transactional
 class TopicService(
     private val topicQuerydslRepository: TopicQuerydslRepository,
     private val topicRepository: TopicRepository,
+    private val voteOptionMemberRepository: VoteOptionMemberRepository,
     private val topicLikesRepository: TopicLikesRepository,
 ) {
-    fun getPopularTopics(): List<TopicPreviewResponse> {
+    fun getPopularTopics(member: Member? = null): List<TopicPreviewResponse> {
         val popularTopics = topicQuerydslRepository.findPopularTopics()
         return popularTopics.map { topicPreviewVo ->
             TopicPreviewResponse.of(
                 topicPreviewVo.topic,
                 topicPreviewVo.commentCount.toInt(),
                 topicPreviewVo.voteAmount.toInt(),
-                getVoteOptionPreviewResponses(topicPreviewVo.topic),
+                getVoteOptionPreviewResponses(topicPreviewVo.topic, member),
             )
         }
     }
 
-    fun getLatestTopicsSlice(lastTopicId: Long?, topicCategory: TopicCategory?): Slice<TopicPreviewResponse> {
+    fun getLatestTopicsSlice(
+        lastTopicId: Long?,
+        topicCategory: TopicCategory?,
+        member: Member? = null
+    ): Slice<TopicPreviewResponse> {
         val latestTopicSliceVo = topicQuerydslRepository.findLatestTopicsByCategory(lastTopicId, topicCategory)
 
         return SliceImpl(
@@ -56,7 +62,7 @@ class TopicService(
                     topicPreviewVo.topic,
                     topicPreviewVo.commentCount.toInt(),
                     topicPreviewVo.voteAmount.toInt(),
-                    getVoteOptionPreviewResponses(topicPreviewVo.topic),
+                    getVoteOptionPreviewResponses(topicPreviewVo.topic, member),
                 )
             },
             Pageable.unpaged(),
@@ -64,30 +70,46 @@ class TopicService(
         )
     }
 
-    private fun getVoteOptionPreviewResponses(topic: Topic): List<VoteOptionPreviewResponse> {
+    private fun getVoteOptionPreviewResponses(topic: Topic, member: Member?): List<VoteOptionPreviewResponse> {
         return topic.voteOptions.map { voteOption ->
             VoteOptionPreviewResponse.of(
                 voteOption,
-                //TODO 로그인 한 회원에 대한 투표 여부 응답
+                isVoted(voteOption, member)
             )
         }
     }
 
-    fun getTopicDetail(topicId: Long): TopicDetailResponse {
+    private fun isVoted(voteOption: VoteOption, member: Member?): Boolean {
+        if (member == null) {
+            return false
+        }
+
+        return voteOptionMemberRepository.existsByVoteOptionAndVotedBy(voteOption, member)
+    }
+
+    fun getTopicDetail(topicId: Long, member: Member? = null): TopicDetailResponse {
         try {
             return topicQuerydslRepository.findTopicDetailById(topicId)?.let { voteVo ->
                 TopicDetailResponse.of(
                     voteVo.topic,
                     voteVo.voteAmount.toInt(),
                     voteVo.commentCount.toInt(),
-                    false, //TODO 좋아요 여부
+                    isLiked(voteVo.topic, member),
                     voteVo.likedAmount.toInt(),
-                    getVoteOptionPreviewResponses(voteVo.topic),
+                    getVoteOptionPreviewResponses(voteVo.topic, member),
                 )
             } ?: throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
+    }
+
+    private fun isLiked(topic: Topic, member: Member?): Boolean {
+        if (member == null) {
+            return false
+        }
+
+        return topicLikesRepository.existsByTopicAndLikedBy(topic, member)
     }
 
     @Transactional
@@ -134,14 +156,18 @@ class TopicService(
         }
     }
 
-    fun searchTopic(searchRequest: TopicSearchRequest, pageable: Pageable): Slice<TopicPreviewResponse> {
+    fun searchTopic(
+        searchRequest: TopicSearchRequest,
+        pageable: Pageable,
+        member: Member? = null,
+    ): Slice<TopicPreviewResponse> {
         val topic = topicQuerydslRepository.searchByTitleAndContentOrTag(searchRequest, pageable)
         return topic.map { topicPreviewVo ->
             TopicPreviewResponse.of(
                 topicPreviewVo.topic,
                 topicPreviewVo.commentCount.toInt(),
                 topicPreviewVo.voteAmount.toInt(),
-                getVoteOptionPreviewResponses(topicPreviewVo.topic),
+                getVoteOptionPreviewResponses(topicPreviewVo.topic, member),
             )
         }
     }

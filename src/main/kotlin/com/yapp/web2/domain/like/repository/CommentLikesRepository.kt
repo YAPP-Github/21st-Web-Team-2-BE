@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentLikesRepository : JpaRepository<CommentLikes, Long> {
     fun findByLikedByAndComment(member: Member, topic: Comment): CommentLikes?
+    fun existsByCommentAndLikedBy(comment: Comment, member: Member): Boolean
 }

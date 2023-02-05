@@ -27,7 +27,7 @@ class CommentService(
     private val commentLikesRepository: CommentLikesRepository,
 ) {
 
-    fun getLatestComments(voteId: Long, lastCommentId: Long?): Slice<CommentDetailResponse> {
+    fun getLatestComments(voteId: Long, lastCommentId: Long?, member: Member?): Slice<CommentDetailResponse> {
         val findCommentsSlice = commentQuerydslRepository.findComments(voteId, lastCommentId)
 
         return SliceImpl(
@@ -35,12 +35,20 @@ class CommentService(
                 CommentDetailResponse.of(
                     comment,
                     comment.commentLikes.size,
-                    false //TODO 좋아요 여부
+                    isLiked(comment, member),
                 )
             },
             findCommentsSlice.pageable,
             findCommentsSlice.hasNext()
         )
+    }
+
+    private fun isLiked(comment: Comment, member: Member?): Boolean {
+        if (member == null) {
+            return false
+        }
+
+        return commentLikesRepository.existsByCommentAndLikedBy(comment, member)
     }
 
     @Transactional

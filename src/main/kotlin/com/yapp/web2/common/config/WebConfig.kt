@@ -14,7 +14,8 @@ class WebConfig : WebMvcConfigurer {
                 HttpMethod.GET.name(),
                 HttpMethod.PATCH.name(),
                 HttpMethod.POST.name(),
-                HttpMethod.DELETE.name()
+                HttpMethod.DELETE.name(),
+                HttpMethod.OPTIONS.name(),
             )
     }
 }

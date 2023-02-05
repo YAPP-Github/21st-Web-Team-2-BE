@@ -1,6 +1,7 @@
 package com.yapp.web2.web.api.controller.topic
 
 import com.yapp.web2.common.annotation.CurrentMember
+import com.yapp.web2.common.annotation.NonMember
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.domain.topic.application.TopicService
 import com.yapp.web2.domain.topic.model.TopicCategory
@@ -27,28 +28,32 @@ import org.springframework.web.bind.annotation.*
 class TopicController(
     private val topicService: TopicService,
 ) {
-
+    @NonMember
     @GetMapping("/popular")
-    fun getPopularTopics(): ApiResponse<List<TopicPreviewResponse>> {
-        val topicsByPopular = topicService.getPopularTopics()
+    fun getPopularTopics(@CurrentMember member: Member?): ApiResponse<List<TopicPreviewResponse>> {
+        val topicsByPopular = topicService.getPopularTopics(member)
 
         return ApiResponse.success(topicsByPopular)
     }
 
+    @NonMember
     @GetMapping("/latest")
     fun getTopicsSlice(
+        @CurrentMember member: Member?,
         @RequestParam lastOffset: String?,
         @RequestParam topicCategory: TopicCategory?
     ): ApiResponse<List<TopicPreviewResponse>> {
         val latestTopicsSlice =
-            topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
+            topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory, member) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestTopicsSlice)
     }
-
+    @NonMember
     @GetMapping("/{topicId}")
-    fun getTopicDetail(@PathVariable topicId: String): ApiResponse<TopicDetailResponse> {
-        val topicDetail = topicService.getTopicDetail(topicId.toLong()) //TODO toLong() 예외처리
+    fun getTopicDetail(
+        @CurrentMember member: Member?,
+        @PathVariable topicId: String): ApiResponse<TopicDetailResponse> {
+        val topicDetail = topicService.getTopicDetail(topicId.toLong(), member) //TODO toLong() 예외처리
 
         return ApiResponse.success(topicDetail)
     }
@@ -57,7 +62,6 @@ class TopicController(
     fun createTopic(
         @CurrentMember member: Member,
         @Valid @RequestBody topicPostRequest: TopicPostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<TopicPostResponse> {
         val topicPostResponse = topicService.saveTopic(member, topicPostRequest)
 
@@ -68,22 +72,19 @@ class TopicController(
     fun likeTopic(
         @CurrentMember member: Member,
         @Valid @RequestBody topicLikePostRequest: TopicLikePostRequest,
-        bindingResult: BindingResult,
     ): ApiResponse<TopicLikePostResponse> {
-        if (bindingResult.hasErrors()) {
-            throw BusinessException(ErrorCode.NULL_VALUE)
-        }
-
         val topicLikesResponse = topicService.toggleTopicLikes(member, topicLikePostRequest)
         return ApiResponse.success(topicLikesResponse)
     }
 
+    @NonMember
     @PostMapping("/search")
     fun searchTopic(
+        @CurrentMember member: Member?,
         @RequestBody topicSearchRequest: TopicSearchRequest,
         @RequestParam(required = false, defaultValue = "0") @Min(0) page: Int,
     ): ApiResponse<List<TopicPreviewResponse>> {
         val pageable = PageRequest.of(page, 6)
-        return ApiResponse.successWithPage(topicService.searchTopic(topicSearchRequest, pageable))
+        return ApiResponse.successWithPage(topicService.searchTopic(topicSearchRequest, pageable, member))
     }
 }

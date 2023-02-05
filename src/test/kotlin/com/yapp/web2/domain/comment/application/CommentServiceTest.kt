@@ -38,7 +38,7 @@ internal class CommentServiceTest @Autowired constructor(
     @Test
     fun `댓글 최신순 조회 테스트`() {
         //when
-        val latestCommentSlice = commentService.getLatestComments(1L, null)
+        val latestCommentSlice = commentService.getLatestComments(1L, null, null)
 
         //then
         assertThat(latestCommentSlice.hasNext()).isTrue

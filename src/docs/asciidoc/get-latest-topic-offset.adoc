@@ -30,6 +30,17 @@ GET /api/v1/topic/latest?lastOffset=16&category=CAREER HTTP/1.1
 Host: localhost:8080
 
 ----
+=== Request-Headers
+회원 조회시 포함.
+
+투표 이력, 좋아요 여부가 반영되어 응답.
+|===
+|Name|Description|Nullable
+
+|`+Authorization+`
+|회원 AccessToken
+|True
+|===
 // === Request-Headers
 // include::{snippets}/{docname}/request-headers.adoc[]
 === Request-Parameters

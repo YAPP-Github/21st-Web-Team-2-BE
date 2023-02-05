@@ -105,7 +105,7 @@ class TopicQuerydslRepository(
         return SliceImpl(topics, pageable, hasNext(topics))
     }
 
-    fun findTopicDetailById(voteId: Long): TopicDetailVo? {
+    fun findTopicDetailById(topicId: Long): TopicDetailVo? {
         return queryFactory.select(
             Projections.constructor(
                 TopicDetailVo::class.java,
@@ -117,7 +117,7 @@ class TopicQuerydslRepository(
         )
             .distinct()
             .from(topic)
-            .where(topic.id.eq(voteId))
+            .where(topic.id.eq(topicId))
             .join(topic.createdBy, member).fetchJoin()
             .leftJoin(topic.voteOptions, voteOption).fetchJoin()
             .fetch()

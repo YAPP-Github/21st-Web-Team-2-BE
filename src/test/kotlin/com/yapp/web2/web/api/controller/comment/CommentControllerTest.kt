@@ -53,6 +53,7 @@ internal class CommentControllerTest @Autowired constructor(
         val uri = "$uri/{topicId}/latest"
         mockMvc.perform(
             get(uri, findTopicId)
+                .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("SUCCESS"))
