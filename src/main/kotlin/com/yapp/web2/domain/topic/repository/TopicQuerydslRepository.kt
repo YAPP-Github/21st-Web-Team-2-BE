@@ -90,7 +90,7 @@ class TopicQuerydslRepository(
     private fun commentAmountFindQuery(): JPQLQuery<Long> =
         JPAExpressions.select(comment.count()).from(comment).where(comment.topic.id.eq(topic.id))
 
-    fun findTopicDetailById(voteId: Long): TopicDetailVo? {
+    fun findTopicDetailById(topicId: Long): TopicDetailVo? {
         return queryFactory.select(
             Projections.constructor(
                 TopicDetailVo::class.java,
@@ -102,7 +102,7 @@ class TopicQuerydslRepository(
         )
             .distinct()
             .from(topic)
-            .where(topic.id.eq(voteId))
+            .where(topic.id.eq(topicId))
             .join(topic.createdBy, member).fetchJoin()
             .leftJoin(topic.voteOptions, voteOption).fetchJoin()
             .fetch()

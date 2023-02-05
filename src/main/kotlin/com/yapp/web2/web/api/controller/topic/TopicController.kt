@@ -23,27 +23,32 @@ import org.springframework.web.bind.annotation.*
 class TopicController(
     private val topicService: TopicService,
 ) {
-
     @NonMember
     @GetMapping("/popular")
-    fun getPopularTopics(): ApiResponse<List<TopicPreviewResponse>> {
-        val topicsByPopular = topicService.getPopularTopics()
+    fun getPopularTopics(@CurrentMember member: Member?): ApiResponse<List<TopicPreviewResponse>> {
+        val topicsByPopular = topicService.getPopularTopics(member)
 
         return ApiResponse.success(topicsByPopular)
     }
 
     @NonMember
     @GetMapping("/latest")
-    fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory?): ApiResponse<List<TopicPreviewResponse>> {
-        val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
+    fun getTopicsSlice(
+        @CurrentMember member: Member?,
+        @RequestParam lastOffset: String?,
+        @RequestParam topicCategory: TopicCategory?
+    ): ApiResponse<List<TopicPreviewResponse>> {
+        val latestTopicsSlice =
+            topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory, member) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestTopicsSlice)
     }
-
     @NonMember
     @GetMapping("/{topicId}")
-    fun getTopicDetail(@PathVariable topicId: String): ApiResponse<TopicDetailResponse> {
-        val topicDetail = topicService.getTopicDetail(topicId.toLong()) //TODO toLong() 예외처리
+    fun getTopicDetail(
+        @CurrentMember member: Member?,
+        @PathVariable topicId: String): ApiResponse<TopicDetailResponse> {
+        val topicDetail = topicService.getTopicDetail(topicId.toLong(), member) //TODO toLong() 예외처리
 
         return ApiResponse.success(topicDetail)
     }
