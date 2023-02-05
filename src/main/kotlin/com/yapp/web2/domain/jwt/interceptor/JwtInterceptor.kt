@@ -1,5 +1,6 @@
 package com.yapp.web2.domain.jwt.interceptor
 
+import com.yapp.web2.common.annotation.NonMember
 import com.yapp.web2.domain.jwt.application.AuthService.Companion.LOGOUT_ACCESS_TOKEN_PREFIX
 import com.yapp.web2.domain.jwt.util.JwtProvider
 import com.yapp.web2.domain.jwt.util.JwtUtil
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
@@ -20,6 +22,14 @@ class JwtInterceptor(
     private val redisService: RedisService
 ) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        val handlerMethod = handler as HandlerMethod
+        val accessToken = request.getHeader("Authorization")
+        if (handlerMethod.getMethodAnnotation(NonMember::class.java) != null
+            && (accessToken == null || accessToken.isBlank())
+        ) {
+            return true
+        }
+
         try {
             val accessToken = jwtUtil.resolveAccessToken(request)
             jwtProvider.parseToken(accessToken)
