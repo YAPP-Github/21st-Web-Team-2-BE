@@ -93,7 +93,7 @@ class TopicService(
                     voteVo.topic,
                     voteVo.voteAmount.toInt(),
                     voteVo.commentCount.toInt(),
-                    false, //TODO 좋아요 여부
+                    isLiked(voteVo.topic, member), //TODO 좋아요 여부
                     voteVo.likedAmount.toInt(),
                     getVoteOptionPreviewResponses(voteVo.topic, member),
                 )
@@ -101,6 +101,14 @@ class TopicService(
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
+    }
+
+    private fun isLiked(topic: Topic, member: Member?): Boolean {
+        if (member == null) {
+            return false
+        }
+
+        return topicLikesRepository.existsByTopicAndLikedBy(topic, member)
     }
 
     @Transactional

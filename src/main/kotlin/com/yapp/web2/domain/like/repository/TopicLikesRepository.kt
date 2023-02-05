@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface TopicLikesRepository : JpaRepository<TopicLikes, Long> {
     fun findByLikedByAndTopic(member: Member, topic: Topic): TopicLikes?
+    fun existsByTopicAndLikedBy(topic: Topic, member: Member): Boolean
 }
