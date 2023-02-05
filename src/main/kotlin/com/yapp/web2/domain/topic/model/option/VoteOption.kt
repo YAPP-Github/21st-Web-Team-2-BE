@@ -12,6 +12,7 @@ class VoteOption constructor(
 
     val image: String?,
 
+    val language: String?,
     val codeBlock: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)

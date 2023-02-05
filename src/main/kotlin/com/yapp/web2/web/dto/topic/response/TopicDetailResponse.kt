@@ -30,7 +30,7 @@ data class TopicDetailResponse(
                 voteAmount,
                 liked,
                 likedAmount,
-                topic.hashTags.map { it.toString() },
+                topic.hashTags.map { it.hashTag },
                 voteOptionPreviewResponse,
             )
         }

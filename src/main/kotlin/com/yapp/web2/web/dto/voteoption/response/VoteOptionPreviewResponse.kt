@@ -6,6 +6,7 @@ data class VoteOptionPreviewResponse(
     val voteOptionId: Long,
     val text: String?,
     val image: String?,
+    val language: String?,
     val codeBlock: String?,
     val voted: Boolean,
     val voteAmount: Int,
@@ -17,6 +18,7 @@ data class VoteOptionPreviewResponse(
                 voteOption.id,
                 voteOption.text,
                 voteOption.image,
+                voteOption.language,
                 voteOption.codeBlock,
                 voted,
                 voteOption.voteOptionMembers.size

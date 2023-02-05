@@ -9,10 +9,10 @@ internal class VoteTypeTest {
     @Test
     fun `저장 요청에 따라 옳바른 투표 타입 생성 테스트`() {
         //given
-        val voteOptionAll = VoteOptionPostRequest("Text", "imageUrl", "codeBlock")
-        val voteOptionCode = VoteOptionPostRequest("Text", null, "codeBlock")
-        val voteOptionImage = VoteOptionPostRequest("Text", "imageUrl", null)
-        val voteOptionText = VoteOptionPostRequest("Text", null, null)
+        val voteOptionAll = VoteOptionPostRequest("Text", "imageUrl",null, "codeBlock")
+        val voteOptionCode = VoteOptionPostRequest("Text", null,null, "codeBlock")
+        val voteOptionImage = VoteOptionPostRequest("Text", "imageUrl",null, null)
+        val voteOptionText = VoteOptionPostRequest("Text", null,null, null)
 
         //when
         assertAll(
