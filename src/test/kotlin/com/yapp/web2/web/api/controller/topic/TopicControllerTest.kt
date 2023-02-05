@@ -1,6 +1,5 @@
 package com.yapp.web2.web.api.controller.topic
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.yapp.web2.common.EntityFactory
 import com.yapp.web2.common.TestMember
 import com.yapp.web2.domain.member.repository.MemberRepository
@@ -11,9 +10,11 @@ import com.yapp.web2.domain.topic.model.option.VoteOption
 import com.yapp.web2.domain.topic.model.option.VoteOptionMember
 import com.yapp.web2.domain.topic.repository.TopicRepository
 import com.yapp.web2.web.api.controller.ApiControllerTest
+import com.yapp.web2.web.api.controller.andDocument
 import com.yapp.web2.web.dto.jwt.response.JwtTokens
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.topic.request.TopicSearchRequest
 import com.yapp.web2.web.dto.voteoption.request.VoteOptionPostRequest
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -29,10 +30,14 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.request.RequestDocumentation.*
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.util.LinkedMultiValueMap
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class TopicControllerTest @Autowired constructor(
@@ -230,7 +235,7 @@ internal class TopicControllerTest @Autowired constructor(
         mockMvc.perform(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .content(objectMapper.writeValueAsString(topicPostRequest))
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
@@ -272,7 +277,7 @@ internal class TopicControllerTest @Autowired constructor(
         mockMvc.perform(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicPostRequest))
+                .content(objectMapper.writeValueAsString(topicPostRequest))
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isBadRequest)
@@ -302,7 +307,7 @@ internal class TopicControllerTest @Autowired constructor(
         mockMvc.perform(
             post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(topicLikePostRequest))
+                .content(objectMapper.writeValueAsString(topicLikePostRequest))
                 .header("Authorization", jwtTokens.accessToken)
         )
             .andExpect(status().isOk)
@@ -325,6 +330,40 @@ internal class TopicControllerTest @Autowired constructor(
             )
     }
 
+    @Test
+    fun `topic 검색 테스트`(){
+        val uri = "$uri/search"
+        val searchRequest = TopicSearchRequest(
+            searchQuery = "Vote10",
+            hashTag = null
+        )
+
+        val requestParam = LinkedMultiValueMap<String, String>().also {
+            it.set("page", "0")
+        }
+
+        mockMvc.post(uri) {
+            jsonContent(searchRequest)
+            params = requestParam
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.code").value("SUCCESS")
+        }.andDocument(
+            "search-topic",
+            queryParameters(
+                parameterWithName("page").description("요청할 page 번호 / 0부터 시작, 순차 증가")
+            ),
+            requestFields(
+                fieldWithPath("searchQuery").description("제목 or 내용으로 검색"),
+                fieldWithPath("hashTag").description("hashTag로 검색")
+            ),
+            responseFields(
+                beneathPath("data").withSubsectionId("data"),
+                *topicPreviewDataResponseFieldsSnippet(),
+                *memberPreviewDataResponseFieldsSnippet(),
+            ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+        )
+    }
 
     // 투표 게시글 미리보기 응답에 대한 Spring Rest Docs snippet
     private fun topicPreviewDataResponseFieldsSnippet(): Array<FieldDescriptor> {
