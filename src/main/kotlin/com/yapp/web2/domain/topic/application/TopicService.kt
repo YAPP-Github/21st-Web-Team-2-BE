@@ -15,6 +15,7 @@ import com.yapp.web2.web.api.error.BusinessException
 import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.topic.request.TopicSearchRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
@@ -94,9 +95,9 @@ class TopicService(
         val voteType = VoteType.from(requestDto.voteOptions[0])
 
         val topic = Topic(
-            requestDto.title?: nullValueException(),
-            requestDto.topicCategory?: nullValueException(),
-            requestDto.contents?: nullValueException(),
+            requestDto.title ?: nullValueException(),
+            requestDto.topicCategory ?: nullValueException(),
+            requestDto.contents ?: nullValueException(),
             voteType,
             createdBy = member,
         )
@@ -105,7 +106,7 @@ class TopicService(
 
         for (voteOptionDto in requestDto.voteOptions) {
             val voteOption = VoteOption(
-                voteOptionDto.text?: nullValueException(),
+                voteOptionDto.text ?: nullValueException(),
                 voteOptionDto.image,
                 voteOptionDto.language,
                 voteOptionDto.codeBlock,
@@ -130,6 +131,18 @@ class TopicService(
             return likeTopic(member, topic)
         } else {
             unlikeTopic(topicLikes)
+        }
+    }
+
+    fun searchTopic(searchRequest: TopicSearchRequest, pageable: Pageable): Slice<TopicPreviewResponse> {
+        val topic = topicQuerydslRepository.searchByTitleAndContentOrTag(searchRequest, pageable)
+        return topic.map { topicPreviewVo ->
+            TopicPreviewResponse.of(
+                topicPreviewVo.topic,
+                topicPreviewVo.commentCount.toInt(),
+                topicPreviewVo.voteAmount.toInt(),
+                getVoteOptionPreviewResponses(topicPreviewVo.topic),
+            )
         }
     }
 

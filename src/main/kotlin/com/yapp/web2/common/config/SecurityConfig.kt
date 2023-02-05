@@ -32,6 +32,7 @@ class SecurityConfig(
                 "/api/v1/topic/popular",
                 "/api/v1/topic/latest",
                 "/api/v1/topic/{topicId}",
+                "/api/v1/topic/search",
                 "/api/v1/comment/**",
                 "/docs/**",
                 "/api/v1/nickname-duplication",

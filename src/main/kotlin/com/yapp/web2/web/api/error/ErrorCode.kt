@@ -9,6 +9,7 @@ enum class ErrorCode(
 ) {
     //Common
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "1000", "서버 내부 오류가 발생하였습니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "1001", "올바른 요청 값이 아닙니다."),
 
     //Auth
     OAUTH2_FAIL_EXCEPTION(HttpStatus.UNAUTHORIZED, "2000", "유효하지 않는 Oauth2 엑세스 토큰입니다."),
