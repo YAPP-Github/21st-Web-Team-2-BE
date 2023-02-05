@@ -9,14 +9,19 @@ import com.yapp.web2.web.api.error.ErrorCode
 import com.yapp.web2.web.api.response.ApiResponse
 import com.yapp.web2.web.dto.topic.request.TopicLikePostRequest
 import com.yapp.web2.web.dto.topic.request.TopicPostRequest
+import com.yapp.web2.web.dto.topic.request.TopicSearchRequest
 import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Min
+import org.springframework.data.domain.PageRequest
 import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
+@Validated
 @RequestMapping("/api/v1/topic")
 @RestController
 class TopicController(
@@ -31,8 +36,12 @@ class TopicController(
     }
 
     @GetMapping("/latest")
-    fun getTopicsSlice(@RequestParam lastOffset: String?, @RequestParam topicCategory: TopicCategory?): ApiResponse<List<TopicPreviewResponse>> {
-        val latestTopicsSlice = topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
+    fun getTopicsSlice(
+        @RequestParam lastOffset: String?,
+        @RequestParam topicCategory: TopicCategory?
+    ): ApiResponse<List<TopicPreviewResponse>> {
+        val latestTopicsSlice =
+            topicService.getLatestTopicsSlice(lastOffset?.toLong(), topicCategory) //TODO toLong() 예외처리
 
         return ApiResponse.success(latestTopicsSlice)
     }
@@ -71,5 +80,14 @@ class TopicController(
 
         val topicLikesResponse = topicService.toggleTopicLikes(member, topicLikePostRequest)
         return ApiResponse.success(topicLikesResponse)
+    }
+
+    @PostMapping("/search")
+    fun searchTopic(
+        @RequestBody topicSearchRequest: TopicSearchRequest,
+        @RequestParam(required = false, defaultValue = "0") @Min(0) page: Int,
+    ): ApiResponse<List<TopicPreviewResponse>> {
+        val pageable = PageRequest.of(page, 6)
+        return ApiResponse.success(topicService.searchTopic(topicSearchRequest, pageable))
     }
 }
