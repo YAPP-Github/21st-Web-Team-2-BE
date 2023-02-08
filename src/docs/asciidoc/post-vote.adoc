@@ -53,6 +53,10 @@ include::{snippets}/{docname}/http-response.adoc[]
 |`+String+`
 |상태 메세지
 |_false_
+|`+data+`
+|`+String+`
+|투표한 옵션 Id
+|_false_
 |===
 
 link:api-docs.html[back to api-docs]
