@@ -53,7 +53,9 @@ dependencies {
     //validation
     implementation ("org.springframework.boot:spring-boot-starter-validation")
     //redis
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    //s3
+    implementation ("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 }
 
 jacoco {
