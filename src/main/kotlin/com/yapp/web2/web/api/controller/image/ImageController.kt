@@ -1,5 +1,6 @@
 package com.yapp.web2.web.api.controller.image
 
+import com.yapp.web2.common.annotation.NonMember
 import com.yapp.web2.domain.image.ImageService
 import com.yapp.web2.web.api.response.ApiResponse
 import org.springframework.web.bind.annotation.PostMapping
