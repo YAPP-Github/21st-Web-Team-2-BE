@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+
 
 @Configuration
 @EnableWebSecurity
@@ -26,12 +28,13 @@ class SecurityConfig(
         registry.addInterceptor(jwtInterceptor)
             .addPathPatterns("/**")
             .excludePathPatterns(
+                "/docs/**",
                 "/api/v1/auth/signin",
                 "/api/v1/auth/signup",
                 "/api/v1/auth/refresh",
                 "/api/v1/topic/search",
-                "/docs/**",
                 "/api/v1/nickname-duplication",
+                "/api/v1/image/**"
             )    //TODO 회원 도입 후 경로 제거
     }
 }

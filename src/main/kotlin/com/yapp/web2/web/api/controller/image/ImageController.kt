@@ -6,6 +6,7 @@ import com.yapp.web2.domain.image.ImageService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.web.api.response.ApiResponse
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -19,6 +20,7 @@ class ImageController(
 
     @PostMapping("/upload")
     fun uploadImage(
+        @CurrentMember member: Member,
         @RequestPart images: MutableList<MultipartFile>
     ): ApiResponse<List<String>> {
         val uploadFiles = imageService.uploadFiles(images)
