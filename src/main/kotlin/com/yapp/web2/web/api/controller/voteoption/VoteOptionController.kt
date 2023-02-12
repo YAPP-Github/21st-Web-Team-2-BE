@@ -21,9 +21,9 @@ class VoteOptionController(
     fun vote(
         @CurrentMember votedBy: Member,
         @Valid @RequestBody votePostRequest: VotePostRequest,
-    ): ApiResponse<Nothing> {
-        voteOptionService.vote(votedBy, votePostRequest)
+    ): ApiResponse<Long> {
+        val votedOptionId = voteOptionService.vote(votedBy, votePostRequest)
 
-        return ApiResponse.success()
+        return ApiResponse.success(votedOptionId)
     }
 }

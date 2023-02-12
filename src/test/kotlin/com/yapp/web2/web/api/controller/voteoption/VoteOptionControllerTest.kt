@@ -46,7 +46,7 @@ internal class VoteOptionControllerTest @Autowired constructor(
         val topicA = EntityFactory.testTopicA(testMemberA)
 
         val votePostRequest = VotePostRequest(topicA.id, topicA.voteOptions[0].id)
-        doNothing().`when`(voteOptionService).vote(testMemberA, votePostRequest)
+        `when`(voteOptionService.vote(testMemberA, votePostRequest)).thenReturn(topicA.voteOptions[0].id)
         `when`(jwtService.findAccessTokenMember("token")).thenReturn(testMemberA)
 
         val uri = "$uri"
@@ -71,6 +71,7 @@ internal class VoteOptionControllerTest @Autowired constructor(
                     responseFields(
                         fieldWithPath("code").description("요청 결과 상태 코드"),
                         fieldWithPath("message").description("상태 메세지"),
+                        fieldWithPath("data").description("투표한 옵션 Id"),
                     )
                 ),
             )
