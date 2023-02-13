@@ -26,7 +26,7 @@ class VoteOptionService(
      * 3. 투표 게시글에 대한 투표 이력이 없는 경우 -> 추가
      */
     @Transactional
-    fun vote(votedBy: Member, requestDto: VotePostRequest) {
+    fun vote(votedBy: Member, requestDto: VotePostRequest): Long {
         val topic = topicRepository.findByIdOrThrow(requestDto.topicId)
         val votedRecord = voteOptionMemberQuerydslRepository.findByMemberAndTopic(votedBy, topic)
 
@@ -36,6 +36,8 @@ class VoteOptionService(
                 saveVoteRecord(requestDto, votedBy) // 투표 이력은 있지만, 투표 선택지가 다른 경우
             }
         } ?: saveVoteRecord(requestDto, votedBy)
+
+        return requestDto.voteOptionId
     }
 
     private fun saveVoteRecord(
