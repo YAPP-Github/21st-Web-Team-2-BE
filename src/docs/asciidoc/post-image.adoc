@@ -20,8 +20,9 @@ endif::[]
 //WARNING: ""
 
 == Request
-// === Curl-Reqeust
-// include::{snippets}/{docname}/curl-request.adoc[]
+=== Curl-Reqeust
+include::{snippets}/{docname}/curl-request.adoc[]
+
 === Http-Request
 include::{snippets}/{docname}/http-request.adoc[]
 === Request-Headers
@@ -40,22 +41,7 @@ include::{snippets}/{docname}/http-request.adoc[]
 === Http-Response
 include::{snippets}/{docname}/http-response.adoc[]
 === Response-Fields
-==== Common
-|===
-|Path|Type|Description|Nullable
+include::{snippets}/{docname}/response-fields.adoc[]
 
-|`+code+`
-|`+String+`
-|요청 결과 상태 코드
-|_false_
-|`+message+`
-|`+String+`
-|상태 메세지
-|_false_
-|`+data+`
-|`+String+`
-|업로드된 이미지 url
-|_false_
-|===
 
 link:api-docs.html[back to api-docs]
