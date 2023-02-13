@@ -5,11 +5,7 @@ import com.yapp.web2.common.annotation.NonMember
 import com.yapp.web2.domain.image.ImageService
 import com.yapp.web2.domain.member.model.Member
 import com.yapp.web2.web.api.response.ApiResponse
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 @RequestMapping("/api/v1/image")
@@ -18,12 +14,13 @@ class ImageController(
     private val imageService: ImageService,
 ) {
 
+    @NonMember
     @PostMapping("/upload")
     fun uploadImage(
-        @CurrentMember member: Member,
-        @RequestPart images: MutableList<MultipartFile>
-    ): ApiResponse<List<String>> {
-        val uploadFiles = imageService.uploadFiles(images)
+        @CurrentMember member: Member?,
+        @RequestParam file: MultipartFile
+    ): ApiResponse<String> {
+        val uploadFiles = imageService.uploadFiles(file)
         return ApiResponse.success(uploadFiles)
     }
 }
