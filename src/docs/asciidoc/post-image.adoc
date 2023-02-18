@@ -1,0 +1,47 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+= {docname} API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+//NOTE: ""
+
+//TIP: ""
+
+//IMPORTANT: ""
+
+//CAUTION: ""
+
+//WARNING: ""
+
+== Request
+=== Curl-Reqeust
+include::{snippets}/{docname}/curl-request.adoc[]
+
+=== Http-Request
+include::{snippets}/{docname}/http-request.adoc[]
+=== Request-Headers
+|===
+|Name|Description|Nullable
+
+|`+Authorization+`
+|회원 AccessToken
+|False
+|===
+
+// === Request-Parameters
+// include::{snippets}/{docname}/request-parameters.adoc[]
+
+== Response
+=== Http-Response
+include::{snippets}/{docname}/http-response.adoc[]
+=== Response-Fields
+include::{snippets}/{docname}/response-fields.adoc[]
+
+
+link:api-docs.html[back to api-docs]

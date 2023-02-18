@@ -27,6 +27,20 @@ spring:
       host: ${/prod/redis/host}
       port: 6379
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${/prod/s3/credentials/accesskey}
+      secret-key: ${/prod/s3/credentials/secretkey}
+      instanceProfile: true
+    s3:
+      bucket: ${/prod/s3/bucket}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
 jwt:
   secret: ${/prod/jwt/secret}
   access-token-expiry: 1296000000 #15일

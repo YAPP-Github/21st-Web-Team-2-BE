@@ -38,3 +38,20 @@ management:
   health:
     redis:
       enabled: false
+
+cloud:
+  aws:
+    credentials:
+      access-key: accessKey
+      secret-key: secretKey
+      instanceProfile: true
+    s3:
+      bucket: web2
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+bucket:
+  domain: "s3/domain"

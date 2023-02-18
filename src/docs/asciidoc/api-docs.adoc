@@ -47,3 +47,6 @@ auth 관련 api (탈퇴, refresh, 로그아웃)는 노션 참고 link:https://ww
 
 = 4. Member API
 === link:get-member.html[4.1 회원정보 조회]
+
+= 5. Image API
+=== link:post-image.html[5.1 이미지 업로드]
