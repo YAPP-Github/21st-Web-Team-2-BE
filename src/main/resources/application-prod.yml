@@ -50,3 +50,6 @@ jwt:
 
 awsParameterStorePropertySource:
   enabled: true
+
+bucket:
+  domain: ${/prod/bucket/domain}
