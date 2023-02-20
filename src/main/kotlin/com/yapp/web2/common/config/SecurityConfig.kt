@@ -3,6 +3,7 @@ package com.yapp.web2.common.config
 import com.yapp.web2.domain.jwt.interceptor.JwtInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
@@ -21,6 +22,9 @@ class SecurityConfig(
             .httpBasic().disable()
             .csrf().disable()
             .cors().disable()
+            .authorizeHttpRequests()
+            .requestMatchers(HttpMethod.OPTIONS, "**").permitAll()
+
         return http.build()
     }
 
