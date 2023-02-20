@@ -20,6 +20,7 @@ class SecurityConfig(
         http!!
             .httpBasic().disable()
             .csrf().disable()
+            .cors().disable()
         return http.build()
     }
 
