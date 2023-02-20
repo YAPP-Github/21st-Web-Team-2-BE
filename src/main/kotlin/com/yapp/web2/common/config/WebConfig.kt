@@ -12,6 +12,8 @@ class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .allowedOrigins("http://localhost:3000")
+            .allowedOrigins("http://thumbs-up.me")
+            .allowedOrigins("http://www.thumbs-up.me")
             .allowedOrigins("https://www.thumbs-up.me")
             .allowedOrigins("https://thumbs-up.me")
             .allowedMethods(
