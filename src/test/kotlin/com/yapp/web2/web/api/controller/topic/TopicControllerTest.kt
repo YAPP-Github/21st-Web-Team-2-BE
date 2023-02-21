@@ -153,6 +153,7 @@ internal class TopicControllerTest @Autowired constructor(
                         *memberPreviewDataResponseFieldsSnippet(),
                         fieldWithPath("liked").description("투표 게시글 좋아요 여부")
                     ).andWithPrefix("voteOptions[].", *voteOptionPreviewDataResponseFieldsSnippet())
+                        .andWithPrefix("voteOptions[].votedAmountStatistics.", *voteOptionDetailStatisticsResponseFieldsSnippet())
                 ),
             )
     }
@@ -415,6 +416,15 @@ internal class TopicControllerTest @Autowired constructor(
             fieldWithPath("codeBlock").type(JsonFieldType.STRING).description("투표 선택지 코드블럭").optional(),
             fieldWithPath("voted").description("현재 사용자의 투표 선택지 투표 여부"),
             fieldWithPath("voteAmount").description("투표 선택지 투표 수"),
+        )
+    }
+
+    private fun voteOptionDetailStatisticsResponseFieldsSnippet(): Array<FieldDescriptor> {
+        return arrayOf(
+            fieldWithPath("developerVoteAmount").description("개발자 투표 수"),
+            fieldWithPath("designerVoteAmount").description("디자이너 투표 수"),
+            fieldWithPath("pmVoteAmount").description("기획자 투표 수"),
+            fieldWithPath("etcVoteAmount").description("기타 투표 수"),
         )
     }
 
