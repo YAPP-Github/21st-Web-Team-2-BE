@@ -21,13 +21,19 @@ import com.yapp.web2.web.dto.topic.response.TopicDetailResponse
 import com.yapp.web2.web.dto.topic.response.TopicLikePostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPostResponse
 import com.yapp.web2.web.dto.topic.response.TopicPreviewResponse
+import com.yapp.web2.web.dto.voteoption.response.VoteOptionDetailResponse
 import com.yapp.web2.web.dto.voteoption.response.VoteOptionPreviewResponse
+import com.yapp.web2.web.dto.voteoption.response.VotedAmountStatisticsResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+
+const val DEVELOPER_FILTER = "개발"
+const val DESIGNER_FILTER = "디자인"
+const val PM_FILTER = "기획"
 
 @Transactional(readOnly = true)
 @Service
@@ -96,12 +102,51 @@ class TopicService(
                     voteVo.commentCount.toInt(),
                     isLiked(voteVo.topic, member),
                     voteVo.likedAmount.toInt(),
-                    getVoteOptionPreviewResponses(voteVo.topic, member),
+                    getVoteOptionDetailResponses(voteVo.topic, member),
                 )
             } ?: throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         } catch (exception: NoSuchElementException) {
             throw BusinessException(ErrorCode.NOT_FOUND_DATA)
         }
+    }
+
+    private fun getVoteOptionDetailResponses(topic: Topic, member: Member?): List<VoteOptionDetailResponse> {
+        return topic.voteOptions.map { voteOption ->
+            VoteOptionDetailResponse.of(
+                voteOption,
+                isVoted(voteOption, member),
+                calculateVotedStatistics(voteOption),
+            )
+        }
+    }
+
+    private fun calculateVotedStatistics(voteOption: VoteOption): VotedAmountStatisticsResponse {
+        val voteOptionMembers = voteOptionMemberRepository.findVotedMembersByVoteOptionId(voteOption)
+
+        val developerVotedAmount = voteOptionMembers.stream()
+            .map { it.votedBy }
+            .filter { it.jobCategory == DEVELOPER_FILTER }
+            .toList()
+            .size
+
+        val designerVotedAmount = voteOptionMembers.stream()
+            .map { it.votedBy }
+            .filter { it.jobCategory == DESIGNER_FILTER }
+            .toList()
+            .size
+
+        val plannerVotedAmount = voteOptionMembers.stream()
+            .map { it.votedBy }
+            .filter { it.jobCategory == PM_FILTER }
+            .toList().size
+
+        val etcVotedAmount = voteOptionMembers.size - (developerVotedAmount + designerVotedAmount + plannerVotedAmount)
+        return VotedAmountStatisticsResponse(
+            developerVotedAmount,
+            designerVotedAmount,
+            plannerVotedAmount,
+            etcVotedAmount,
+        )
     }
 
     private fun isLiked(topic: Topic, member: Member?): Boolean {
