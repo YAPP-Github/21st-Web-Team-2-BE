@@ -184,6 +184,33 @@ internal class TopicServiceTest @Autowired constructor(
         assertThat(topicDetail.voteOptions[0].voted).isTrue
     }
 
+    @Test
+    fun `투표 게시글 조회시 투표 통계 이력 응답 테스트`() {
+        //given
+        val testMemberA = EntityFactory.testMemberA() // 개발
+        val testMemberB = EntityFactory.testMemberB() // 개발
+        val testMemberC = EntityFactory.testMemberC() // 기획
+
+        val testTopicA = EntityFactory.testTopicA(testMemberA)
+        memberRepository.saveAll(mutableListOf(testMemberA, testMemberB, testMemberC))
+        val voteOptionA = testTopicA.voteOptions[0]
+        val voteOptionB = testTopicA.voteOptions[1]
+        voteOptionA.addVoteOptionMember(VoteOptionMember(testMemberA, voteOptionA))
+        voteOptionA.addVoteOptionMember(VoteOptionMember(testMemberB, voteOptionA))
+
+        voteOptionB.addVoteOptionMember(VoteOptionMember(testMemberC, voteOptionB))
+
+        topicRepository.save(testTopicA)
+
+        //when
+        val topicDetail = topicService.getTopicDetail(testTopicA.id, testMemberA)
+
+        //then
+        assertThat(topicDetail.voteOptions[0].voted).isTrue
+        assertThat(topicDetail.voteOptions[0].votedAmountStatistics.developerVoteAmount).isEqualTo(2)
+        assertThat(topicDetail.voteOptions[1].votedAmountStatistics.pmVoteAmount).isEqualTo(1)
+    }
+
     fun `투표 좋아요 테스트`() {
         //given
         val testMemberA = EntityFactory.testMemberA()

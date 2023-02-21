@@ -11,21 +11,21 @@ class EntityFactory {
         fun testMemberA() = Member(
             nickname = "MemberA",
             email = "MemberA@test.com",
-            jobCategory = "developer",
+            jobCategory = "개발",
             workingYears = 3
         )
 
         fun testMemberB() = Member(
             nickname = "MemberB",
             email = "MemberB@test.com",
-            jobCategory = "Designer",
+            jobCategory = "개발",
             workingYears = 5
         )
 
         fun testMemberC() = Member(
             nickname = "MemberC",
             email = "MemberC@test.com",
-            jobCategory = "product_manager",
+            jobCategory = "기획",
             workingYears = 1
         )
 
